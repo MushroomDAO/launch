@@ -1,0 +1,6 @@
+[submodule "projects/Custom-Sale-Contract"]
+	path = projects/Custom-Sale-Contract
+	url = git@github.com:jhfnetboy/Custom-Sale-Contract.git
+[submodule "projects/Tokenomics-Thinking"]
+	path = projects/Tokenomics-Thinking
+	url = git@github.com:jhfnetboy/Tokenomics-Thinking.git
