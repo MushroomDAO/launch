@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{subcaption} % For subfigures
+\usepackage{amsmath} % For advanced equation typesetting
+\usepackage[
+  backend=biber,
+  style=ieee
+]{biblatex}
+
+\addbibresource{../refs.bib}
+
+\title{SuperPaymaster: A Decentralized and UX-Optimized Ethereum Gas Payment System Based on Account Abstraction}
+\author{Huifeng Jiao, Dr. Nathapon Udomlertsakul, Dr. Anukul Tamprasirt, AAStar Team}
+\date{August 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Blockchain technology, underpinning a digital asset market valued in the
+tillions, offers transformative potential for societal collaboration.
+However, its path to mass adoption is significantly hindered by user experience
+challenges, particularly surrounding the fundamental process of paying
+transaction fees, or "gas" on networks like Ethereum. As established by the
+Technology Acceptance Model (TAM) and Human-Computer Interaction
+(HCI) principles, perceived ease of use is critical for
+adoption. Currently, interacting with blockchain often involves a cumbersome and
+costly gas payment process, presenting substantial barriers related to
+usability, efficiency, and cost. Users, especially newcomers, confront a
+steep learning curve involving numerous complex steps, high cognitive load, and opaque procedures. These usability hurdles act as significant deterrents, preventing many from engaging with and realizing the value of decentralized applications (dApps) \cite{Saldivar2021, Glomann2022}.
+
+The emergence of Account Abstraction (AA), particularly Ethereum's ERC-4337
+standard \cite{Buterin2021}, offers promising mechanisms like gas sponsorship (Paymaster) to
+alleviate some of these burdens. However, current implementations leveraging AA
+frequently introduce new centralization risks.
+
+% I have commented out the figure. Please download the image and place it in
+% research/SuperPaymaster/img/crypto-market-cap.png
+% Then you can uncomment this section.
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.8\linewidth]{./img/image-02}
+    \caption{The crypto market cap is valued in the trillions (data source: CoinMarketCap).}
+    \label{fig:market-cap}
+  \end{center}
+\end{figure}
+
+\section{Related Work and Comparison}
+
+In recent years, considerable research has investigated the integration of
+blockchain technology in the account and gas payment and related
+sector \cite{Sandford2020, Buterin2021, Singh2022}, with relatively fewer studies exploring
+on HCI, TAM, SLT, and decentralization computing. In this section, we have
+selected research and works closest to our proposed system. We also investigate
+the top industry gas payment suppliers with different metrics on their
+solutions: Pimlico, Alchemy, Stackup, ZeroDev, Coinbase, Biconomy, to show the
+current state of the industry and compare with the proposed system.
+
+On gasless transaction, we have meta transactions introduced by Ronan Sandford,
+et al. \cite{Sandford2020}, it needs a relayer to sign and pay the gas fee, but it
+is not a common gas payment solution cause every contract should be modified to
+support meta trasactions. So Vitalik Buterin introduced ERC4337 \cite{Buterin2021}, it has no
+changes to the existing contract, it just add a new interface to sign the
+transaction. ERC4337 now is the main standard on Account Abstraction.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    \textbf{Feature} & \textbf{SuperPaymaster} & \textbf{Pimlico} & \textbf{ZeroDev} & \textbf{Alchemy} \\ \hline
+    Decentralization & High & Low & Low & Low \\ \hline
+    Gas Sponsorship & Flexible & Basic & Basic & Basic \\ \hline
+    ERC20 Support & Extensive & Limited & Limited & Limited \\ \hline
+    Open Source & Yes & Yes & Yes & No \\ \hline
+    Developer Complexity & Low & Medium & Medium & Medium \\ \hline
+  \end{tabular}
+  \caption{Comparative Analysis of Account Abstraction Solutions.}
+  \label{tab:comparison}
+\end{table}
+
+\section{Citations}
+
+This is a sample citation section. You can cite works like this \cite{Krug2005} or this \cite{Sans2024}.
+
+\medskip
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,7 @@
+## Chapter 8: Conclusion
+
+The inherent complexity and cost of blockchain gas payments remain a critical barrier to mainstream Web3 adoption. This paper addressed this challenge through a Design Science Research approach, presenting the design, implementation, and evaluation of SuperPaymaster, a user-centric and competitive gas payment system. We sought to answer how to reduce the cost and complexity of gas payments, how to leverage user-centric metaphors to lower cognitive load, and what architecture could support this in a competitive manner.
+
+Our research offers three primary contributions. First, we present a novel, open-source architecture that enables a competitive market for gas sponsorship, mitigating the centralization risks prevalent in current solutions. Second, we provide strong empirical evidence that our HCI-driven design significantly improves usability, reducing transaction steps by over 70% and net costs by over 30%. Third, we validate the "Gas Card" metaphor as an effective HCI pattern for abstracting the technicalities of gas, thereby lowering the cognitive load for end-users and enhancing the perceived ease of use.
+
+By demonstrating that a rigorous, user-centered design process can solve fundamental blockchain usability challenges, this work provides a replicable model for building a more accessible, efficient, and inclusive decentralized future. SuperPaymaster serves as a concrete step towards making the power of Web3 technologies available to all, shifting the focus from technical hurdles to application value.

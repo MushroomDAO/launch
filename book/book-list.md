@@ -1,0 +1,13 @@
+# 书单
+- 复杂系统 complexity system
+- 社会资本 social capital
+- 技术的本质 the essence of technology
+- 大教堂与集市 The Cathedral and the Bazaar
+- 激进市场 The Radical Market
+- Cypherpunk Cypherpunk
+- 规模 Scale
+- 乡土中国 The Countryside of China
+- 镶嵌 社会网络和经济行动
+- 通往奴役之路 The Road to Serfdom
+- 乌合之众 The Crowd
+- 货币的非国家化 The Non-State of Money
