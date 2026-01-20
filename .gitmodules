@@ -4,3 +4,6 @@
 [submodule "projects/Tokenomics-Thinking"]
 	path = projects/Tokenomics-Thinking
 	url = git@github.com:jhfnetboy/Tokenomics-Thinking.git
+[submodule "projects/MyNFT"]
+	path = projects/MyNFT
+	url = git@github.com:jhfnetboy/MyNFT.git
