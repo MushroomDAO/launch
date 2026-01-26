@@ -1,14 +1,42 @@
 # Progress
 每日更新  🚧Desinging，⏳Working，✅Done
-## 1-21 近期todo
+## 近期todo
 1. MyNFT单页面版本设计，基于文档，repo建立上，算是COS72的第一个应用 ⏳ 5%
 2. 部署OP测试网，进行全面测试，然后添加NFT合约，部署和验证；⏳ 30%，Op-sepolia部署+测试ok
 3. EOA bridge 项目推动（期望快速进展）⏳
 4. 硬件设备的部署迁移，找老师确认网卡硬件地址如何连接？然后部署上，测试 🚧
 5. 联合测试，OP测试网，包括account测试，🚧
 6. 关键合约UUIP+proxy，然后发布OP主网 🚧
-7. 销售合约和launchpad ⏳
+7. 销售合约和launchpad ⏳20%
 8. Task黑客松测试出demo 🚧
+
+## 1-26
+1.体检，准备材料，驾照换本准备
+2.下午4点活动
+3.lifecycle API测试，看是否合并到SDK
+4. 销售合约今日一定开始，晚上开始这个
+
+
+## 1-25
+1. 完成了两个分享的ppt，就这样吧
+2. 分析模块继续推动，到一个小版本，暂停，稍候从论文角度分析是否足够（明天推进）
+
+
+## 1-24
+1. 所有合约稳定在4.3.1，已发布和验证ok；sdk和docs稳定在0.16.14, npm已经发布
+2. 分析模块明天进行，如果结果能接受，就开始发布op主网（需要稳定几个核心合约为proxy？）
+3. 明天和david碰下进展（近期他没空。。。推后
+
+## 1-23
+1. 终于测试全通过，合约和sdk打死也不动了，发op-sepolia，测试，然后发op ✅
+2. https://gateway.pinata.cloud/ipfs/bafybeiait3ds2fn42kmnu3ofp73ycujgppks3ma3zzvxnedthunpsrvn7e
+## 1-22
+1. 优化部署脚本，为部署op-sepolia和op主网准备，昨天一天优化了xpnts和sp；sepolia test 通过；
+2. 准备ppt（25晚上的分享），推掉了主持人的角色；
+## 1-21
+1. NFT设计了一下，没开始
+2. OP测网部署了，优化了xpnts
+3. 销售合约进展了一点
 ## 1-20
 1. 数字游民大会分享（赋能社区和个体，ppt准备10 page）+邀请人文学院老师分享✅
 2. demo稳定到了faucet+本地demo✅

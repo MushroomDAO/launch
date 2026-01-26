@@ -5,7 +5,7 @@
 2. 从哪来？
   - 概述：23年4月Zuzalu与Vitalik沟通后，Plancker^建立的AAStar（账户抽象）小组，目前专注AA和infra的开源团队。
 3. 到哪去？
-  - 愿景：Pivot+扩展到赋能社区，聚焦区块链面临的动机问题，通过倡导和探索建立Mycelium开放协议，赋能社区从而激发更多创新和协作。
+  - 愿景：Pivot+扩展到赋能社区，自由个体，聚焦区块链的动机问题，通过倡导和探索建立Mycelium开放协议，赋能社区从而激发更多创新和协作。
   
 ## What? 
 check this doc:[人性之光小短文](./docs/HumanityLight.md)
