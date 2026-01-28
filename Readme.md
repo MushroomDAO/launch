@@ -25,7 +25,7 @@ All this kind of organizations, I just call: Community.
 We want to follow a simple way: "Narrate. Validate. Evolve." 
 "Tell the story. Seek the feedback. Evolve the vision."
 
-We follow：Problem/Community-->Research/Paper-->Publich Digital Goods/Products--->Validation/Community
+We follow：Problem/Community-->Research/Paper-->Public Digital Goods/Products--->Validation/Community
 A circulation loop with these steps.
 ### How?
 1. Cold Launch
@@ -43,3 +43,16 @@ All launching related projects. GToken saling contract and related contracts, an
 
 ### Research
 Some related topics deep research.
+
+## Task list(cold launch)
+
+### 1. GToken sale interface with community launchpad
+一个初步版本的launchpad, for Mycelium Protocol, for all communities.
+Who register a community can launch their token in seconds.
+The token(xPNTs) is utility token, which has no investment value and without any financial return in future.
+
+#### 1.1 GToken sale contract
+
+#### 1.2 Launchpad contract
+
+#### 1.3 Web interface
