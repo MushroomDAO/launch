@@ -9,14 +9,66 @@
 6. 关键合约UUIP+proxy，然后发布OP主网 🚧
 7. 销售合约和launchpad ⏳20%
 8. Task黑客松测试出demo 🚧
+1. 增加NFT和AI基础模块，然后发布OP主网合约+发布一次SDK（带主网合约）；
+2. 附带youtube视频demo+bilibili视频demo，教建设者/builder用起来
+- M的诉求，M的障碍（概念，上下文，开发环境，测试token和ETH等），M的需求
+- 拆解为诉求，讨论，确定几个解决方案的方式：一键部署自己的社区网站框架+集成的infra？嵌入式部署infra？插件支持？
+3. 建立天使用户群，邀请制，大家提需求，给反馈，讨论想要的帮助和产品feat
+4. AI（社区AI+个人AI+AI workshop）, bot(tele第一位，wechat第二位，找个技术栈），以赋能社区，自由个体为目标；
+account repo继续思考和完善；sp提供社区面板，改进registry repo；
 
+## 2-4
+1. close MyExDraw： https://hub.docker.com/repository/docker/aastar/myexdraw-excalidraw/general， ✅
+2. launch继续整理，争取到阶段成果，满足下一步
+3. SDK registry设计最简单的界面
+4. AI整理到一个repo（社区和个人的）
+
+## 2-3
+1. 建立了半个DApp示范：MyExDraw，数字公共物品，改了点东西，能用了；
+- 后面要：添加账户认证（SBT）和订阅 or Shops购买、Reputation和Credit显示
+- 到期自动销毁的NFT（例如订阅制度）
+- 自动支付订阅，扣款失败发email提醒
+2. 冷启动repo继续维护和完善，晚上继续；
+3. 更新slogan：Empower Community, Unleash Humanity🍄
+迁移aastar.io网站从github pages到cloudflare
+
+
+
+## 2-2
+黑客松结束
+5. 反思黑客松：由别人定义的规则，如果你想协作，就要check和遵守，否则得不到你想要的结果；当然，如果想original的hack精神，那我们绝对符合：创造点好玩的
+
+## 2-1
+1. NFT设计了一下,独立分支，社区快速发放nft，独立可运行，包括前端和输入（json输入空投地址列表，json输入nft meta data），operator支付gas（未来扩展为免gas支付）✅
+2. ppt初稿整理了✅ 初稿ok，声纹识别看情况
+3. AI流程基础完成 ✅ 不改了
+4. 晚上碰下，打磨下，明天绚子或者我来demo show？需要录制一个video 2-3分钟叙事:问题，解决方案，流程演示
+
+## 1-31
+1. 黑客松：爬虫（停止了），合约今天初稿（初步ok）；黑客松ppt：Oscar+绚子来，5页，展示演讲：绚子（全英文）
+2. 下午去数字游民大会
+
+## 1-30
+1. 黑客松开发，目标完成几个核心：Bot，AI语音，分析结果上链，全程可信可验证
+2. 完善明天的分享ppt
+3. 黑客松基础流程ok；Oscar的几个建议：有用户，有反馈，迭代
+
+## 1-29
+1. Dev的活动，全天
+
+## 1-28
+1. hackathon 开幕
+2. iridescent，support
+3. echoRank，event reputation和加权NFT信用的简单的公共物品和社区bot
+
+## 1-27
+1. 外面一天，办理驾照和年检
 
 ## 1-26
 1.体检，准备材料，驾照换本准备✅
 2.下午3:15活动✅
 3.lifecycle API测试，看是否合并到SDK
 4. 销售合约今日一定开始，开始这个(开了个头)
-
 
 ## 1-25
 1. 完成了两个分享的ppt，就这样吧

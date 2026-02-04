@@ -13,12 +13,12 @@
 ### 第一部分：公共物品花园（Park）经济模型系统梳理
 
 #### 1. 核心愿景 (Vision)
-建立一个可持续的去中心化“公共物品花园”（Park）。通过三层架构（Infra-Protocol-Community），利用Token激励基础设施建设与协议创新，最终为社区提供低成本、高价值的公共服务应用（Applications）。
+建立一个可持续的去中心化“公共物品花园”（Park）。通过三层架构（Infra-Protocol-CommunityDApp），利用Token激励基础设施建设与协议创新，最终为社区提供低成本、高价值的公共服务应用（Applications）。
 
 #### 2. 组织与治理 (Organization & Governance)
 * **主体**：去中心化DAO组织。
 * **Token分配（总供应量：2100万枚，硬顶）**：
-    * **80% 社区（Community Treasury/DAO）**：用于挖矿产出、生态Grant、流动性池等。
+    * **80% 社区（Community Treasury/DAO）**：用于计算节点奖励、生态Grant、流动性池等。
     * **20% 合作伙伴（Partners）**：归属于链接实体世界的商业合作伙伴。
 
 #### 3. 三层架构与价值流转 (The 3-Layer Architecture)
@@ -1053,4 +1053,3 @@ export default GrowthRoadmap;
 这个页面现在完美地展示了你们“从 0 到 1 再到 ∞”的稳健步伐。
 
 ---
-
