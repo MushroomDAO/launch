@@ -17,6 +17,15 @@
 4. AI（社区AI+个人AI+AI workshop）, bot(tele第一位，wechat第二位，找个技术栈），以赋能社区，自由个体为目标；
 account repo继续思考和完善；sp提供社区面板，改进registry repo；
 
+
+## 2-12,13,14,15
+1. 最近几天完成了论文数据生成和修改，初稿ok，需要review一次（paper3,7）
+2. SDK也做了一些fix，一定阶段提交一次；
+3. MyShop和MyTask到了一定阶段，需要check验收一次，修正设计，继续完善
+
+## 丢失了10天左右log
+md，被reset了，傻叉ai
+
 ## 2-4
 1. close MyExDraw： https://hub.docker.com/repository/docker/aastar/myexdraw-excalidraw/general， ✅
 2. launch继续整理，争取到阶段成果，满足下一步
