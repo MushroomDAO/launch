@@ -1,70 +1,50 @@
 # Progress
 每日更新  🚧Desinging，⏳Working，✅Done
 ## 近期todo
-1. MyNFT单页面版本设计，基于文档，repo建立上，算是COS72的第一个应用 ⏳ 5%
-2. 部署OP测试网，进行全面测试，然后添加NFT合约，部署和验证；⏳ 30%，Op-sepolia部署+测试ok
+1. MyNFT单页面版本设计，基于文档，repo建立上，算是COS72的第一个应用 ⏳ 5%,合并到MyShop，黑客松已经实现部分✅
+2. 部署OP测试网，进行全面测试，然后添加NFT合约，部署和验证；⏳ 30%，Op-sepolia部署+测试ok，部署测试完成✅
 3. EOA bridge 项目推动（期望快速进展）⏳
 4. 硬件设备的部署迁移，找老师确认网卡硬件地址如何连接？然后部署上，测试 🚧
 5. 联合测试，OP测试网，包括account测试，🚧
 6. 关键合约UUIP+proxy，然后发布OP主网 🚧
-7. 销售合约和launchpad ⏳20%
-8. Task黑客松测试出demo 🚧
-1. 增加NFT和AI基础模块，然后发布OP主网合约+发布一次SDK（带主网合约）；
-2. 附带youtube视频demo+bilibili视频demo，教建设者/builder用起来
-- M的诉求，M的障碍（概念，上下文，开发环境，测试token和ETH等），M的需求
-- 拆解为诉求，讨论，确定几个解决方案的方式：一键部署自己的社区网站框架+集成的infra？嵌入式部署infra？插件支持？
-3. 建立天使用户群，邀请制，大家提需求，给反馈，讨论想要的帮助和产品feat
-4. AI（社区AI+个人AI+AI workshop）, bot(tele第一位，wechat第二位，找个技术栈），以赋能社区，自由个体为目标；
-account repo继续思考和完善；sp提供社区面板，改进registry repo；
+7. 销售合约和launchpad ⏳20%，合并到MyShop，✅
+1. 增加NFT（合并到MyShop）和AI基础模块，然后发布OP主网合约+发布一次SDK（带主网合约）；🚧
+2. 附带youtube视频demo+bilibili视频demo，教建设者/builder用起来🚧
+- M的诉求，M的障碍（概念，上下文，开发环境，测试token和ETH等），M的需求🚧
+- 拆解为诉求，讨论，确定几个解决方案的方式：一键部署自己的社区网站框架+集成的infra？嵌入式部署infra？插件支持？🚧
+3. 建立天使用户群，邀请制，大家提需求，给反馈，讨论想要的帮助和产品feat🚧
+4. AI（社区AI+个人AI+AI workshop）, bot(tele第一位，wechat第二位，找个技术栈），以赋能社区，自由个体为目标；Aura建立✅
+4.1 account repo继续思考和完善；🚧
+5. sp提供社区面板，改进registry repo；🚧
 
+## 2-22,23,24,25
+1. 逐行review paper3,7； 然后AI 小范围review，定稿；
+2. paper3 arxiv+浙大；paper7 arxiv+老师介绍+自己找
+3. OPC OS/ Aura AI，关于传播，思考这个组件
+4. 完善N3XT继续，完善Sin90（gemini对话基础上，建立repo）
 
-## 2-12,13,14,15
-1. 最近几天完成了论文数据生成和修改，初稿ok，需要review一次（paper3,7）
-2. SDK也做了一些fix，一定阶段提交一次；
-3. MyShop和MyTask到了一定阶段，需要check验收一次，修正设计，继续完善
+## 2-18,19,20,21
+1. 数据基本ok，论文进行最后一遍review，然后提交；
+2. - 论文发arcvix，3,7
+- 找导师确认：我期望是3-7投稿CommunityFi，估计修改几次。
+- 问题：发表周期（请老师评估下发表概率，别老拒稿）；提交格式要求、accept时间和缴费方式和金额、署名要求（老师必须是通讯作者？）、投稿流程（投稿网站入口）、APC费用和发表后的报销流程，我的todo：准备好论文pdf，和latex；3-17自己投稿paper3；
+2. 开始写EOA，两周完成，3-27投稿老师推荐或者其他刊 物；3-17开始写AA,目标：；paper6（EOA）arxiv+老师介绍+自己找，AAarxiv+老师介绍+自己找
+
+## 2-12,13,14,15,16，17
+1. 最近几天完成了论文数据生成和修改，初稿ok，需要review一次（paper3,7）✅；
+2. 再次refine完毕，下一步是逐行review+模块过一遍+多AI audit🚧
+2. SDK也做了一些fix，一定阶段提交一次；✅
+3. MyShop和MyTask到了一定阶段，需要check验收一次，修正设计，继续完善；✅shop待验收；✅task待验收；
 ### 近期todo
-1. keeper 跑起来，给sepolia，op-sepolia和op定时update，梳理清楚update规则，评估最好情况和最坏情况。
+1. keeper 跑起来，给sepolia，op-sepolia和op定时update，梳理清楚update规则，评估最好情况和最坏情况。✅
 - op主网我们合约设置过期时间是4200秒（check确定下，paymasterv4和superpaymaster合约）
 - 在例如4100秒的时候更新，检测频率是3分钟check一次,每次确保还有至少5分钟有效时间，否则则自动更新，则实际大约有效时间是60-65分钟之间；
 - sepolia和op-sepolia的chainlink更新时间我不确定，需要变动的符合实际；
 - 因为任何人都可以提交updatePrice 交易，所以这个keeper接受任何在对应链有eth，test eth的eoa account作为参数，就能跑起来
-2. 论文收尾
+2. 论文收尾✅
 - 今日review，估计要两天
 - 多轮check和audit，fix
 - 导师反馈的：移除usd，模拟图，格式，都fix
-- 论文发arcvix，3,7
-- 找导师确认：我期望是3-7投稿CommunityFi，修改几次，发表（评估下发表概率，别老拒稿）；提交格式、确认accept时间和缴费方式、署名要求、投稿流程、费用和报销流程，准备好论文pdf，确认后发布；3-17自己投稿paper3；3-7开始写EOA，两周完成，3-27投稿老师推荐或者其他刊物；3-27开始写AA
-
-3. MyTask，MyShop测试和refine，启动MyVote和AA的插件
-### MyTask: make descision
-用中文沟通
-- What is the canonical “agentId” source of truth (SBT tokenId vs registry mapping vs derived)?
-
-- Which payment authorization rails are mandatory for MVP:
-  - ERC-2612, EIP-3009 (token-specific), or AA-only?
-- What is the minimum viable dispute model:
-  - “soft disputes” (reputation-only) vs “hard disputes” (slashing + onchain arbitration)?
-- Where do receipts live and what is posted onchain (hash-only vs full URIs)?
-### MyShop: all done
-- P0：D1 定义环境与地址版本结构（状态：进行中）
-- P1：D4 发布流程落地（含预检清单落地执行）
-- P2：D2 最小 CI（合约 build/test、worker check/test、前端 build/check/e2e）
-- P3：C5 交易生命周期体验完善（approve/buy/pending/success/fail）
-- P4：C7 全角色最小 E2E 自动化补齐
-- P5：D3 SDK 整合（地址源对齐 + MyShop client）
-已覆盖的核心能力
-
-- 社区准入、店铺注册与费用配置：合约已有 registry gating、平台费、上架费与角色控制 MyShops.sol
-- 商品上架与购买闭环（含串号与风控签名）：合约已实现 SerialPermit/RiskAllowance 验证、购买原子执行、Action 白名单 MyShopItems.sol
-- Worker 监听、Webhook/Telegram 通知、Query API 与索引：已实现购买事件 enrich、通知、API/metrics 与索引持久化 watchPurchased.js apiServer.js
-- aPNTs/GToken 售卖基础规则（白名单支付、rate、上限/日限/单笔限）：合约已实现 APNTsSale.sol GTokenSale.sol
-设计中明确但代码里尚未覆盖的部分
-#### todo
-- Plaza 前端升级 ：设计里要求广场/列表/多入口购买，当前前端只有最小 demo 单页逻辑（仅 main.js 等 4 个文件） Solution.md:L314-L340 frontend/src
-- SDK 整合与地址稳定 ：文档 M4 明确要把 MyShop 地址与 client 收敛进 aastar-sdk，但仓库内无对应实现 Solution.md:L402-L419
-- Eligibility/资格校验插件化 ：设计里有 validator/EligibilityPermit 路线，但合约与服务端暂无对应实现 architecture.md:L71-L102
-- 风险评估页与可视化风控 ：设计要求展示风控与发行统计，但前端未实现 Solution.md:L279-L293
-- 售卖价格机制与 timelock ：设计提出预言机/滑点保护/变更延时，但现有售卖合约仅固定 rate 与上限 Solution.md:L259-L286
 
 ## 丢失了10天左右log
 md，被reset了，傻叉ai
