@@ -292,11 +292,32 @@ https://github.com/zakirkun/guardian-cli
 ## Research/科研
 https://github.com/HughYau/AcademicForge
 
+Claude Scholar 是一个面向 Claude Code CLI 的个人配置系统，提供丰富的技能、命令、代理和钩子，针对AI/CS的学术研究进行了特定优化。覆盖完整的学术研究生命周期（从构思到发表）和软件开发工作流，同时提供插件开发和项目管理能力。
+ 
+核心工作流：
+1. 研究构思：research-ideation skill + literature-reviewer agent/research-init
+2. ML 项目开发：architecture-design skill + code-reviewer agent/plan, /commit, /tdd
+3. 实验分析：results-analysis skill + data-analyst agent/analyze-results
+4. 论文写作：ml-paper-writing skill + paper-miner agent
+5. 论文自审：paper-self-review skill
+6. 投稿与 Rebuttal：review-response skill + rebuttal-writer agent/rebuttal
+7. 录用后处理：post-acceptance skill/presentation, /poster, /promote
+ 
+辅助工作流：
+1. 自动化执行: 5 个 Hook 在会话各阶段自动触发（技能评估、环境初始化、工作总结、安全检查）
+2. 知识提取: paper-miner 和 kaggle-miner agent 持续从论文和竞赛中提取知识
+3. 技能进化: skill-development → skill-quality-reviewer → skill-improver 三步改进循环
+ 
+Claude Scholar 不仅仅是一个配置集合，它是一套完整的研究工作方法论。通过自动化钩子强制执行最佳实践，通过专业技能提供领域知识，通过智能代理处理复杂任务，通过知识进化持续改进。从今天开始，让 Claude Code 成为你研究工作的得力助手。
+ 
+仓库地址：https://github.com/Galaxy-Dawn/claude-scholar
+
 ## TODOs
 1. kin，放置mini和iot（先迁移完成）
 2. 每日增加Happy LLM, Happy Agents课程学习
-3. theworldlabs，three.js
-4. open alice
-5. crewly借鉴
-6. 微软litebox
-7. 理性的仪式：人类合作需要共同知识
+3. 每日看课程：https://www.bilibili.com/video/BV1sqfxBFE4J?spm_id_from=333.788.player.switch&vd_source=852e36bebe294c109f2be8840a17d7fa&p=8 ， https://www.bilibili.com/video/BV1ikEEzGES5/?spm_id_from=333.788.top_right_bar_window_custom_collection.content.click
+4. theworldlabs，three.js
+5. open alice
+6. crewly借鉴
+7. 微软litebox
+8. 理性的仪式：人类合作需要共同知识

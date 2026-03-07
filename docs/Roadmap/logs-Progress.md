@@ -1,5 +1,9 @@
 # Progress
 每日更新  🚧Desinging，⏳Working，✅Done
+所有todo移动到了：https://www.mushroom.cv/
+
+
+-----------------------------Archive---------------------------
 ## 近期todo
 1. MyNFT单页面版本设计，基于文档，repo建立上，算是COS72的第一个应用 ⏳ 5%,合并到MyShop，黑客松已经实现部分✅
 2. 部署OP测试网，进行全面测试，然后添加NFT合约，部署和验证；⏳ 30%，Op-sepolia部署+测试ok，部署测试完成✅
@@ -14,14 +18,66 @@
 - 拆解为诉求，讨论，确定几个解决方案的方式：一键部署自己的社区网站框架+集成的infra？嵌入式部署infra？插件支持？🚧
 3. 建立天使用户群，邀请制，大家提需求，给反馈，讨论想要的帮助和产品feat🚧
 4. AI（社区AI+个人AI+AI workshop）, bot(tele第一位，wechat第二位，找个技术栈），以赋能社区，自由个体为目标；Aura建立✅
-4.1 account repo继续思考和完善；🚧
-5. sp提供社区面板，改进registry repo；🚧
+
+-----------------------------Archive---------------------------
+
+## 3-7
+所有todo移动到了：https://www.mushroom.cv/
+
+
+
+-----------------------------Archive----------------------------
+
+# 3-4,5,6，
+1. demo先设计和完成，给社区用户体验，给sdk和airaccount集成提供admin入口，🚧
+  1. cos72.mushroom.dev，在线demo 0.1版本，演示demo+真实注册可用（可docker自部署）🚧
+2. fang了解下，small progress
+3. 论文review完毕✅
+3. superpaymaster项目的合约改进：UUIP改进（先评估透彻），微支付改进支持（不仅仅gas，对购买nft在指定合约建议的也支持credit payment体系）🚧
+4. ENS项目完成OP解析，完成自动授予某个地址一个ENS+开源的解析显示页面
+5. spores协议设计和思考 
+
+## 3-1，2，3
+1. claude买了✅
+2. claude跑stm32项目，发布到设备，发布kms并进行重启测试，确保私钥在上面存储正确，同时确定KMS核心API（可能要添加修改一点）✅
+8. VPN的做个脚本✅
+
+## 2-27,28
+1. 做一个roadmap.mushroom.box+在线backlog+ai，等域名，马上上线✅
+2. 解析*.forest.mushroom.box to a single page with readme and download；+ plugin 0.15 version ✅同上
+3. 连接stm设备，在线访问，今天搞定✅
+
+
+
+## 2-26
+1. paper3,7导出pdf给导师，自己看一遍再，没问题发arxiv；申请教育包
+2. 3. 启动EOA bridge论文 ✅
+3. 画图（为啥不能分享了？奇怪）
+4. 周会：
+  1. 目标：启动，要有个插件，可以注册社区，发utility gas token，无gas交易；发布task，结算社区积分；发布社区服务和item，以积分兑换
+  2. 目标：还有投票，基于snapshot，未来再迁移到snapshotx（官方有方案），这个也差不多了
+  3. MyShop（Oscar），治理投票马上ok；（roadmap给个简单版）
+  3. SuperPaymaster的代理机制合约，未来升级合约地址不变，合约核心代码不改（jhf）
+  4. AirAccount集成到插件；TEE的设备联网（jhf）
+  5. Oscar建议：DEMO，基础的功能展示；CoS72说明书，简单，面向社区；（jhf）
+  6. SDK，bundler，zerodev的ultrarelay，kernel？？ stackup合约；KMS，插件；（Davidxu）
 
 ## 2-22,23,24,25
-1. 逐行review paper3,7； 然后AI 小范围review，定稿；
-2. paper3 arxiv+浙大；paper7 arxiv+老师介绍+自己找
-3. OPC OS/ Aura AI，关于传播，思考这个组件
-4. 完善N3XT继续，完善Sin90（gemini对话基础上，建立repo）
+1. 逐行review paper3,7； 然后AI 小范围review，定稿；✅
+2. paper3 arxiv+浙大；paper7 arxiv+老师介绍+自己找 ✅
+3. OPC OS/ Aura AI，关于传播，思考这个组件✅
+4. 完善N3XT继续，完善Sin90（gemini对话基础上，建立repo）🚧
+
+done：
+1. keeper 跑起来，给sepolia，op-sepolia和op定时update，梳理清楚update规则，评估最好情况和最坏情况。✅
+- op主网我们合约设置过期时间是4200秒（check确定下，paymasterv4和superpaymaster合约）
+- 在例如4100秒的时候更新，检测频率是3分钟check一次,每次确保还有至少5分钟有效时间，否则则自动更新，则实际大约有效时间是60-65分钟之间；
+- sepolia和op-sepolia的chainlink更新时间我不确定，需要变动的符合实际；
+- 因为任何人都可以提交updatePrice 交易，所以这个keeper接受任何在对应链有eth，test eth的eoa account作为参数，就能跑起来
+2. 论文收尾✅
+- 今日review，估计要两天
+- 多轮check和audit，fix
+- 导师反馈的：移除usd，模拟图，格式，都fix
 
 ## 2-18,19,20,21
 1. 数据基本ok，论文进行最后一遍review，然后提交；
@@ -35,16 +91,7 @@
 2. 再次refine完毕，下一步是逐行review+模块过一遍+多AI audit🚧
 2. SDK也做了一些fix，一定阶段提交一次；✅
 3. MyShop和MyTask到了一定阶段，需要check验收一次，修正设计，继续完善；✅shop待验收；✅task待验收；
-### 近期todo
-1. keeper 跑起来，给sepolia，op-sepolia和op定时update，梳理清楚update规则，评估最好情况和最坏情况。✅
-- op主网我们合约设置过期时间是4200秒（check确定下，paymasterv4和superpaymaster合约）
-- 在例如4100秒的时候更新，检测频率是3分钟check一次,每次确保还有至少5分钟有效时间，否则则自动更新，则实际大约有效时间是60-65分钟之间；
-- sepolia和op-sepolia的chainlink更新时间我不确定，需要变动的符合实际；
-- 因为任何人都可以提交updatePrice 交易，所以这个keeper接受任何在对应链有eth，test eth的eoa account作为参数，就能跑起来
-2. 论文收尾✅
-- 今日review，估计要两天
-- 多轮check和audit，fix
-- 导师反馈的：移除usd，模拟图，格式，都fix
+
 
 ## 丢失了10天左右log
 md，被reset了，傻叉ai
