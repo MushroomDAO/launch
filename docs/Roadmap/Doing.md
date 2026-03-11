@@ -12,6 +12,15 @@
 - Aura AI iDoris：自己训练模型，思考设计ing：基座可以换么？
 - Aura AI iDoris：应用层：解决谁的什么问题，解决方式和流程，效果评测；架构层：Gears+Mycelium Network+链接个人AI和社区AI
 
+
+## 临时记录
+
+https://github.com/ResearAI/DeepReviewer-v2
+https://github.com/MushroomDAO/MyShop/tree/check-acceptance
+https://kagi.com/
+https://studio.openledger.xyz/datanets
+https://github.com/AAStarCommunity/demo
+
 ## MyTask: make descision
 用中文沟通
 - What is the canonical “agentId” source of truth (SBT tokenId vs registry mapping vs derived)?
@@ -245,6 +254,9 @@ The Rust-based CLI uses your existing system browser (Chrome, Brave, Edge, Arc, 
 
 Step 2: Use with any AI Agent
 
+https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering
+https://github.com/shenhao-stu/openclaw-agents
+
 When working with any AI coding assistant (Claude Code, Cursor, etc.), add this to your prompt:
 
 Use Actionbook to understand and operate the web page.
@@ -256,6 +268,7 @@ For enhanced agent integration, add the Actionbook skill:
 
 npx skills add actionbook/actionbook
 https://github.com/actionbook/actionbook
+https://github.com/mvanhorn/last30days-skill
 
 ### Mobile App
 https://github.com/BlockRunAI/ClawRouter

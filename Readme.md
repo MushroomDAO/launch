@@ -1,58 +1,25 @@
 # Protocol Launch
-三个问题：
-1. 你是谁？
-  - 简介：AAStar，一个以太坊开源建设小组，前身来自于Plancker^的建设小组（AAStar），2024年11月继承普朗克精神，独立运营。
-2. 从哪来？
-  - 概述：23年4月Zuzalu与Vitalik沟通后，Plancker^建立的AAStar（账户抽象）小组，目前专注AA和infra的开源团队。
-3. 到哪去？
-  - 愿景：Pivot+扩展到赋能社区，自由个体，聚焦区块链的动机问题，通过倡导和探索建立Mycelium开放协议，赋能社区从而激发更多创新和协作。
-  
-## What? 
-check this doc:[人性之光小短文](./docs/HumanityLight.md)
-Protocol is the vision.
-DAO is a kind of organization structure to make vision into realities.
-I mean without DAO, we can also forward to the vision, like a open source group.
-All this kind of organizations, I just call: Community.
+## Three Questions
+**1. Who are you?**
+* **Introduction:** AAStar is an Ethereum open-source building group. Originating from a building group (AAStar) under Plancker^, it inherited the Plancker spirit and began operating independently in November 2024.
+
+**2. Where do you come from?**
+* **Overview:** Following a discussion with Vitalik at Zuzalu in April 2023, the AAStar (Account Abstraction) group was established by Plancker^, focusing primarily on AA and infrastructure.
+
+**3. Where are you going?**
+* **Vision:** By advocating and exploring the establishment of the Mycelium open protocol, we aim to empower communities and free individuals. We focus on addressing motivational challenges in the blockchain space, empowering the community to inspire greater innovation and collaboration.
+---
+check this doc:[Humanity Light](./docs/HumanityLight.md)
+Organizations that foster the exploration of life's meaning are what I simply define as: Community.
 
 ### Links
-1. [Progress logs](./docs/logs-Progress.md)
-2. [Roadmap](./docs/Roadmap.md)
+1. [Progress logs, deprecated](./docs/logs-Progress.md); check here:[Realtime Roadmap, Milestones and Tasks](https://www.mushroom.cv/)
+2. [Roadmap](https://www.mushroom.cv/documentation/5/roadmap-2026-2027)
 3. [Cold Launch](./docs/Coldlaunch.md))
 4. [Community Touch](./docs/CommuTouch.md)
+5. [Docs](https://www.mushroom.cv/documentation/1/broodbrain-readme)
+6. [Projects in Kanban tasks](https://www.mushroom.cv/tasks)
+7. [Research](https://www.mushroom.cv/milestones)
 
 ## Launching
-### Why?
-We want to follow a simple way: "Narrate. Validate. Evolve." 
-"Tell the story. Seek the feedback. Evolve the vision."
-
-We follow：Problem/Community-->Research/Paper-->Public Digital Goods/Products--->Validation/Community
-A circulation loop with these steps.
-### How?
-1. Cold Launch
-2. Build and Communicate:get feedback, provide new features to test and use.
-3. Evolution and Build, keep loops.
-
-## Structure
-
-### Docs
-所有和 MushroomDAO 相关的计划（Planning）、组织（Organizing）、~~领导（Leading ）~~、协调（Coordinating）、~~控制（Controlling）~~ 的文档汇集。
-This directory contains documents related to the launch of the Mushroom DAO, including cold launch plans, DAO structure, and information about GToken offering to the early protocol supporters.
-
-### Projects
-All launching related projects. GToken saling contract and related contracts, and a simple community launchpad.
-
-### Research
-Some related topics deep research.
-
-## Task list(cold launch)
-
-### 1. GToken sale interface with community launchpad
-一个初步版本的launchpad, for Mycelium Protocol, for all communities.
-Who register a community can launch their token in seconds.
-The token(xPNTs) is utility token, which has no investment value and without any financial return in future.
-
-#### 1.1 GToken sale contract
-
-#### 1.2 Launchpad contract
-
-#### 1.3 Web interface
+We following：Community Problem --> Academic Research --> Digital Public Goods --> Community Validation.
