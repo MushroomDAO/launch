@@ -1,4 +1,5 @@
 # Protocol Launch
+[Chinese version](#中文版-chinese-translation)
 ## Three Questions
 **1. Who are you?**
 * **Introduction:** AAStar is an Ethereum open-source building group. Originating from a building group (AAStar) under Plancker^, it inherited the Plancker spirit and began operating independently in November 2024.
@@ -12,14 +13,26 @@
 check this doc:[Humanity Light](./docs/HumanityLight.md)
 Organizations that foster the exploration of life's meaning are what I simply define as: Community.
 
-### Links
-1. [Progress logs, deprecated](./docs/logs-Progress.md); check here:[Realtime Roadmap, Milestones and Tasks](https://www.mushroom.cv/)
-2. [Roadmap](https://www.mushroom.cv/documentation/5/roadmap-2026-2027)
-3. [Cold Launch](./docs/Coldlaunch.md))
-4. [Community Touch](./docs/CommuTouch.md)
+## Links
+1. [Roadmap](https://www.mushroom.cv/documentation/5/roadmap-2026-2027)
+2. [Realtime Progress on Tasks](https://www.mushroom.cv/), Milestones,[Research](https://www.mushroom.cv/milestones)
+3. [Cold Launch](./docs/Coldlaunch.md)
+4. [Mushroom Forest](./docs/CommuTouch.md)
 5. [Docs](https://www.mushroom.cv/documentation/1/broodbrain-readme)
-6. [Projects in Kanban tasks](https://www.mushroom.cv/tasks)
-7. [Research](https://www.mushroom.cv/milestones)
+
 
 ## Launching
-We following：Community Problem --> Academic Research --> Digital Public Goods --> Community Validation.
+We following: Problem --> Academic Research --> Digital Public Goods --> Validation.
+We are seeking for grant, sponsorship, and partnerships to support our work.
+
+### Cos72 & Sin90
+### iDoris-Community Brain
+
+# 中文版-chinese-translation
+三个问题：
+1. 你是谁？
+- 简介：AAStar，一个以太坊开源建设小组，前身来自于Plancker^的建设小组（AAStar），2024年11月继承普朗克精神，独立运营。
+2. 从哪来？
+- 概述：23年4月Zuzalu与Vitalik沟通后，Plancker^建立的AAStar（账户抽象）小组，专注AA和infra。
+3. 到哪去？
+- 愿景：通过倡导和探索建立Mycelium开放协议，赋能社区，自由个体，聚焦区块链的动机问题，赋能社区从而激发更多创新和协作。
