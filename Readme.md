@@ -28,6 +28,28 @@ We are seeking for grant, sponsorship, and partnerships to support our work.
 ### Cos72 & Sin90
 ### iDoris-Community Brain
 
+## Repo Structure
+
+```
+site/           ← Static pages (index/cold-launch/architecture/sustainability/dashboard)
+contracts/      ← Foundry project (GToken, SaleContract, APNTsSaleContract + tests)
+docs/brood/     ← Docs from Brood (manifesto/roadmap/milestones/progress-report)
+submodules/
+  mushroomdao-site  ← mushroom.cv main site
+  mushroomdao-docs  ← docs site
+wrangler.toml   ← Cloudflare Pages deploy config (launch.mushroom.cv)
+```
+
+### Deploy
+```bash
+npx wrangler pages deploy site --project-name launch-mushroom-box
+```
+
+### Contracts (Foundry)
+```bash
+cd contracts && forge install && forge test
+```
+
 # 中文版-chinese-translation
 三个问题：
 1. 你是谁？
