@@ -10,3 +10,9 @@
 [submodule "projects/ETHChiangMai-Hachathon-2026"]
 	path = projects/ETHChiangMai-Hachathon-2026
 	url = git@github.com:jhfnetboy/ETHChiangMai-Hachathon-2026.git
+[submodule "submodules/mushroomdao-site"]
+	path = submodules/mushroomdao-site
+	url = git@github.com:MushroomDAO/mushroomdao.github.io.git
+[submodule "submodules/mushroomdao-docs"]
+	path = submodules/mushroomdao-docs
+	url = git@github.com:MushroomDAO/docs.git

@@ -1,0 +1,6 @@
+name = "launch-mushroom-box"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "site"
+
+# Custom domain: launch.mushroom.box
+# Configure in Cloudflare Pages dashboard → Custom domains → Add domain

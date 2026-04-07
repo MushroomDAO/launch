@@ -1,0 +1,109 @@
+# All repositories
+## MushroomDAO
+- git@github.com:MushroomDAO/YetAnotherAA.git，合并7702功能分支https://github.com/MushroomDAO/YetAnotherAA/tree/7702到前端插件，依赖airaccount-contract repo,完成后删除。
+- MushroomDAO静态网页，有备份历史版本：https://github.com/MushroomDAO/mushroomdao.github.io，和https://github.com/MushroomDAO/docs组合为了冷启动和文档一体的网站
+- https://github.com/MushroomDAO/CityOS，计划中的希望，思考研究中
+- https://github.com/MushroomDAO/Asset3，底层协议，思考研究中
+- Cos72的三个模块之一：任务模块，https://github.com/MushroomDAO/MyTask，完成了初稿，需要审核校验,~/Dev/crypto-projects/MyTask
+- https://github.com/AAStarCommunity/CometENS，CometENS，待完成的ens工具，配合account地址使用，给社区和个人免费使用,/Users/jason/Dev/aastar/ens-tool
+- https://github.com/MushroomDAO/Sin90，个体OS，包括插件、PC端、移动端，端侧模型+知识库+内置知识，社区模型，三步走流程：信息，决策，行动，思考研究中
+- Cos72的三个模块之一：共识模块，https://github.com/MushroomDAO/MyVote，基于Snapshot魔改的投票共识系统，希望IPFS存储+链上存证+自动执行到国库，初稿完成，待验收
+- Cos72的三个模块之一：兑换模块，https://github.com/MushroomDAO/MyShop，完成了基础功能，待验收和集成，~/Dev/crypto-projects/MyShop
+- https://github.com/MushroomDAO/Park-PublicGoodsGarden，待启动，目标是持续的为未来三大角色，社区和城市，设计（构建）数字公共物品
+- https://github.com/MushroomDAO/Spores，孢子协议，设计思考中
+- https://github.com/MushroomDAO/OpenPNTs，需要提取核心价值后废弃，早期的积分和前端应用示例
+- https://github.com/MushroomDAO/Cos72/tree/main，集成模块，代表可安装的多端发布入口，包括教程等，待启动
+- https://github.com/MushroomDAO/Doris，未来的小黑书，去中心的小红书，待深入，刚开头
+- for airdrop：https://github.com/MushroomDAO/whitelist，待启动的空投白名单列表
+- Mushroom Blog and Wechat：https://github.com/MushroomDAO/blog， /Users/jason/Dev/crypto-projects/blog
+
+- cold launch: https://github.com/MushroomDAO/launch, 
+
+## AAStar
+- 核心infra：https://github.com/AAStarCommunity/SuperPaymaster，gas sponsor和微支付一级agent经济核心兼容x402,EIP-8004以及Tempo的MPP，并提供credit payment。
+- 核心infra：https://github.com/AAStarCommunity/airaccount-contract，https://github.com/AAStarCommunity/airaccount，完整支持[stage2]()的合约账户和ARM TEE的社区保险箱，日限额，社交恢复，自动安全升级等能力。/Users/jason/Dev/mycelium/my-exploration/projects/airAccount-contract
+- 核心infra：https://github.com/AAStarCommunity/aastar-sdk，支持TS和JS的底层能力SDK，/Users/jason/Dev/mycelium/my-exploration/projects/aastar-sdk
+- 核心infra：https://github.com/AAStarCommunity/YetAnotherAA，基于SDK扩展，集成所有AAStar能力，作为所有DApp的基础底座，~/Dev/mycelium/my-exploration/projects/YetAnotherAA
+- 协作大脑：https://github.com/AAStarCommunity/Brood，提供任务分配和进度跟踪、发布，以及claude上下文全局同步能力，/Users/jason/Dev/Brood
+- /Users/jason/Dev/crypto-projects/AirAccount-Plugin，插件
+-----
+下面是一些呃实验型的边缘的项目，呃，未来可能进入我们的核心的任务队列，但目前就是探索和实验性质。
+-
+
+
+## AuraAI
+- https://github.com/AuraAIHQ/iDoris，核心大脑，构建边缘计算的模型库和持续迭代，为个体和社区提供隐私保护、Token Free的架构体系，设计思考中
+- https://github.com/AuraAIHQ/Agent24，个人agent，待思考设计,/Users/jason/Dev/tools/autoagent , git@github.com:jhfnetboy/autoagent.git
+- https://github.com/AuraAIHQ/OpenCrab，另外类型的信息抓取和处理agent，刚开头
+- https://github.com/AuraAIHQ/courses，基础课程，进行了一点
+- https://github.com/AuraAIHQ/AuraAI，整体想法整理，组织等等，待深入思考
+- https://github.com/AuraAIHQ/AI_Beginner_Courses，另外初学者课程
+- https://github.com/AuraAIHQ/AiToEarn，fork的，待学习和拆解
+- https://github.com/AuraAIHQ/nanochat,fork的，待学习和拆解
+- AI三部曲之一：Skill之路，工具，思维模式，资源，信息
+- AI三部曲之二：Agent Swarm，算力，Token，打破边界，释放想象力，创造力和情感
+- AI三部曲之三：AI Native，建立可进化，自进化的个人本地AI和算力Token框架
+- 组织：
+
+
+### 其他
+/Users/jason/Dev/Community/PlanckWebsite
+git@github.com:PlanckerLabs/PlanckWebsite.git
+
+
+## 当前
+
+### Freeze SP+AA
+我今天freeze sp（版本5.3.11？）和aa代码（0.16.15-M7？），估计会再部署各一次，后面就只记录问题，然后一两个月之后再集中修bug和升级了
+
+### SDK basic debug
+sdk你先跑通之前流程：YAA+指定AA合约（airaccount）创建账户（默认社区guardian和两次手机扫码收集guardian签名，社交恢复+日限额+额度不同分层安全策略的测试），然后可以指定paymater v4 和superpaymaster gasless操作.
+AA括号里面的低优先级，估计会有bug，记录即可。
+需要阅读sp freeze文档：
+  ┌────────────────────────────────┬───────────────────────────────────────────────┐
+  │              文档              │                     变化                      │
+  ├────────────────────────────────┼───────────────────────────────────────────────┤
+  │ API_SUPERPAYMASTER.md          │ V2.3.3 → V5.3.0，新增全部 V5 函数             │
+  ├────────────────────────────────┼───────────────────────────────────────────────┤
+  │ API_REGISTRY.md                │ V2.2.1 → V4.1.0，immutable REGISTRY、H-02 fix │
+  ├────────────────────────────────┼───────────────────────────────────────────────┤
+  │ DEVELOPER_INTEGRATION_GUIDE.md │ 新增 x402、agent、micropayment 三个场景       │
+  ├────────────────────────────────┼───────────────────────────────────────────────┤
+  │ SDK-E2E-Scenario-Guide.md      │ 新建，7 个用户场景 → 合约调用 + viem 伪代码   │
+  └────────────────────────────────┴───────────────────────────────────────────────┘
+阅读airaccount-contract文档：
+
+
+### SDK 深度集成
+拉新分支，不影响上面basic的发布。
+然后进行SP的新增能力集成：新增 x402、agent、micropayment 三个场景
+
+### 编码偏好
+- use pnpm, not npm
+- use vite(React), not Next.js)
+- Use foundry and forge, anvil, not hardhat
+- 需求确认：所有用户提交的诉求，都要分析整理，并且强制针对其中不确定的部分进行提问交互，以获得更多信息
+- 创建新的分支，匹配本次需求
+- 需求转换为计划文档，在文档内拆分为多个任务：
+- 任务多agent并发完成：
+- 检查和补充单元测试
+- compile和build是否通过
+- 记录此任务完成，进行下一个任务
+- 所有全部完成，更新changelog和计划文档
+- 运行所有单元测试，发现问题并fix，确保回归测试和新增变动的测试都通过
+- 运行代码 review + security-review + simplify，并记录问题，然后评估是否合理和正确，是否值得fix，然后逐一fix
+- 注意变动引起的测试改动和增加
+- 编写E2E测试，覆盖所有用户场景和函数
+- 如果依赖新部署合约，则先mock，然后部署后再真正运行E2E（两个脚本可以分开）
+- 所有测试和fix都ok后，commit，push，提新PR，comment所有变动内容和影响范围，给同事足够信息来review
+- 同事review会给出反馈，修改建议，评估和分析后进行fix
+- 同事review通过后，我来手动merge，禁止自动merge
+- merge完成后，在main分支进行完整的单元测试，E2E测试和review，simplify，security-review，这些fix先汇报，我review后确认是否修复和提新pr，或者留作下次升级fix。
+- solidity使用 0.8.33  ，默认优化10000次
+
+### 流程规范
+合约类
+forge script单元测试-->部署到本地anvil，anvil集成测试+E2E-->部署op-sepolia-->进行完整的全功能的E2E测试
+
+## Licesnse
+license我想让你整体分析和规划一下。首先license种类，你帮我介绍一下，我知道了有阿帕奇呃，2.0有GNU也有这个MIT当然还有一些其他的呃边缘的协议，主流的可能就这三大种。那我是想采用双协议。对，所谓双协议，就是一方面呢呃所有的都是开源的，任何人都可以拿去做研究cloan本地部署使用。但是对于商业应用。啊，我们想保留这个权利。换句话说，一部分是可以用于商业应用的一部分呢不可以用于商业应用，必须经过我们的授权。对，那这个呢你帮我调研和分析一下，有哪几种方式适合我们这样的开源社区去去设计这种license。
