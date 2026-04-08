@@ -115,14 +115,14 @@ contract SaleContractScenariosTest is Test {
     function _buyUsdc(address buyer, uint256 usdAmount) internal {
         vm.startPrank(buyer);
         usdc.approve(address(sale), usdAmount);
-        sale.buyTokens(usdAmount, address(usdc));
+        sale.buyTokens(usdAmount, address(usdc), 0);
         vm.stopPrank();
     }
 
     function _buyUsdt(address buyer, uint256 usdAmount) internal {
         vm.startPrank(buyer);
         usdt.approve(address(sale), usdAmount);
-        sale.buyTokens(usdAmount, address(usdt));
+        sale.buyTokens(usdAmount, address(usdt), 0);
         vm.stopPrank();
     }
 
@@ -187,7 +187,7 @@ contract SaleContractScenariosTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(SaleContract.ExceedsPerPersonCap.selector, 1 * 1e6, 0)
         );
-        sale.buyTokens(1 * 1e6, address(usdc));
+        sale.buyTokens(1 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         console.log("A4 PASS: whale capped at $864, extra $1 correctly reverted");
@@ -210,7 +210,7 @@ contract SaleContractScenariosTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(SaleContract.ExceedsPerPersonCap.selector, 100 * 1e6, 64 * 1e6)
         );
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         // Corrected: $64 → exactly $864
@@ -272,12 +272,10 @@ contract SaleContractScenariosTest is Test {
 
         assertGe(sale.totalRevenue(), REVENUE_CAP_M1, "C1: revenue should be >= cap");
 
-        vm.prank(owner);
-        sale.advanceMilestone();
-
+        // Auto-advance fired inside buyTokens when cap was crossed — no owner call needed
         assertEq(sale.currentMilestone(), 1, "C1: should be at milestone 1");
         assertEq(sale.getCurrentPriceUSD(), PRICE_M1, "C1: price should be M1");
-        console.log("C1 PASS: 10 users x $130 = $1300 > $1200, milestone advanced");
+        console.log("C1 PASS: 10 users x $130 = $1300 > $1200, auto-advanced to milestone 1");
     }
 
     function test_C2_AdvanceMilestoneRevertInsufficientRevenue() public {
@@ -355,7 +353,7 @@ contract SaleContractScenariosTest is Test {
                 PER_PERSON_CAP
             )
         );
-        sale.buyTokens(5000 * 1e6, address(usdc));
+        sale.buyTokens(5000 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         address[5] memory regularUsers = [user1, user2, user3, user4, user5];
@@ -396,7 +394,7 @@ contract SaleContractScenariosTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(SaleContract.NotWhitelisted.selector, user1)
         );
-        sale.buyTokens(50 * 1e6, address(usdc));
+        sale.buyTokens(50 * 1e6, address(usdc), 0);
         vm.stopPrank();
         console.log("E1 PASS: non-whitelisted user correctly blocked");
     }
@@ -445,7 +443,7 @@ contract SaleContractScenariosTest is Test {
         vm.startPrank(user1);
         usdc.approve(address(sale), 100 * 1e6);
         vm.expectRevert(Pausable.EnforcedPause.selector);
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         vm.prank(owner);
@@ -480,7 +478,7 @@ contract SaleContractScenariosTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(SaleContract.ExceedsPerPersonCap.selector, 200 * 1e6, 64 * 1e6)
         );
-        sale.buyTokens(200 * 1e6, address(usdc));
+        sale.buyTokens(200 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         // Owner raises cap to $1000
@@ -515,7 +513,7 @@ contract SaleContractScenariosTest is Test {
     function test_G1_ZeroAmountRevert() public {
         vm.prank(user1);
         vm.expectRevert(SaleContract.ZeroAmount.selector);
-        sale.buyTokens(0, address(usdc));
+        sale.buyTokens(0, address(usdc), 0);
         console.log("G1 PASS: ZeroAmount error for 0 USD purchase");
     }
 
@@ -525,7 +523,7 @@ contract SaleContractScenariosTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(SaleContract.TokenNotAccepted.selector, unknownToken)
         );
-        sale.buyTokens(100 * 1e6, unknownToken);
+        sale.buyTokens(100 * 1e6, unknownToken, 0);
         console.log("G2 PASS: TokenNotAccepted for unknown token");
     }
 
@@ -542,7 +540,7 @@ contract SaleContractScenariosTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(SaleContract.InsufficientInventory.selector, expectedGTokens, 0)
         );
-        sale.buyTokens(buyAmount, address(usdc));
+        sale.buyTokens(buyAmount, address(usdc), 0);
         vm.stopPrank();
         console.log("G3 PASS: InsufficientInventory error when stock depleted");
     }

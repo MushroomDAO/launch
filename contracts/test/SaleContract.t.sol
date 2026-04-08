@@ -96,7 +96,7 @@ contract SaleContractTest is Test {
 
         vm.startPrank(user1);
         usdc.approve(address(sale), usdAmount);
-        sale.buyTokens(usdAmount, address(usdc));
+        sale.buyTokens(usdAmount, address(usdc), 0);
         vm.stopPrank();
 
         assertEq(gToken.balanceOf(user1), expectedGTokens);
@@ -109,14 +109,14 @@ contract SaleContractTest is Test {
     function test_BuyTokens_ZeroAmountReverts() public {
         vm.prank(user1);
         vm.expectRevert(SaleContract.ZeroAmount.selector);
-        sale.buyTokens(0, address(usdc));
+        sale.buyTokens(0, address(usdc), 0);
     }
 
     function test_BuyTokens_UnacceptedTokenReverts() public {
         address randomToken = makeAddr("randomToken");
         vm.prank(user1);
         vm.expectRevert(abi.encodeWithSelector(SaleContract.TokenNotAccepted.selector, randomToken));
-        sale.buyTokens(100 * 1e6, randomToken);
+        sale.buyTokens(100 * 1e6, randomToken, 0);
     }
 
     function test_BuyTokens_InsufficientInventoryReverts() public {
@@ -128,7 +128,7 @@ contract SaleContractTest is Test {
         usdc.approve(address(sale), 100 * 1e6);
         uint256 gTokens = sale.getTokensForUSD(100 * 1e6);
         vm.expectRevert(abi.encodeWithSelector(SaleContract.InsufficientInventory.selector, gTokens, 0));
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
     }
 
@@ -140,7 +140,7 @@ contract SaleContractTest is Test {
         // Spend exactly the cap — should succeed
         vm.startPrank(user1);
         usdc.approve(address(sale), PER_PERSON_CAP);
-        sale.buyTokens(PER_PERSON_CAP, address(usdc));
+        sale.buyTokens(PER_PERSON_CAP, address(usdc), 0);
         vm.stopPrank();
 
         assertEq(sale.userTotalSpent(user1), PER_PERSON_CAP);
@@ -149,7 +149,7 @@ contract SaleContractTest is Test {
         vm.startPrank(user1);
         usdc.approve(address(sale), 1);
         vm.expectRevert(abi.encodeWithSelector(SaleContract.ExceedsPerPersonCap.selector, 1, 0));
-        sale.buyTokens(1, address(usdc));
+        sale.buyTokens(1, address(usdc), 0);
         vm.stopPrank();
     }
 
@@ -158,11 +158,11 @@ contract SaleContractTest is Test {
 
         vm.startPrank(user1);
         usdc.approve(address(sale), PER_PERSON_CAP + 1);
-        sale.buyTokens(half, address(usdc));
-        sale.buyTokens(half, address(usdc));
+        sale.buyTokens(half, address(usdc), 0);
+        sale.buyTokens(half, address(usdc), 0);
         // One more wei should revert
         vm.expectRevert(abi.encodeWithSelector(SaleContract.ExceedsPerPersonCap.selector, 1, 0));
-        sale.buyTokens(1, address(usdc));
+        sale.buyTokens(1, address(usdc), 0);
         vm.stopPrank();
     }
 
@@ -171,14 +171,11 @@ contract SaleContractTest is Test {
     // =========================================================
 
     function test_AdvanceMilestone() public {
-        // Milestone 1 requires $1,200 revenue
+        // Milestone 1 requires $1,200 revenue — auto-advance fires inside buyTokens
+        (uint256 price1, ) = sale.getMilestone(1);
         _buyWithRevenue(user1, REVENUE_CAP_M1);
 
-        (uint256 price1, ) = sale.getMilestone(1);
-
-        vm.prank(owner);
-        sale.advanceMilestone();
-
+        // Auto-advance already happened inside buyTokens
         assertEq(sale.currentMilestone(), 1);
         assertEq(sale.getCurrentPriceUSD(), price1);
     }
@@ -187,18 +184,24 @@ contract SaleContractTest is Test {
         uint256 priceBefore = sale.getCurrentPriceUSD();
         _buyWithRevenue(user1, REVENUE_CAP_M1);
 
-        vm.prank(owner);
-        sale.advanceMilestone();
-
+        // Auto-advance already happened inside buyTokens
         uint256 priceAfter = sale.getCurrentPriceUSD();
         assertGt(priceAfter, priceBefore);
+    }
+
+    function test_ManualAdvanceMilestone_StillWorksWhenNeeded() public {
+        // Owner can still manually advance (e.g., after off-chain revenue)
+        _setTotalRevenue(REVENUE_CAP_M1);
+        vm.prank(owner);
+        sale.advanceMilestone();
+        assertEq(sale.currentMilestone(), 1);
     }
 
     function test_AdvanceMilestoneNotReached() public {
         // Only $100 — far below $1,200 cap
         vm.startPrank(user1);
         usdc.approve(address(sale), 100 * 1e6);
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         vm.prank(owner);
@@ -235,7 +238,7 @@ contract SaleContractTest is Test {
         vm.startPrank(user1);
         usdc.approve(address(sale), 100 * 1e6);
         vm.expectRevert(abi.encodeWithSelector(SaleContract.NotWhitelisted.selector, user1));
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         // Whitelist user1 then buy should succeed
@@ -246,7 +249,7 @@ contract SaleContractTest is Test {
 
         vm.startPrank(user1);
         usdc.approve(address(sale), 100 * 1e6);
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         assertGt(gToken.balanceOf(user1), 0);
@@ -256,7 +259,7 @@ contract SaleContractTest is Test {
         // whitelistRequired is false by default — user2 should be able to buy
         vm.startPrank(user2);
         usdc.approve(address(sale), 100 * 1e6);
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         assertGt(gToken.balanceOf(user2), 0);
@@ -273,7 +276,7 @@ contract SaleContractTest is Test {
         vm.startPrank(user1);
         usdc.approve(address(sale), 100 * 1e6);
         vm.expectRevert(Pausable.EnforcedPause.selector);
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         vm.prank(owner);
@@ -282,7 +285,7 @@ contract SaleContractTest is Test {
         // After unpause, purchase should succeed
         vm.startPrank(user1);
         usdc.approve(address(sale), 100 * 1e6);
-        sale.buyTokens(100 * 1e6, address(usdc));
+        sale.buyTokens(100 * 1e6, address(usdc), 0);
         vm.stopPrank();
 
         assertGt(gToken.balanceOf(user1), 0);
@@ -326,17 +329,17 @@ contract SaleContractTest is Test {
 
         vm.startPrank(user1);
         usdc.approve(address(sale), amountEach);
-        sale.buyTokens(amountEach, address(usdc));
+        sale.buyTokens(amountEach, address(usdc), 0);
         vm.stopPrank();
 
         vm.startPrank(user2);
         usdc.approve(address(sale), amountEach);
-        sale.buyTokens(amountEach, address(usdc));
+        sale.buyTokens(amountEach, address(usdc), 0);
         vm.stopPrank();
 
         vm.startPrank(user3);
         usdc.approve(address(sale), amountEach);
-        sale.buyTokens(amountEach, address(usdc));
+        sale.buyTokens(amountEach, address(usdc), 0);
         vm.stopPrank();
 
         assertEq(sale.totalRevenue(), amountEach * 3);
@@ -377,14 +380,23 @@ contract SaleContractTest is Test {
     }
 
     function test_SetPaymentToken() public {
-        address newToken = makeAddr("newToken");
+        // Use a real 6-decimal mock token (decimals() is validated on accept)
+        MockUSDC newToken = new MockUSDC();
         vm.prank(owner);
-        sale.setPaymentToken(newToken, true);
-        assertTrue(sale.acceptedTokens(newToken));
+        sale.setPaymentToken(address(newToken), true);
+        assertTrue(sale.acceptedTokens(address(newToken)));
 
         vm.prank(owner);
-        sale.setPaymentToken(newToken, false);
-        assertFalse(sale.acceptedTokens(newToken));
+        sale.setPaymentToken(address(newToken), false);
+        assertFalse(sale.acceptedTokens(address(newToken)));
+    }
+
+    function test_Revert_SetPaymentToken_NonSixDecimals() public {
+        // 18-decimal token should be rejected
+        MockGToken nonUsdToken = new MockGToken(); // 18 decimals by default
+        vm.prank(owner);
+        vm.expectRevert();
+        sale.setPaymentToken(address(nonUsdToken), true);
     }
 
     function test_GetTokensForUSD() public view {
@@ -422,7 +434,7 @@ contract SaleContractTest is Test {
 
             vm.startPrank(b);
             usdc.approve(address(sale), amount);
-            sale.buyTokens(amount, address(usdc));
+            sale.buyTokens(amount, address(usdc), 0);
             vm.stopPrank();
 
             remaining -= amount;

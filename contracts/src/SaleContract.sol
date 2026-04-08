@@ -2,6 +2,7 @@
 pragma solidity 0.8.25;
 
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
@@ -12,6 +13,17 @@ import {Pausable} from "openzeppelin-contracts/contracts/utils/Pausable.sol";
  * @author Mycelium Protocol
  * @notice Revenue-Based Milestone Sale for GToken.
  *
+ * Version scheme: MAJOR.MINOR.PATCH (each segment 0-99)
+ *   MAJOR: breaking changes to sale logic or milestone structure
+ *   MINOR: new features (new payment token, whitelist mode, cap changes)
+ *   PATCH: bug fixes, parameter tweaks, doc updates
+ *
+ * Current: 1.2.1
+ *   1 = revenue-based milestone architecture
+ *   2 = security: CEI ordering, zero-token guard, slippage param, 6-decimal token enforcement,
+ *       auto-advance milestone (_advanceIfNeeded), public tryAdvanceMilestone()
+ *   1 = fix: TokensPurchased event now emits actual price/milestone paid (pre-advance)
+ *
  * The sale is divided into 6 milestones (0-5). The price increases at each milestone
  * and the owner can advance the milestone once totalRevenue reaches the milestone's
  * revenueCap. This design aligns price increases with actual traction.
@@ -20,6 +32,19 @@ import {Pausable} from "openzeppelin-contracts/contracts/utils/Pausable.sol";
  * GToken uses 18 decimals.
  */
 contract SaleContract is Ownable, ReentrancyGuard, Pausable {
+
+    // =============================================================
+    //                         VERSION
+    // =============================================================
+
+    /// @notice Semantic version: MAJOR * 10000 + MINOR * 100 + PATCH
+    /// e.g. 1.0.0 = 10000, 1.2.3 = 10203, 2.0.0 = 20000
+    uint256 public constant VERSION = 10201; // 1.2.1
+
+    /// @notice Human-readable version string
+    function version() external pure returns (string memory) {
+        return "1.2.1";
+    }
     using SafeERC20 for IERC20;
 
     // =============================================================
@@ -27,7 +52,10 @@ contract SaleContract is Ownable, ReentrancyGuard, Pausable {
     // =============================================================
 
     error ZeroAmount();
+    error ZeroTokensOut();
     error TokenNotAccepted(address token);
+    error InvalidTokenDecimals(address token, uint8 decimals);
+    error SlippageExceeded(uint256 got, uint256 minExpected);
     error ExceedsPerPersonCap(uint256 requested, uint256 remaining);
     error InsufficientInventory(uint256 requested, uint256 available);
     error NotWhitelisted(address user);
@@ -96,6 +124,7 @@ contract SaleContract is Ownable, ReentrancyGuard, Pausable {
     event MilestoneAdvanced(uint256 indexed newMilestone, uint256 newPriceUSD);
     event PaymentTokenSet(address indexed token, bool accepted);
     event TreasuryUpdated(address indexed newTreasury);
+    event WhitelistRequiredUpdated(bool required);
     event WhitelistUpdated(address indexed user, bool status);
     event PerPersonCapUpdated(uint256 newCapUSD);
 
@@ -174,10 +203,15 @@ contract SaleContract is Ownable, ReentrancyGuard, Pausable {
 
     /**
      * @notice Purchase GTokens by paying with an accepted stablecoin.
-     * @param usdAmount USD amount to spend (6 decimals)
-     * @param paymentToken Accepted ERC20 stablecoin address (e.g. USDC)
+     * @param usdAmount USD amount to spend (6 decimals, must match payment token decimals)
+     * @param paymentToken Accepted ERC20 stablecoin address (must be 6-decimal USD-pegged)
+     * @param minTokensOut Minimum GTokens to receive (slippage guard); pass 0 to skip
      */
-    function buyTokens(uint256 usdAmount, address paymentToken) external nonReentrant whenNotPaused {
+    function buyTokens(uint256 usdAmount, address paymentToken, uint256 minTokensOut)
+        external
+        nonReentrant
+        whenNotPaused
+    {
         // 1. Whitelist check
         if (whitelistRequired && !isWhitelisted[msg.sender]) {
             revert NotWhitelisted(msg.sender);
@@ -195,30 +229,68 @@ contract SaleContract is Ownable, ReentrancyGuard, Pausable {
 
         // 4. Calculate GToken amount
         uint256 gTokenAmount = getTokensForUSD(usdAmount);
+        if (gTokenAmount == 0) revert ZeroTokensOut();
 
-        // 5. Inventory check
+        // 5. Slippage guard
+        if (minTokensOut > 0 && gTokenAmount < minTokensOut) {
+            revert SlippageExceeded(gTokenAmount, minTokensOut);
+        }
+
+        // 6. Inventory check
         uint256 inventory = availableInventory();
         if (gTokenAmount > inventory) revert InsufficientInventory(gTokenAmount, inventory);
 
-        // 6. Transfer payment to treasury
-        IERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
+        // 7. Capture the price/milestone used for this buy (before possible auto-advance)
+        uint256 pricePaid = getCurrentPriceUSD();
+        uint256 milestonePaid = currentMilestone;
 
-        // 7. Transfer GTokens to buyer
-        gToken.safeTransfer(msg.sender, gTokenAmount);
-
-        // 8. Update state
+        // 8. Update state BEFORE external calls (CEI pattern)
         totalRevenue += usdAmount;
         totalTokensSold += gTokenAmount;
         userTotalSpent[msg.sender] = spent + usdAmount;
+
+        // 9. Auto-advance milestone if revenue cap crossed (for next buyers)
+        _advanceIfNeeded();
+
+        // 10. Transfer payment to treasury
+        IERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
+
+        // 11. Transfer GTokens to buyer
+        gToken.safeTransfer(msg.sender, gTokenAmount);
 
         emit TokensPurchased(
             msg.sender,
             paymentToken,
             usdAmount,
             gTokenAmount,
-            getCurrentPriceUSD(),
-            currentMilestone
+            pricePaid,
+            milestonePaid
         );
+    }
+
+    // =============================================================
+    //                    MILESTONE ADVANCEMENT
+    // =============================================================
+
+    /**
+     * @notice Internal: auto-advance milestone(s) if totalRevenue crossed their caps.
+     * @dev Called after state update in buyTokens. Bounded loop (max 5 iterations).
+     */
+    function _advanceIfNeeded() internal {
+        while (currentMilestone < 5) {
+            uint256 next = currentMilestone + 1;
+            if (totalRevenue < _milestones[next].revenueCap) break;
+            currentMilestone = next;
+            emit MilestoneAdvanced(next, _milestones[next].priceUSD);
+        }
+    }
+
+    /**
+     * @notice Anyone can trigger milestone advancement once revenueCap is reached.
+     * @dev Prevents owner from delaying price increases. Anyone can call.
+     */
+    function tryAdvanceMilestone() external {
+        _advanceIfNeeded();
     }
 
     // =============================================================
@@ -245,11 +317,17 @@ contract SaleContract is Ownable, ReentrancyGuard, Pausable {
 
     /**
      * @notice Set whether a token is accepted as payment.
+     * @dev Only 6-decimal USD-pegged tokens (USDC, USDT) are permitted to ensure
+     *      correct USD accounting. Tokens with any other decimal count are rejected.
      * @param token ERC20 token address
      * @param accepted True to accept, false to reject
      */
     function setPaymentToken(address token, bool accepted) external onlyOwner {
         if (token == address(0)) revert ZeroAddress();
+        if (accepted) {
+            uint8 decimals = IERC20Metadata(token).decimals();
+            if (decimals != 6) revert InvalidTokenDecimals(token, decimals);
+        }
         acceptedTokens[token] = accepted;
         emit PaymentTokenSet(token, accepted);
     }
@@ -259,6 +337,7 @@ contract SaleContract is Ownable, ReentrancyGuard, Pausable {
      */
     function setWhitelistRequired(bool required) external onlyOwner {
         whitelistRequired = required;
+        emit WhitelistRequiredUpdated(required);
     }
 
     /**

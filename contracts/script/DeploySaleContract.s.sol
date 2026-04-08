@@ -14,7 +14,10 @@ contract DeploySaleContract is Script {
             vm.envOr("GTOKEN_ADDRESS", address(0xa592eC5a05C3909917d038AB01AAF7bcCF2D90f0));
 
         address treasuryAddress = vm.envAddress("TREASURY_ADDRESS");
-        address ownerAddress = vm.envOr("OWNER_ADDRESS", msg.sender);
+        // Owner = OWNER_ADDRESS env var, or DEPLOYER_ADDRESS, or msg.sender
+        // Note: msg.sender outside broadcast is forge's default caller, not the private key holder
+        address deployerAddr = vm.envOr("DEPLOYER_ADDRESS", address(0));
+        address ownerAddress = vm.envOr("OWNER_ADDRESS", deployerAddr != address(0) ? deployerAddr : msg.sender);
 
         // Optional: Sepolia USDT (set USDT_SEPOLIA in .env if available)
         address usdtSepolia = vm.envOr("USDT_SEPOLIA", address(0));
