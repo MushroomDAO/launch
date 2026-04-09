@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍄</text></svg>"
+        />
+        <title>GToken — 协议参与凭证 · Mycelium Protocol</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --bg-color: #020617;
+                --primary-cyan: #22d3ee;
+                --secondary-blue: #3b82f6;
+                --accent-green: #4ade80;
+                --accent-yellow: #fbbf24;
+                --accent-orange: #fb923c;
+                --accent-purple: #a78bfa;
+                --glass-bg: rgba(15, 23, 42, 0.8);
+                --border-color: rgba(34, 211, 238, 0.3);
+            }
+
+            body {
+                background-color: var(--bg-color);
+                color: #f8fafc;
+                font-family: "Segoe UI", system-ui, sans-serif;
+                overflow-x: hidden;
+            }
+
+            .bg-grid {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image:
+                    linear-gradient(var(--border-color) 1px, transparent 1px),
+                    linear-gradient(
+                        90deg,
+                        var(--border-color) 1px,
+                        transparent 1px
+                    );
+                background-size: 50px 50px;
+                z-index: -1;
+                mask-image: radial-gradient(
+                    circle at 50% 50%,
+                    black,
+                    transparent 80%
+                );
+                opacity: 0.15;
+            }
+
+            .glass-card {
+                border: 1px solid var(--border-color);
+                background: var(--glass-bg);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                transition: all 0.3s ease;
+            }
+
+            .glass-card:hover {
+                border-color: var(--primary-cyan);
+                box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .cyan-text { color: var(--primary-cyan); }
+            .green-text { color: var(--accent-green); }
+            .yellow-text { color: var(--accent-yellow); }
+            .orange-text { color: var(--accent-orange); }
+            .purple-text { color: var(--accent-purple); }
+
+            .tag {
+                display: inline-block;
+                padding: 2px 10px;
+                border-radius: 20px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .divider {
+                height: 1px;
+                background: linear-gradient(
+                    to right,
+                    transparent,
+                    var(--border-color),
+                    transparent
+                );
+            }
+
+            h1, h2, h3 { font-weight: 700; }
+
+            .glow-cyan { text-shadow: 0 0 20px rgba(34, 211, 238, 0.5); }
+
+            .nav-link {
+                color: #94a3b8;
+                font-size: 0.85rem;
+                transition: color 0.2s;
+            }
+            .nav-link:hover { color: var(--primary-cyan); }
+
+            table { width: 100%; border-collapse: collapse; }
+            th {
+                text-align: left;
+                padding: 10px 14px;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: #94a3b8;
+                border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+            }
+            td {
+                padding: 10px 14px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                font-size: 0.875rem;
+                vertical-align: top;
+            }
+            tr:last-child td { border-bottom: none; }
+            tr:hover td { background: rgba(34, 211, 238, 0.03); }
+
+            .card-cyan {
+                border-color: rgba(34, 211, 238, 0.4);
+            }
+            .card-cyan:hover {
+                border-color: var(--primary-cyan);
+                box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+            }
+            .card-yellow {
+                border-color: rgba(251, 191, 36, 0.4);
+            }
+            .card-yellow:hover {
+                border-color: var(--accent-yellow);
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+            }
+            .card-green {
+                border-color: rgba(74, 222, 128, 0.4);
+            }
+            .card-green:hover {
+                border-color: var(--accent-green);
+                box-shadow: 0 0 20px rgba(74, 222, 128, 0.15);
+            }
+
+            .sub-card {
+                background: rgba(15, 23, 42, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.07);
+                border-radius: 8px;
+            }
+
+            .step-number {
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: 50%;
+                background: rgba(34, 211, 238, 0.1);
+                border: 1px solid rgba(34, 211, 238, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: "Courier New", monospace;
+                font-weight: 700;
+                color: var(--primary-cyan);
+                flex-shrink: 0;
+            }
+
+            .placeholder-note {
+                color: var(--primary-cyan);
+                font-size: 0.75rem;
+                font-style: italic;
+                opacity: 0.8;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="bg-grid"></div>
+
+        <!-- NAV -->
+        <nav
+            class="fixed top-0 left-0 right-0 z-50"
+            style="
+                background: rgba(2, 6, 23, 0.9);
+                border-bottom: 1px solid var(--border-color);
+                backdrop-filter: blur(12px);
+            "
+        >
+            <div
+                class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between"
+            >
+                <span class="cyan-text font-mono font-bold text-sm tracking-widest">MYCELIUM PROTOCOL</span>
+                <div class="flex gap-6">
+                    <a href="/" class="nav-link">Kanban</a>
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="sustainability.html" class="nav-link">Sustainability</a>
+                    <a href="architecture.html" class="nav-link">Architecture</a>
+                    <a href="token.html" class="nav-link" style="color: var(--primary-cyan);">Token</a>
+                    <a href="for-communities.html" class="nav-link">For Communities</a>
+                    <a href="https://github.com/MushroomDAO/launch" class="nav-link"><i class="fab fa-github mr-1"></i>GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-5xl mx-auto px-6 pt-24 pb-20">
+
+            <!-- HERO -->
+            <div class="text-center mb-16">
+                <div class="inline-block mb-4">
+                    <span
+                        class="tag"
+                        style="
+                            background: rgba(34, 211, 238, 0.1);
+                            color: var(--primary-cyan);
+                            border: 1px solid rgba(34, 211, 238, 0.3);
+                        "
+                        >GToken · Governance Token</span
+                    >
+                </div>
+                <h1 class="text-5xl mb-4 glow-cyan cyan-text">
+                    协议参与凭证<br /><span class="text-white text-3xl font-normal"
+                        >Protocol Participation Token</span
+                    >
+                </h1>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+                    GToken 是 Mycelium 协议的治理与访问凭证。持有即参与，质押即解锁。
+                </p>
+            </div>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 1: What GToken Does -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Core Functions</span>
+                    <h2 class="text-2xl cyan-text mt-2">GToken 能做什么 <span class="text-slate-400 text-lg font-normal">/ What GToken Does</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1: 治理投票 -->
+                    <div class="glass-card card-cyan p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:rgba(34,211,238,0.1)">
+                                <i class="fas fa-vote-yea cyan-text"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">治理投票</div>
+                                <div class="text-xs text-slate-500">Governance Voting</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle cyan-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>持有 GToken → 有权对协议提案投票</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle cyan-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>包括：协议参数、资金使用、新功能优先级</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle cyan-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>链上可查，链上执行</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 2: 质押·注册角色 -->
+                    <div class="glass-card card-yellow p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:rgba(251,191,36,0.1)">
+                                <i class="fas fa-layer-group yellow-text"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">质押 · 注册角色</div>
+                                <div class="text-xs text-slate-500">Stake & Register Role</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle yellow-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>质押 GToken → 在 Registry 合约注册协议角色</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle yellow-text text-xs mt-1 flex-shrink-0"></i>
+                                <span><strong class="yellow-text">Community：</strong>创建社区节点，获得 ENS 子域名</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle yellow-text text-xs mt-1 flex-shrink-0"></i>
+                                <span><strong class="yellow-text">Individual：</strong>建立链上数字身份</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle yellow-text text-xs mt-1 flex-shrink-0"></i>
+                                <span><strong class="yellow-text">Operator：</strong>运营 SuperPaymaster gas 支付服务</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 3: 协议访问权 -->
+                    <div class="glass-card card-green p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:rgba(74,222,128,0.1)">
+                                <i class="fas fa-key green-text"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">协议访问权</div>
+                                <div class="text-xs text-slate-500">Protocol Access</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle green-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>join 协议：消耗 GToken（burn-on-join）</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle green-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>exit 协议：消耗 GToken（burn-on-exit）</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle green-text text-xs mt-1 flex-shrink-0"></i>
+                                <span>销毁机制 + 21M 硬顶 = 自然稀缺性</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 2: Tokenomics -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Tokenomics</span>
+                    <h2 class="text-2xl cyan-text mt-2">代币经济学 <span class="text-slate-400 text-lg font-normal">/ Tokenomics</span></h2>
+                </div>
+
+                <div class="glass-card p-6 mb-6">
+                    <div class="text-center mb-6">
+                        <div class="text-xs text-slate-500 mb-1 font-mono uppercase tracking-widest">Total Supply</div>
+                        <div class="text-4xl font-bold font-mono cyan-text glow-cyan">21,000,000</div>
+                        <div class="text-slate-400 text-sm mt-1">GToken · 硬顶，链上可查 · Hard Cap, On-chain Verifiable</div>
+                    </div>
+
+                    <div class="divider mb-6"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- 20% Sale Contract -->
+                        <div class="sub-card p-4 text-center">
+                            <div class="text-3xl font-bold font-mono cyan-text mb-2">20%</div>
+                            <div class="font-semibold mb-1">Sale Contract</div>
+                            <div class="text-xs text-slate-500">冷启动销售，支持协议发展</div>
+                            <div class="text-xs text-slate-600 mt-2">4,200,000 GToken</div>
+                        </div>
+
+                        <!-- 20% HyperCapital -->
+                        <div class="sub-card p-4 text-center">
+                            <div class="text-3xl font-bold font-mono yellow-text mb-2">20%</div>
+                            <div class="font-semibold mb-1">HyperCapital</div>
+                            <div class="text-xs text-slate-500">商业合作与生态激励</div>
+                            <div class="text-xs text-slate-600 mt-2">4,200,000 GToken</div>
+                            <div class="mt-2 p-2 rounded text-xs text-slate-400" style="background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.15)">
+                                Mycelium 协议的双生商业公司，专注于客户忠诚度积分的商业服务。<br/>
+                                <span class="text-slate-500">The commercial twin company of Mycelium Protocol, providing customer loyalty points and commercial services.</span>
+                            </div>
+                        </div>
+
+                        <!-- 60% Community Treasury -->
+                        <div class="sub-card p-4 text-center">
+                            <div class="text-3xl font-bold font-mono green-text mb-2">60%</div>
+                            <div class="font-semibold mb-1">Community Treasury</div>
+                            <div class="text-xs text-slate-500">社区治理，贡献者奖励，生态建设</div>
+                            <div class="text-xs text-slate-600 mt-2">12,600,000 GToken</div>
+                        </div>
+                    </div>
+
+                    <div class="divider my-4"></div>
+
+                    <div class="text-sm text-slate-400 text-center">
+                        <i class="fas fa-fire orange-text mr-2"></i>
+                        销毁机制：每次 join/exit 协议均消耗 GToken，社区多签控制销毁率
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 3: Price Milestones -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Price Milestones</span>
+                    <h2 class="text-2xl cyan-text mt-2">价格里程碑 <span class="text-slate-400 text-lg font-normal">/ Price Milestones</span></h2>
+                    <p class="text-slate-500 text-sm mt-2">每个里程碑由收入自动触发（合约链上验证），无需人工干预。价格每阶段上涨约 +12%。</p>
+                </div>
+
+                <div class="glass-card overflow-hidden">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>阶段</th>
+                                <th>名称</th>
+                                <th>触发条件（累计收入）</th>
+                                <th class="text-right">GToken 价格</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag" style="background:rgba(34,211,238,0.15);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)">初始</span></td>
+                                <td class="font-semibold">Genesis</td>
+                                <td class="text-slate-400">启动即生效</td>
+                                <td class="text-right font-mono cyan-text font-bold">$0.15000 <span class="text-green-400 text-xs font-bold ml-1">当前 / Current</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--accent-green);border:1px solid rgba(74,222,128,0.3)">里程碑 1</span></td>
+                                <td class="font-semibold">Phase 2 达成</td>
+                                <td class="text-slate-400">累计收入 $1,200</td>
+                                <td class="text-right font-mono green-text font-bold">$0.16800</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--accent-green);border:1px solid rgba(74,222,128,0.3)">里程碑 2</span></td>
+                                <td class="font-semibold">Phase 3 中段</td>
+                                <td class="text-slate-400">累计收入 $4,800</td>
+                                <td class="text-right font-mono green-text font-bold">$0.18816</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--accent-green);border:1px solid rgba(74,222,128,0.3)">里程碑 3</span></td>
+                                <td class="font-semibold">Phase 3 达成</td>
+                                <td class="text-slate-400">累计收入 $12,800</td>
+                                <td class="text-right font-mono green-text font-bold">$0.21074</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag" style="background:rgba(251,191,36,0.1);color:var(--accent-yellow);border:1px solid rgba(251,191,36,0.3)">里程碑 4</span></td>
+                                <td class="font-semibold">Phase 4 达成</td>
+                                <td class="text-slate-400">累计收入 $49,400</td>
+                                <td class="text-right font-mono yellow-text font-bold">$0.23603</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag" style="background:rgba(167,139,250,0.1);color:var(--accent-purple);border:1px solid rgba(167,139,250,0.3)">里程碑 5</span></td>
+                                <td class="font-semibold">Phase 5 达成</td>
+                                <td class="text-slate-400">累计收入 $135,800</td>
+                                <td class="text-right font-mono purple-text font-bold">$0.26435</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 4: Contract Info -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">On-chain</span>
+                    <h2 class="text-2xl cyan-text mt-2">合约信息 <span class="text-slate-400 text-lg font-normal">/ Contract</span></h2>
+                </div>
+
+                <div class="glass-card p-6">
+                    <div class="space-y-4">
+                        <div class="flex flex-col md:flex-row md:items-center gap-2">
+                            <div class="text-slate-500 text-sm w-40 flex-shrink-0">网络 / Network</div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-yellow-400" style="box-shadow:0 0 6px #fbbf24"></span>
+                                <span class="font-semibold">Ethereum Sepolia Testnet</span>
+                                <span class="tag" style="background:rgba(251,191,36,0.1);color:var(--accent-yellow);border:1px solid rgba(251,191,36,0.3)">测试阶段</span>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="flex flex-col md:flex-row md:items-start gap-2">
+                            <div class="text-slate-500 text-sm w-40 flex-shrink-0">GToken 合约</div>
+                            <div class="flex-1">
+                                <div class="font-mono text-sm cyan-text break-all">0xa592ec5a05c3909917d038ab01aaf7bccf2d90f0</div>
+                                <a
+                                    href="https://sepolia.etherscan.io/address/0xa592ec5a05c3909917d038ab01aaf7bccf2d90f0"
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded text-xs font-semibold"
+                                    style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)"
+                                >
+                                    <i class="fas fa-external-link-alt"></i> Etherscan 查看
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="flex flex-col md:flex-row md:items-start gap-2">
+                            <div class="text-slate-500 text-sm w-40 flex-shrink-0">SaleContract</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-green-400 text-sm font-mono">0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA</span>
+                                    <span class="tag" style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)">v1.2.1</span>
+                                    <a href="https://sepolia.etherscan.io/address/0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA" target="_blank" rel="noopener" class="text-xs nav-link">Etherscan ↗</a>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-1">Sepolia Testnet · Codex 安全审计通过 · 测试网运行中</div>
+                                <a href="sale.html"
+                                    class="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded text-sm font-semibold"
+                                    style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)"
+                                >
+                                    Buy GToken →
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="flex flex-col md:flex-row md:items-center gap-2">
+                            <div class="text-slate-500 text-sm w-40 flex-shrink-0">总量 / Supply</div>
+                            <div class="font-mono font-bold cyan-text">21,000,000 GToken</div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="flex flex-col md:flex-row md:items-center gap-2">
+                            <div class="text-slate-500 text-sm w-40 flex-shrink-0">源码 / Source</div>
+                            <a
+                                href="https://github.com/MushroomDAO/launch"
+                                target="_blank"
+                                rel="noopener"
+                                class="inline-flex items-center gap-2 text-sm"
+                                style="color:var(--primary-cyan)"
+                            >
+                                <i class="fab fa-github"></i> github.com/MushroomDAO/launch
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Team -->
+                    <div class="mt-6 pt-4 border-t" style="border-color:rgba(255,255,255,0.07)">
+                        <p class="text-slate-400 text-sm text-center font-semibold mb-1">核心团队 / Core Team</p>
+                        <p class="text-slate-400 text-sm text-center mt-1">Jason Jiao · David Xu · Ethan · Oscar · 0xRory · and more</p>
+                    </div>
+
+                    <!-- Community Channels -->
+                    <div class="flex gap-4 justify-center mt-4 text-sm">
+                        <a href="https://t.me/Account_Abstraction_Community" target="_blank" rel="noopener" class="nav-link">Telegram ↗</a>
+                        <a href="https://x.com/mushroomdao1984" target="_blank" rel="noopener" class="nav-link">Twitter/X ↗</a>
+                        <a href="https://github.com/MushroomDAO" target="_blank" rel="noopener" class="nav-link">GitHub ↗</a>
+                    </div>
+
+                    <!-- Risk Disclaimer -->
+                    <div class="mt-6 pt-4 border-t" style="border-color:rgba(255,255,255,0.07)">
+                        <p class="text-slate-500 text-xs text-center">
+                            ⚠ GToken 是协议参与凭证（Utility Token），不构成投资建议。本协议处于实验阶段，合约未经外部审计。购买前请自行评估风险。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 5: Docs & Resources -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Documentation</span>
+                    <h2 class="text-2xl cyan-text mt-2">文档与资源 <span class="text-slate-400 text-lg font-normal">/ Docs & Resources</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="https://docs.mushroom.cv/whitepaper" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3 no-underline" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(34,211,238,0.1)">
+                            <i class="fas fa-file-alt cyan-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">White Paper</div>
+                            <div class="text-xs text-slate-500">协议白皮书 · Mycelium Protocol</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://docs.mushroom.cv/tokenomics" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(74,222,128,0.1)">
+                            <i class="fas fa-chart-pie green-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Tokenomics</div>
+                            <div class="text-xs text-slate-500">代币经济学详细说明</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://docs.mushroom.cv/governance" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(167,139,250,0.1)">
+                            <i class="fas fa-landmark purple-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Governance</div>
+                            <div class="text-xs text-slate-500">治理机制与投票规则</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://docs.mushroom.cv/technical" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(251,191,36,0.1)">
+                            <i class="fas fa-code yellow-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Technical Docs</div>
+                            <div class="text-xs text-slate-500">合约架构与 API 文档</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://github.com/MushroomDAO/launch/blob/main/contracts/src/SaleContract.sol" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.05)">
+                            <i class="fab fa-github text-slate-300"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">SaleContract Source</div>
+                            <div class="text-xs text-slate-500">v1.2.1 · Codex 安全审计通过</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="cold-launch.html" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(34,211,238,0.1)">
+                            <i class="fas fa-rocket cyan-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Cold Launch Plan</div>
+                            <div class="text-xs text-slate-500">Phase 2-5 资金规划详情</div>
+                        </div>
+                        <i class="fas fa-arrow-right text-xs text-slate-600 ml-auto"></i>
+                    </a>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 6: How to Get -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Get Started</span>
+                    <h2 class="text-2xl cyan-text mt-2">如何获取 GToken <span class="text-slate-400 text-lg font-normal">/ How to Get</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Step 1 -->
+                    <div class="glass-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="step-number">01</div>
+                            <div>
+                                <div class="font-bold">准备稳定币</div>
+                                <div class="text-xs text-slate-500">Prepare Stablecoin</div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-400">
+                            准备 USDC 或 USDT（Ethereum 网络）。确保钱包已连接 Ethereum 主网，并持有足够的 ETH 用于 gas 费用。
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="glass-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="step-number">02</div>
+                            <div>
+                                <div class="font-bold">访问购买页面</div>
+                                <div class="text-xs text-slate-500">Connect Wallet</div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">
+                            点击下方按钮，前往购买页面，连接钱包后完成购买。
+                        </p>
+                        <a href="sale.html" class="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold" style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)">
+                            Buy GToken →
+                        </a>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="step-number">03</div>
+                            <div>
+                                <div class="font-bold">确认购买</div>
+                                <div class="text-xs text-slate-500">Confirm Purchase</div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-400">
+                            选择购买金额，确认交易，GToken 将直接到账你的钱包。交易完成后可在 Etherscan 验证。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="border-t" style="border-color:var(--border-color);background:rgba(2,6,23,0.8)">
+            <div class="max-w-5xl mx-auto px-6 py-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <div class="cyan-text font-mono font-bold text-sm tracking-widest mb-1">MYCELIUM PROTOCOL</div>
+                        <div class="text-slate-600 text-xs">数字公共物品基础设施 · Digital Public Goods Infrastructure</div>
+                    </div>
+                    <div class="flex gap-6 text-sm">
+                        <a href="cold-launch.html" class="nav-link">Cold Launch</a>
+                        <a href="for-communities.html" class="nav-link">For Communities</a>
+                        <a href="architecture.html" class="nav-link">Architecture</a>
+                        <a href="https://www.mushroom.cv" class="nav-link" target="_blank">mushroom.cv</a>
+                        <a href="https://github.com/MushroomDAO/launch" class="nav-link" target="_blank"><i class="fab fa-github mr-1"></i>GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
