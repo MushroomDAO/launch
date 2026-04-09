@@ -391,7 +391,7 @@
                 <div class="mb-8">
                     <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Price Milestones</span>
                     <h2 class="text-2xl cyan-text mt-2">价格里程碑 <span class="text-slate-400 text-lg font-normal">/ Price Milestones</span></h2>
-                    <p class="text-slate-500 text-sm mt-2">每个里程碑代表协议的可验证价值增长，admin 确认收入达标后触发 +12% 涨价</p>
+                    <p class="text-slate-500 text-sm mt-2">每个里程碑由收入自动触发（合约链上验证），无需人工干预。价格每阶段上涨约 +12%。</p>
                 </div>
 
                 <div class="glass-card overflow-hidden">
@@ -413,32 +413,32 @@
                             </tr>
                             <tr>
                                 <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--accent-green);border:1px solid rgba(74,222,128,0.3)">里程碑 1</span></td>
-                                <td class="font-semibold">Phase A-1</td>
-                                <td class="text-slate-400">$1,200 达成</td>
+                                <td class="font-semibold">Phase 2 达成</td>
+                                <td class="text-slate-400">累计收入 $1,200</td>
                                 <td class="text-right font-mono green-text font-bold">$0.16800</td>
                             </tr>
                             <tr>
                                 <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--accent-green);border:1px solid rgba(74,222,128,0.3)">里程碑 2</span></td>
-                                <td class="font-semibold">Phase A-2</td>
-                                <td class="text-slate-400">$4,800 达成</td>
+                                <td class="font-semibold">Phase 3 中段</td>
+                                <td class="text-slate-400">累计收入 $4,800</td>
                                 <td class="text-right font-mono green-text font-bold">$0.18816</td>
                             </tr>
                             <tr>
                                 <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--accent-green);border:1px solid rgba(74,222,128,0.3)">里程碑 3</span></td>
-                                <td class="font-semibold">Phase A-3</td>
-                                <td class="text-slate-400">$12,800 达成</td>
+                                <td class="font-semibold">Phase 3 达成</td>
+                                <td class="text-slate-400">累计收入 $12,800</td>
                                 <td class="text-right font-mono green-text font-bold">$0.21074</td>
                             </tr>
                             <tr>
                                 <td><span class="tag" style="background:rgba(251,191,36,0.1);color:var(--accent-yellow);border:1px solid rgba(251,191,36,0.3)">里程碑 4</span></td>
-                                <td class="font-semibold">Phase B</td>
-                                <td class="text-slate-400">$49,400 达成</td>
+                                <td class="font-semibold">Phase 4 达成</td>
+                                <td class="text-slate-400">累计收入 $49,400</td>
                                 <td class="text-right font-mono yellow-text font-bold">$0.23603</td>
                             </tr>
                             <tr>
                                 <td><span class="tag" style="background:rgba(167,139,250,0.1);color:var(--accent-purple);border:1px solid rgba(167,139,250,0.3)">里程碑 5</span></td>
-                                <td class="font-semibold">Phase C</td>
-                                <td class="text-slate-400">$135,800 达成</td>
+                                <td class="font-semibold">Phase 5 达成</td>
+                                <td class="text-slate-400">累计收入 $135,800</td>
                                 <td class="text-right font-mono purple-text font-bold">$0.26435</td>
                             </tr>
                         </tbody>
@@ -489,11 +489,18 @@
                         <div class="flex flex-col md:flex-row md:items-start gap-2">
                             <div class="text-slate-500 text-sm w-40 flex-shrink-0">SaleContract</div>
                             <div class="flex-1">
-                                <div>
-                                    <span class="text-green-400 text-sm font-mono">0x1da9e61ABa8363Efe7D2910d96662fDc544eE2E7</span>
-                                    <a href="https://sepolia.etherscan.io/address/0x1da9e61aba8363efe7d2910d96662fdc544ee2e7" target="_blank" rel="noopener" class="ml-2 text-xs nav-link">Etherscan ↗</a>
-                                    <div class="text-xs text-slate-500 mt-1">Sepolia Testnet · 主网部署进行中 / Mainnet deployment in progress</div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-green-400 text-sm font-mono">0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA</span>
+                                    <span class="tag" style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)">v1.2.1</span>
+                                    <a href="https://sepolia.etherscan.io/address/0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA" target="_blank" rel="noopener" class="text-xs nav-link">Etherscan ↗</a>
                                 </div>
+                                <div class="text-xs text-slate-500 mt-1">Sepolia Testnet · Codex 安全审计通过 · 测试网运行中</div>
+                                <a href="sale.html"
+                                    class="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded text-sm font-semibold"
+                                    style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)"
+                                >
+                                    Buy GToken →
+                                </a>
                             </div>
                         </div>
 
@@ -544,7 +551,85 @@
 
             <div class="divider mb-16"></div>
 
-            <!-- SECTION 5: How to Get -->
+            <!-- SECTION 5: Docs & Resources -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Documentation</span>
+                    <h2 class="text-2xl cyan-text mt-2">文档与资源 <span class="text-slate-400 text-lg font-normal">/ Docs & Resources</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="https://docs.mushroom.cv/whitepaper" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3 no-underline" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(34,211,238,0.1)">
+                            <i class="fas fa-file-alt cyan-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">White Paper</div>
+                            <div class="text-xs text-slate-500">协议白皮书 · Mycelium Protocol</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://docs.mushroom.cv/tokenomics" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(74,222,128,0.1)">
+                            <i class="fas fa-chart-pie green-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Tokenomics</div>
+                            <div class="text-xs text-slate-500">代币经济学详细说明</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://docs.mushroom.cv/governance" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(167,139,250,0.1)">
+                            <i class="fas fa-landmark purple-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Governance</div>
+                            <div class="text-xs text-slate-500">治理机制与投票规则</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://docs.mushroom.cv/technical" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(251,191,36,0.1)">
+                            <i class="fas fa-code yellow-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Technical Docs</div>
+                            <div class="text-xs text-slate-500">合约架构与 API 文档</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="https://github.com/MushroomDAO/launch/blob/main/contracts/src/SaleContract.sol" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.05)">
+                            <i class="fab fa-github text-slate-300"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">SaleContract Source</div>
+                            <div class="text-xs text-slate-500">v1.2.1 · Codex 安全审计通过</div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs text-slate-600 ml-auto"></i>
+                    </a>
+
+                    <a href="cold-launch.html" class="glass-card p-4 flex items-center gap-3" style="text-decoration:none">
+                        <div class="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(34,211,238,0.1)">
+                            <i class="fas fa-rocket cyan-text"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Cold Launch Plan</div>
+                            <div class="text-xs text-slate-500">Phase 2-5 资金规划详情</div>
+                        </div>
+                        <i class="fas fa-arrow-right text-xs text-slate-600 ml-auto"></i>
+                    </a>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION 6: How to Get -->
             <section class="mb-16">
                 <div class="mb-8">
                     <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Get Started</span>
@@ -576,10 +661,10 @@
                             </div>
                         </div>
                         <p class="text-sm text-slate-400 mb-3">
-                            访问 launch.mushroom.cv，连接钱包。
+                            点击下方按钮，前往购买页面，连接钱包后完成购买。
                         </p>
-                        <a href="https://launch.mushroom.cv" class="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold" style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)" target="_blank" rel="noopener">
-                            <i class="fas fa-external-link-alt text-xs"></i> launch.mushroom.cv ↗
+                        <a href="sale.html" class="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold" style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)">
+                            Buy GToken →
                         </a>
                     </div>
 
