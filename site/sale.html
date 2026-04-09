@@ -280,13 +280,14 @@
                     <!-- Wallet Status -->
                     <div id="wallet-section">
                         <div class="log-line mb-3">
-                            <span class="cyan-text">$</span> ./connect_wallet.sh --provider airaccount
+                            <span class="cyan-text">$</span> ./connect_wallet.sh --provider eip1193
                         </div>
                         <button id="btn-connect" class="btn-connect" onclick="connectWallet()">
                             连接钱包 / Connect Wallet
                         </button>
                         <p class="text-xs slate-text mt-2 text-center">
-                            支持 AirAccount（AA 钱包）· MetaMask · 任意 EVM 钱包
+                            支持 MetaMask · Rabby · 任意 EIP-1193 钱包
+                            <span style="color:#475569">· AirAccount 集成开发中</span>
                         </p>
                     </div>
 
@@ -527,18 +528,38 @@
             }
 
             // ── Wallet connection ─────────────────────────────────────────────────
+            //
+            // TODO: AirAccount integration (future — requires backend service)
+            //
+            // AirAccount (@aastar/airaccount@0.19.0) uses WebAuthn Passkey + BLS signing.
+            // It does NOT expose a window.airaccount global — it needs a backend API.
+            //
+            // Integration pattern when ready:
+            //   import { YAAAClient } from "@aastar/airaccount";
+            //   const yaaa = new YAAAClient({ apiURL: "...", tokenProvider: () => token, bls: {...} });
+            //   await yaaa.passkey.authenticate();          // WebAuthn login
+            //   await yaaa.passkey.verifyTransaction(tx);  // sign tx via Passkey
+            //   // then submit UserOp via backend / bundler
+            //
+            // YetAnotherAA (REST API) integration pattern:
+            //   const verification = await authAPI.beginTransactionVerification();
+            //   const credential = await startAuthentication(verification.data);
+            //   await transferAPI.execute({ to, amount, passkeyCredential: credential });
+            //
+            // Ref: /Users/jason/Dev/mycelium/my-exploration/projects/aastar-sdk
+            //      /Users/jason/Dev/aastar/YetAnotherAA/aastar-frontend/lib/api.ts
+            //
             window.connectWallet = async function() {
-                // 1. Try AirAccount (window.airaccount) first, then standard window.ethereum
+                // Current: standard EIP-1193 wallet (MetaMask, Rabby, etc.)
+                // AirAccount/YetAnotherAA integration: requires backend — see TODO above
                 let provider = null;
 
-                if (window.airaccount) {
-                    addLog('检测到 AirAccount 钱包...', 'info');
-                    provider = window.airaccount;
-                } else if (window.ethereum) {
-                    addLog('使用 EVM 钱包 (MetaMask / 标准钱包)...', 'info');
+                if (window.ethereum) {
+                    addLog('使用 EVM 钱包 (MetaMask / Rabby / 标准钱包)...', 'info');
                     provider = window.ethereum;
                 } else {
-                    addLog('未检测到钱包。请安装 MetaMask 或使用 AirAccount。', 'error');
+                    addLog('未检测到 EVM 钱包。请安装 MetaMask 或支持 EIP-1193 的钱包扩展。', 'error');
+                    addLog('AirAccount 集成开发中，敬请期待...', 'warn');
                     return;
                 }
 
