@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍄</text></svg>"
+        />
+        <title>Buy GToken — Mycelium Protocol</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --bg-color: #020617;
+                --primary-cyan: #22d3ee;
+                --accent-green: #4ade80;
+                --accent-yellow: #fbbf24;
+                --accent-purple: #a78bfa;
+                --glass-bg: rgba(15, 23, 42, 0.8);
+                --border-color: rgba(34, 211, 238, 0.3);
+            }
+
+            body {
+                background-color: var(--bg-color);
+                color: #f8fafc;
+                font-family: "Courier New", "Courier", monospace;
+                overflow-x: hidden;
+            }
+
+            .bg-grid {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background-image:
+                    linear-gradient(var(--border-color) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+                background-size: 50px 50px;
+                z-index: -1;
+                mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+                opacity: 0.12;
+            }
+
+            .glass-card {
+                border: 1px solid var(--border-color);
+                background: var(--glass-bg);
+                backdrop-filter: blur(10px);
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .terminal-card {
+                border: 1px solid rgba(34, 211, 238, 0.4);
+                background: rgba(2, 6, 23, 0.95);
+                border-radius: 8px;
+                font-family: "Courier New", monospace;
+            }
+
+            .terminal-header {
+                background: rgba(34, 211, 238, 0.08);
+                border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+                padding: 8px 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                border-radius: 8px 8px 0 0;
+            }
+
+            .dot { width: 10px; height: 10px; border-radius: 50%; }
+            .dot-red { background: #ef4444; }
+            .dot-yellow { background: #fbbf24; }
+            .dot-green { background: #4ade80; }
+
+            .cyan-text { color: var(--primary-cyan); }
+            .green-text { color: var(--accent-green); }
+            .yellow-text { color: var(--accent-yellow); }
+            .purple-text { color: var(--accent-purple); }
+            .slate-text { color: #94a3b8; }
+
+            .glow-cyan { text-shadow: 0 0 20px rgba(34, 211, 238, 0.5); }
+
+            .tag {
+                display: inline-block;
+                padding: 2px 10px;
+                border-radius: 20px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .divider {
+                height: 1px;
+                background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            }
+
+            .nav-link {
+                color: #94a3b8;
+                font-size: 0.85rem;
+                transition: color 0.2s;
+                text-decoration: none;
+            }
+            .nav-link:hover { color: var(--primary-cyan); }
+
+            .btn-primary {
+                background: rgba(34, 211, 238, 0.15);
+                color: var(--primary-cyan);
+                border: 1px solid rgba(34, 211, 238, 0.5);
+                padding: 10px 24px;
+                border-radius: 6px;
+                font-family: "Courier New", monospace;
+                font-size: 0.9rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.2s;
+                width: 100%;
+                letter-spacing: 0.05em;
+            }
+            .btn-primary:hover:not(:disabled) {
+                background: rgba(34, 211, 238, 0.25);
+                box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+            }
+            .btn-primary:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+            .btn-connect {
+                background: rgba(74, 222, 128, 0.1);
+                color: var(--accent-green);
+                border: 1px solid rgba(74, 222, 128, 0.4);
+                padding: 10px 24px;
+                border-radius: 6px;
+                font-family: "Courier New", monospace;
+                font-size: 0.9rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.2s;
+                width: 100%;
+                letter-spacing: 0.05em;
+            }
+            .btn-connect:hover {
+                background: rgba(74, 222, 128, 0.2);
+                box-shadow: 0 0 20px rgba(74, 222, 128, 0.15);
+            }
+
+            .input-field {
+                background: rgba(2, 6, 23, 0.8);
+                border: 1px solid rgba(34, 211, 238, 0.3);
+                color: #f8fafc;
+                padding: 10px 14px;
+                border-radius: 6px;
+                font-family: "Courier New", monospace;
+                font-size: 0.95rem;
+                width: 100%;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            .input-field:focus {
+                border-color: var(--primary-cyan);
+                box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
+            }
+
+            .milestone-bar {
+                height: 6px;
+                border-radius: 3px;
+                background: rgba(255, 255, 255, 0.05);
+                overflow: hidden;
+            }
+            .milestone-fill {
+                height: 100%;
+                border-radius: 3px;
+                background: linear-gradient(to right, var(--accent-green), var(--primary-cyan));
+                transition: width 0.5s ease;
+            }
+
+            .log-line {
+                font-size: 0.8rem;
+                color: #64748b;
+                font-family: "Courier New", monospace;
+                padding: 2px 0;
+            }
+            .log-line.success { color: var(--accent-green); }
+            .log-line.error { color: #f87171; }
+            .log-line.info { color: var(--primary-cyan); }
+            .log-line.warn { color: var(--accent-yellow); }
+
+            .blink { animation: blink 1s step-end infinite; }
+            @keyframes blink { 50% { opacity: 0; } }
+
+            #tx-log { max-height: 120px; overflow-y: auto; }
+
+            .sub-card {
+                background: rgba(15, 23, 42, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.07);
+                border-radius: 6px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="bg-grid"></div>
+
+        <!-- NAV -->
+        <nav class="fixed top-0 left-0 right-0 z-50"
+            style="background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(12px);">
+            <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+                <span class="cyan-text font-mono font-bold text-sm tracking-widest">MYCELIUM PROTOCOL</span>
+                <div class="flex gap-6">
+                    <a href="/" class="nav-link">Kanban</a>
+                    <a href="cold-launch.html" class="nav-link">Cold Launch</a>
+                    <a href="token.html" class="nav-link">Token</a>
+                    <a href="sale.html" class="nav-link" style="color: var(--primary-cyan);">Buy GToken</a>
+                    <a href="https://github.com/MushroomDAO/launch" class="nav-link" target="_blank" rel="noopener"><i class="fab fa-github mr-1"></i>GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-3xl mx-auto px-6 pt-24 pb-20">
+
+            <!-- HERO -->
+            <div class="text-center mb-10">
+                <div class="inline-block mb-3">
+                    <span class="tag" style="background:rgba(34,211,238,0.1);color:var(--primary-cyan);border:1px solid rgba(34,211,238,0.3)">
+                        SaleContract v1.2.1 · Sepolia Testnet
+                    </span>
+                </div>
+                <h1 class="text-4xl mb-3 glow-cyan cyan-text font-mono">Buy GToken</h1>
+                <p class="text-slate-400 text-sm">
+                    协议参与凭证 · 使用 USDC 购买 · 当前价格 $0.15 / GT
+                </p>
+            </div>
+
+            <!-- MILESTONE PROGRESS -->
+            <div class="terminal-card mb-6">
+                <div class="terminal-header">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                    <span class="text-xs slate-text ml-2">sale_progress.sh</span>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs slate-text">当前里程碑 / Current Milestone</span>
+                        <span id="milestone-label" class="text-xs cyan-text font-mono">M0 · Genesis</span>
+                    </div>
+                    <div class="milestone-bar mb-3">
+                        <div class="milestone-fill" id="milestone-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="sub-card p-3">
+                            <div class="text-xs slate-text mb-1">当前价格</div>
+                            <div class="cyan-text font-mono font-bold" id="current-price">$0.15000</div>
+                        </div>
+                        <div class="sub-card p-3">
+                            <div class="text-xs slate-text mb-1">累计销售额</div>
+                            <div class="green-text font-mono font-bold" id="total-revenue">$0.00</div>
+                        </div>
+                        <div class="sub-card p-3">
+                            <div class="text-xs slate-text mb-1">下阶段触发</div>
+                            <div class="yellow-text font-mono font-bold" id="next-cap">$1,200</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PURCHASE TERMINAL -->
+            <div class="terminal-card mb-6">
+                <div class="terminal-header">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                    <span class="text-xs slate-text ml-2">buy_gtoken.sh</span>
+                    <span class="ml-auto text-xs" id="network-badge" style="color:#64748b">● 未连接</span>
+                </div>
+                <div class="p-5 space-y-4">
+
+                    <!-- Wallet Status -->
+                    <div id="wallet-section">
+                        <div class="log-line mb-3">
+                            <span class="cyan-text">$</span> ./connect_wallet.sh --provider airaccount
+                        </div>
+                        <button id="btn-connect" class="btn-connect" onclick="connectWallet()">
+                            连接钱包 / Connect Wallet
+                        </button>
+                        <p class="text-xs slate-text mt-2 text-center">
+                            支持 AirAccount（AA 钱包）· MetaMask · 任意 EVM 钱包
+                        </p>
+                    </div>
+
+                    <!-- Connected state (hidden by default) -->
+                    <div id="connected-section" class="hidden">
+                        <div class="flex items-center justify-between mb-3 sub-card p-3">
+                            <div>
+                                <div class="text-xs slate-text mb-1">已连接钱包</div>
+                                <div class="text-sm font-mono cyan-text" id="wallet-address">0x...</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs slate-text mb-1">USDC 余额</div>
+                                <div class="text-sm font-mono green-text" id="usdc-balance">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Amount input -->
+                        <div class="space-y-2 mb-4">
+                            <label class="text-xs slate-text">购买金额 (USDC)</label>
+                            <input
+                                type="number"
+                                id="usd-input"
+                                class="input-field"
+                                placeholder="输入 USDC 金额，如 150"
+                                min="0.15"
+                                step="0.01"
+                                oninput="updateEstimate()"
+                            />
+                            <div class="flex justify-between text-xs">
+                                <span class="slate-text">预计获得 GToken</span>
+                                <span class="green-text font-mono" id="token-estimate">— GT</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="slate-text">个人剩余额度</span>
+                                <span class="yellow-text font-mono" id="remaining-cap">$864.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Quick amounts -->
+                        <div class="flex gap-2 mb-4">
+                            <button onclick="setAmount(15)" class="flex-1 text-xs py-2 rounded slate-text" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1)">$15</button>
+                            <button onclick="setAmount(50)" class="flex-1 text-xs py-2 rounded slate-text" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1)">$50</button>
+                            <button onclick="setAmount(150)" class="flex-1 text-xs py-2 rounded slate-text" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1)">$150</button>
+                            <button onclick="setAmount(864)" class="flex-1 text-xs py-2 rounded slate-text" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1)">$864 (Max)</button>
+                        </div>
+
+                        <!-- Approve + Buy -->
+                        <div class="space-y-2">
+                            <button id="btn-approve" class="btn-primary" onclick="approveUsdc()" disabled>
+                                1. 授权 USDC / Approve USDC
+                            </button>
+                            <button id="btn-buy" class="btn-primary" onclick="buyTokens()" disabled>
+                                2. 购买 GToken / Buy GToken
+                            </button>
+                        </div>
+
+                        <button onclick="disconnectWallet()" class="w-full text-xs slate-text mt-3 py-1 hover:text-red-400 transition-colors">
+                            断开连接 / Disconnect
+                        </button>
+                    </div>
+
+                    <!-- TX Log -->
+                    <div class="divider"></div>
+                    <div id="tx-log" class="space-y-1">
+                        <div class="log-line"><span class="slate-text">> </span>等待钱包连接... <span class="blink">_</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFO CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div class="glass-card p-4">
+                    <div class="text-xs slate-text mb-2 uppercase tracking-widest">合约信息</div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="slate-text">SaleContract</span>
+                            <a href="https://sepolia.etherscan.io/address/0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA"
+                                target="_blank" rel="noopener"
+                                class="cyan-text font-mono hover:underline">0x9cA2...dBA ↗</a>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="slate-text">GToken</span>
+                            <a href="https://sepolia.etherscan.io/address/0xa592eC5a05C3909917d038AB01AAF7bcCF2D90f0"
+                                target="_blank" rel="noopener"
+                                class="cyan-text font-mono hover:underline">0xa592...0f0 ↗</a>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="slate-text">USDC (Sepolia)</span>
+                            <span class="font-mono text-slate-400">0x1c7D...238</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="slate-text">版本</span>
+                            <span class="green-text font-mono">v1.2.1</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card p-4">
+                    <div class="text-xs slate-text mb-2 uppercase tracking-widest">购买须知</div>
+                    <ul class="space-y-1 text-xs text-slate-400">
+                        <li class="flex items-start gap-2">
+                            <span class="cyan-text mt-0.5">›</span>
+                            <span>当前网络：Ethereum Sepolia 测试网</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="cyan-text mt-0.5">›</span>
+                            <span>每人上限 $864 USDC</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="cyan-text mt-0.5">›</span>
+                            <span>需先 Approve USDC，再执行购买</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="cyan-text mt-0.5">›</span>
+                            <span>USDC 直接转入 Treasury 多签钱包</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="yellow-text mt-0.5">›</span>
+                            <span>GToken 为 Utility Token，非投资品</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="border-t" style="border-color:var(--border-color);background:rgba(2,6,23,0.8)">
+            <div class="max-w-5xl mx-auto px-6 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="text-slate-600 text-xs font-mono">
+                        MYCELIUM PROTOCOL · Sepolia Testnet · SaleContract v1.2.1
+                    </div>
+                    <div class="flex gap-6 text-sm">
+                        <a href="token.html" class="nav-link">Token</a>
+                        <a href="cold-launch.html" class="nav-link">Cold Launch</a>
+                        <a href="https://github.com/MushroomDAO/launch" class="nav-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- viem ESM (via CDN) -->
+        <script type="module">
+            import {
+                createPublicClient,
+                createWalletClient,
+                custom,
+                http,
+                parseUnits,
+                formatUnits,
+            } from 'https://esm.sh/viem@2.21.54';
+            import { sepolia } from 'https://esm.sh/viem@2.21.54/chains';
+
+            // ── Contract addresses ────────────────────────────────────────────────
+            const SALE_ADDRESS  = '0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA';
+            const GTOKEN_ADDRESS = '0xa592eC5a05C3909917d038AB01AAF7bcCF2D90f0';
+            const USDC_ADDRESS  = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
+            const PER_CAP_USD   = 864_000_000n; // $864 in 6 decimals
+
+            // ── ABI fragments ─────────────────────────────────────────────────────
+            const SALE_ABI = [
+                { name: 'currentMilestone', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+                { name: 'totalRevenue',     type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+                { name: 'getCurrentPriceUSD', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+                { name: 'getTokensForUSD', type: 'function', stateMutability: 'view', inputs: [{ type: 'uint256' }], outputs: [{ type: 'uint256' }] },
+                { name: 'userTotalSpent',  type: 'function', stateMutability: 'view', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] },
+                { name: 'getMilestone',    type: 'function', stateMutability: 'view', inputs: [{ type: 'uint256' }], outputs: [{ type: 'uint256' }, { type: 'uint256' }] },
+                { name: 'buyTokens',       type: 'function', stateMutability: 'nonpayable', inputs: [{ type: 'uint256' }, { type: 'address' }, { type: 'uint256' }], outputs: [] },
+            ];
+
+            const ERC20_ABI = [
+                { name: 'balanceOf', type: 'function', stateMutability: 'view', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] },
+                { name: 'allowance', type: 'function', stateMutability: 'view', inputs: [{ type: 'address' }, { type: 'address' }], outputs: [{ type: 'uint256' }] },
+                { name: 'approve',   type: 'function', stateMutability: 'nonpayable', inputs: [{ type: 'address' }, { type: 'uint256' }], outputs: [{ type: 'bool' }] },
+            ];
+
+            // Milestone revenue caps (6 decimals)
+            const MILESTONE_CAPS = [0n, 1_200_000_000n, 4_800_000_000n, 12_800_000_000n, 49_400_000_000n, 135_800_000_000n];
+            const MILESTONE_NAMES = ['M0 · Genesis', 'M1 · Phase 2 达成', 'M2 · Phase 3 中段', 'M3 · Phase 3 达成', 'M4 · Phase 4 达成', 'M5 · Phase 5 达成'];
+
+            // ── State ─────────────────────────────────────────────────────────────
+            let publicClient = null;
+            let walletClient = null;
+            let account = null;
+            let currentPrice = 150_000n;
+            let userSpent = 0n;
+            let approvalDone = false;
+
+            // ── UI helpers ────────────────────────────────────────────────────────
+            function addLog(msg, type = '') {
+                const log = document.getElementById('tx-log');
+                const line = document.createElement('div');
+                line.className = `log-line ${type}`;
+                line.textContent = '> ' + msg;
+                log.appendChild(line);
+                log.scrollTop = log.scrollHeight;
+            }
+
+            function formatUSD(raw) {
+                return '$' + (Number(raw) / 1e6).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            function formatGT(raw) {
+                return (Number(raw) / 1e18).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 }) + ' GT';
+            }
+
+            function shortAddr(addr) {
+                return addr.slice(0, 6) + '...' + addr.slice(-4);
+            }
+
+            // ── Milestone progress ────────────────────────────────────────────────
+            async function refreshMilestoneBar() {
+                if (!publicClient) return;
+                try {
+                    const [milestone, revenue] = await Promise.all([
+                        publicClient.readContract({ address: SALE_ADDRESS, abi: SALE_ABI, functionName: 'currentMilestone' }),
+                        publicClient.readContract({ address: SALE_ADDRESS, abi: SALE_ABI, functionName: 'totalRevenue' }),
+                    ]);
+                    currentPrice = await publicClient.readContract({ address: SALE_ADDRESS, abi: SALE_ABI, functionName: 'getCurrentPriceUSD' });
+
+                    document.getElementById('milestone-label').textContent = MILESTONE_NAMES[Number(milestone)];
+                    document.getElementById('current-price').textContent = '$' + (Number(currentPrice) / 1e6).toFixed(5);
+                    document.getElementById('total-revenue').textContent = formatUSD(revenue);
+
+                    const nextIdx = Number(milestone) + 1;
+                    if (nextIdx < MILESTONE_CAPS.length) {
+                        const nextCap = MILESTONE_CAPS[nextIdx];
+                        document.getElementById('next-cap').textContent = formatUSD(nextCap);
+                        const pct = nextCap > 0n ? Number(revenue * 100n / nextCap) : 100;
+                        document.getElementById('milestone-fill').style.width = Math.min(pct, 100) + '%';
+                    } else {
+                        document.getElementById('next-cap').textContent = '— (Max)';
+                        document.getElementById('milestone-fill').style.width = '100%';
+                    }
+                } catch (e) {
+                    addLog('无法读取链上状态: ' + e.message, 'error');
+                }
+            }
+
+            // ── Wallet connection ─────────────────────────────────────────────────
+            window.connectWallet = async function() {
+                // 1. Try AirAccount (window.airaccount) first, then standard window.ethereum
+                let provider = null;
+
+                if (window.airaccount) {
+                    addLog('检测到 AirAccount 钱包...', 'info');
+                    provider = window.airaccount;
+                } else if (window.ethereum) {
+                    addLog('使用 EVM 钱包 (MetaMask / 标准钱包)...', 'info');
+                    provider = window.ethereum;
+                } else {
+                    addLog('未检测到钱包。请安装 MetaMask 或使用 AirAccount。', 'error');
+                    return;
+                }
+
+                try {
+                    const accounts = await provider.request({ method: 'eth_requestAccounts' });
+                    account = accounts[0];
+
+                    // Check network (Sepolia = 11155111)
+                    const chainIdHex = await provider.request({ method: 'eth_chainId' });
+                    const chainId = parseInt(chainIdHex, 16);
+                    if (chainId !== 11155111) {
+                        addLog('请切换到 Sepolia 测试网 (Chain ID: 11155111)', 'warn');
+                        try {
+                            await provider.request({
+                                method: 'wallet_switchEthereumChain',
+                                params: [{ chainId: '0xaa36a7' }],
+                            });
+                        } catch (switchErr) {
+                            addLog('网络切换失败，请手动切换到 Sepolia', 'error');
+                            return;
+                        }
+                    }
+
+                    publicClient = createPublicClient({ chain: sepolia, transport: http() });
+                    walletClient = createWalletClient({ account, chain: sepolia, transport: custom(provider) });
+
+                    document.getElementById('network-badge').textContent = '● Sepolia';
+                    document.getElementById('network-badge').style.color = 'var(--accent-green)';
+                    document.getElementById('wallet-address').textContent = shortAddr(account);
+                    document.getElementById('wallet-section').classList.add('hidden');
+                    document.getElementById('connected-section').classList.remove('hidden');
+
+                    addLog('钱包连接成功: ' + shortAddr(account), 'success');
+                    addLog('网络: Sepolia (11155111)', 'info');
+
+                    await refreshState();
+                    await refreshMilestoneBar();
+
+                } catch (e) {
+                    addLog('连接失败: ' + (e.message || e), 'error');
+                }
+            };
+
+            window.disconnectWallet = function() {
+                account = null;
+                publicClient = null;
+                walletClient = null;
+                approvalDone = false;
+                document.getElementById('wallet-section').classList.remove('hidden');
+                document.getElementById('connected-section').classList.add('hidden');
+                document.getElementById('network-badge').textContent = '● 未连接';
+                document.getElementById('network-badge').style.color = '#64748b';
+                addLog('已断开连接');
+            };
+
+            async function refreshState() {
+                if (!publicClient || !account) return;
+                try {
+                    const [usdcBal, spent] = await Promise.all([
+                        publicClient.readContract({ address: USDC_ADDRESS, abi: ERC20_ABI, functionName: 'balanceOf', args: [account] }),
+                        publicClient.readContract({ address: SALE_ADDRESS, abi: SALE_ABI, functionName: 'userTotalSpent', args: [account] }),
+                    ]);
+                    userSpent = spent;
+                    document.getElementById('usdc-balance').textContent = formatUSD(usdcBal) + ' USDC';
+                    const remaining = PER_CAP_USD > spent ? PER_CAP_USD - spent : 0n;
+                    document.getElementById('remaining-cap').textContent = formatUSD(remaining);
+                    document.getElementById('btn-approve').disabled = false;
+                } catch (e) {
+                    addLog('读取账户状态失败: ' + e.message, 'error');
+                }
+            }
+
+            // ── Input helpers ─────────────────────────────────────────────────────
+            window.setAmount = function(val) {
+                document.getElementById('usd-input').value = val;
+                updateEstimate();
+            };
+
+            window.updateEstimate = function() {
+                const raw = parseFloat(document.getElementById('usd-input').value);
+                if (!raw || raw <= 0) {
+                    document.getElementById('token-estimate').textContent = '— GT';
+                    return;
+                }
+                const usdRaw = BigInt(Math.round(raw * 1e6));
+                const tokens = (usdRaw * BigInt(1e18)) / currentPrice;
+                document.getElementById('token-estimate').textContent = formatGT(tokens);
+                approvalDone = false;
+                document.getElementById('btn-buy').disabled = true;
+            };
+
+            // ── Approve ───────────────────────────────────────────────────────────
+            window.approveUsdc = async function() {
+                const raw = parseFloat(document.getElementById('usd-input').value);
+                if (!raw || raw <= 0) {
+                    addLog('请先输入购买金额', 'warn');
+                    return;
+                }
+                const usdRaw = BigInt(Math.round(raw * 1e6));
+                const remaining = PER_CAP_USD > userSpent ? PER_CAP_USD - userSpent : 0n;
+                if (usdRaw > remaining) {
+                    addLog('超出个人额度上限 ' + formatUSD(remaining), 'error');
+                    return;
+                }
+
+                try {
+                    addLog('发起 USDC approve...', 'info');
+                    document.getElementById('btn-approve').disabled = true;
+
+                    const hash = await walletClient.writeContract({
+                        address: USDC_ADDRESS,
+                        abi: ERC20_ABI,
+                        functionName: 'approve',
+                        args: [SALE_ADDRESS, usdRaw],
+                    });
+                    addLog('Approve TX: ' + hash, 'info');
+                    addLog('等待确认...', 'info');
+
+                    await publicClient.waitForTransactionReceipt({ hash });
+                    addLog('Approve 成功！现在可以购买。', 'success');
+                    approvalDone = true;
+                    document.getElementById('btn-buy').disabled = false;
+
+                } catch (e) {
+                    addLog('Approve 失败: ' + (e.shortMessage || e.message), 'error');
+                    document.getElementById('btn-approve').disabled = false;
+                }
+            };
+
+            // ── Buy ───────────────────────────────────────────────────────────────
+            window.buyTokens = async function() {
+                if (!approvalDone) {
+                    addLog('请先完成 Approve 步骤', 'warn');
+                    return;
+                }
+                const raw = parseFloat(document.getElementById('usd-input').value);
+                if (!raw || raw <= 0) return;
+
+                const usdRaw = BigInt(Math.round(raw * 1e6));
+                try {
+                    addLog('发起 buyTokens...', 'info');
+                    document.getElementById('btn-buy').disabled = true;
+
+                    // Calculate expected tokens with 1% slippage tolerance
+                    const expected = await publicClient.readContract({
+                        address: SALE_ADDRESS,
+                        abi: SALE_ABI,
+                        functionName: 'getTokensForUSD',
+                        args: [usdRaw],
+                    });
+                    const minOut = expected * 99n / 100n; // 1% slippage
+
+                    const hash = await walletClient.writeContract({
+                        address: SALE_ADDRESS,
+                        abi: SALE_ABI,
+                        functionName: 'buyTokens',
+                        args: [usdRaw, USDC_ADDRESS, minOut],
+                    });
+                    addLog('买入 TX: ' + hash, 'info');
+                    addLog('等待链上确认...', 'info');
+
+                    const receipt = await publicClient.waitForTransactionReceipt({ hash });
+                    if (receipt.status === 'success') {
+                        addLog('购买成功！获得 ' + formatGT(expected) + ' GToken', 'success');
+                        addLog('TX: ' + hash, 'success');
+                        approvalDone = false;
+                        document.getElementById('btn-buy').disabled = true;
+                        document.getElementById('usd-input').value = '';
+                        document.getElementById('token-estimate').textContent = '— GT';
+                        await refreshState();
+                        await refreshMilestoneBar();
+                    } else {
+                        addLog('交易失败 (reverted)', 'error');
+                        document.getElementById('btn-buy').disabled = false;
+                    }
+
+                } catch (e) {
+                    addLog('购买失败: ' + (e.shortMessage || e.message), 'error');
+                    document.getElementById('btn-buy').disabled = false;
+                }
+            };
+
+            // ── Init ──────────────────────────────────────────────────────────────
+            // Load public state without wallet connection
+            (async () => {
+                try {
+                    publicClient = createPublicClient({ chain: sepolia, transport: http() });
+                    await refreshMilestoneBar();
+                    addLog('链上状态已加载 · 连接钱包后可购买', 'info');
+                } catch (e) {
+                    addLog('无法连接 Sepolia RPC: ' + e.message, 'error');
+                }
+            })();
+        </script>
+    </body>
+</html>
