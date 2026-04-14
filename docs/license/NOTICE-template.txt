@@ -9,10 +9,12 @@ See LICENSE file for full terms.
 
 == Access Model ==
 
-  Individuals:    Free. No authorization needed.
-  Organizations:  Free for non-commercial use. Requires Community Use
-                  Authorization. See COMMUNITY-USE-POLICY.md
-  Commercial:     Contact HyperCapital for licensing. [EMAIL]
+  Individuals:        Free. No authorization needed.
+  Small communities:  Free (≤50 members). No authorization needed.
+  Organizations:      Free for non-commercial use (>50 members).
+                      Requires Community Use Authorization.
+                      See COMMUNITY-USE-POLICY.md
+  Commercial:         Contact HyperCapital for licensing (jason@aastar.io)
 
 == Contributor License Agreement ==
 

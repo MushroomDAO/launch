@@ -15,11 +15,13 @@ with exceptions for SDK/tools (pure Apache 2.0) and documentation (CC BY-SA 4.0)
 | User Type | Access | Mechanism |
 |-----------|--------|-----------|
 | **Individual** | Free — clone, use, learn, modify, deploy | Automatic via LICENSE |
-| **Organization** | Free for non-commercial use, requires **Community Use Authorization** | Apply → Committee review → public record |
-| **Commercial** | Must license through HyperCapital | Commercial contract |
+| **Small community (≤50 members)** | Free — same as individual | Self-declared, no authorization needed |
+| **Larger organization (>50 members)** | Free for non-commercial use, requires **Community Use Authorization** | Apply → Committee review → public record |
+| **Commercial company** | Must license through HyperCapital (jason@aastar.io) | Commercial contract |
 
-> Organizations include: non-profit communities, DAOs, NGOs, educational institutions,
-> foundations, and any group that is not a single individual.
+> "Members" means active participants, self-declared by the organization.
+> Future upgrade: may switch to on-chain verifiable metric (AirAccount count)
+> when product reaches mainnet stability.
 
 ### Why require authorization for organizations?
 
