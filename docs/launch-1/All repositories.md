@@ -33,7 +33,8 @@
 
 ## AuraAI
 - https://github.com/AuraAIHQ/iDoris，核心大脑，构建边缘计算的模型库和持续迭代，为个体和社区提供隐私保护、Token Free的架构体系，设计思考中
-- https://github.com/AuraAIHQ/Agent24，个人agent，待思考设计,/Users/jason/Dev/tools/autoagent , git@github.com:jhfnetboy/autoagent.git
+- https://github.com/AuraAIHQ/Agent24，用于自我迭代和全局感知的skill系统，未来迭代为独立agent,/Users/jason/Dev/tools/autoagent , git@github.com:jhfnetboy/autoagent.git
+- https://github.com/AuraAIHQ/agent-speaker，agent通信工具和协议，开发中
 - https://github.com/AuraAIHQ/OpenCrab，另外类型的信息抓取和处理agent，刚开头
 - https://github.com/AuraAIHQ/courses，基础课程，进行了一点
 - https://github.com/AuraAIHQ/AuraAI，整体想法整理，组织等等，待深入思考
