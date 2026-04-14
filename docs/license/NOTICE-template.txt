@@ -1,0 +1,19 @@
+Mycelium Protocol — [REPO_NAME]
+Copyright 2024-2026 MushroomDAO Contributors
+
+This product includes software developed by MushroomDAO
+(https://github.com/MushroomDAO).
+
+Licensed under the Apache License 2.0 with Commons Clause restriction.
+See LICENSE file for full terms.
+
+== Access Model ==
+
+  Individuals:    Free. No authorization needed.
+  Organizations:  Free for non-commercial use. Requires Community Use
+                  Authorization. See COMMUNITY-USE-POLICY.md
+  Commercial:     Contact HyperCapital for licensing. [EMAIL]
+
+== Contributor License Agreement ==
+
+All contributions require a signed CLA managed via cla-assistant.io.
