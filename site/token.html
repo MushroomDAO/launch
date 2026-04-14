@@ -346,34 +346,117 @@
 
                     <div class="divider mb-6"></div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- 20% Sale Contract -->
-                        <div class="sub-card p-4 text-center">
-                            <div class="text-3xl font-bold font-mono cyan-text mb-2">20%</div>
-                            <div class="font-semibold mb-1">Sale Contract</div>
-                            <div class="text-xs text-slate-500">冷启动销售，支持协议发展</div>
-                            <div class="text-xs text-slate-600 mt-2">4,200,000 GToken</div>
+                    <!-- DAO 80% / 商业公司 20% 大分类 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="sub-card p-4 text-center" style="border-color:rgba(74,222,128,0.3)">
+                            <div class="text-3xl font-bold font-mono green-text mb-1">80%</div>
+                            <div class="font-semibold text-sm">DAO / 社区</div>
+                            <div class="text-xs text-slate-500">16,800,000 GToken</div>
                         </div>
+                        <div class="sub-card p-4 text-center" style="border-color:rgba(251,191,36,0.3)">
+                            <div class="text-3xl font-bold font-mono yellow-text mb-1">20%</div>
+                            <div class="font-semibold text-sm">商业公司（HyperCapital）</div>
+                            <div class="text-xs text-slate-500">4,200,000 GToken · 4年线性解锁，无悬崖</div>
+                        </div>
+                    </div>
 
-                        <!-- 20% HyperCapital -->
-                        <div class="sub-card p-4 text-center">
-                            <div class="text-3xl font-bold font-mono yellow-text mb-2">20%</div>
-                            <div class="font-semibold mb-1">HyperCapital</div>
-                            <div class="text-xs text-slate-500">商业合作与生态激励</div>
-                            <div class="text-xs text-slate-600 mt-2">4,200,000 GToken</div>
-                            <div class="mt-2 p-2 rounded text-xs text-slate-400" style="background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.15)">
-                                Mycelium 协议的双生商业公司，专注于客户忠诚度积分的商业服务。<br/>
-                                <span class="text-slate-500">The commercial twin company of Mycelium Protocol, providing customer loyalty points and commercial services.</span>
-                            </div>
-                        </div>
+                    <!-- 详细分配表 -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead>
+                                <tr class="text-slate-500 border-b" style="border-color:var(--border)">
+                                    <th class="py-2 pr-3">类别</th>
+                                    <th class="py-2 pr-3 text-right">占比</th>
+                                    <th class="py-2 pr-3 text-right">数量</th>
+                                    <th class="py-2">解锁方式</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-400">
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3"><span class="yellow-text">商业公司</span>（HyperCapital / 积分联盟）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">20%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">4,200,000</td>
+                                    <td class="py-2">4年线性，无悬崖</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3"><span class="green-text">社区国库</span>（治理控制）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">38%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">7,980,000</td>
+                                    <td class="py-2">治理提案拨付</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.03)">
+                                    <td class="py-1 pr-3 pl-4 text-slate-500">→ OpenNest 新协议孵化</td>
+                                    <td class="py-1 pr-3 text-right font-mono text-slate-500">(20%)</td>
+                                    <td class="py-1 pr-3 text-right font-mono text-slate-500">4,200,000</td>
+                                    <td class="py-1 text-slate-500">里程碑解锁</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.03)">
+                                    <td class="py-1 pr-3 pl-4 text-slate-500">→ 3年贡献者报酬池</td>
+                                    <td class="py-1 pr-3 text-right font-mono text-slate-500">(12%)</td>
+                                    <td class="py-1 pr-3 text-right font-mono text-slate-500">2,520,000</td>
+                                    <td class="py-1 text-slate-500">按月流出</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.03)">
+                                    <td class="py-1 pr-3 pl-4 text-slate-500">→ 运营储备</td>
+                                    <td class="py-1 pr-3 text-right font-mono text-slate-500">(6%)</td>
+                                    <td class="py-1 pr-3 text-right font-mono text-slate-500">1,260,000</td>
+                                    <td class="py-1 text-slate-500">治理决议</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3"><span class="cyan-text">基础设施挖矿</span>（DVT · AI节点 · IPFS）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">14%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">2,940,000</td>
+                                    <td class="py-2">按贡献发放，无锁定</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3"><span class="cyan-text">核心建设者</span>（AAStar + AuraAI + 团队）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">12%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">2,520,000</td>
+                                    <td class="py-2">4年线性，6月悬崖</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3"><span class="cyan-text">冷启动自由兑换</span>（Howey 合规）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">3%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">630,000</td>
+                                    <td class="py-2">即时，无锁</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3"><span class="cyan-text">守护者空投</span>（邀约体系）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">3%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">630,000</td>
+                                    <td class="py-2">层级差异化，6月解锁</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3">学术合作（CMUBA + CMUBRC）</td>
+                                    <td class="py-2 pr-3 text-right font-mono">5%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">1,050,000</td>
+                                    <td class="py-2">4年线性</td>
+                                </tr>
+                                <tr class="border-b" style="border-color:rgba(255,255,255,0.05)">
+                                    <td class="py-2 pr-3">顾问</td>
+                                    <td class="py-2 pr-3 text-right font-mono">3%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">630,000</td>
+                                    <td class="py-2">4年线性，1年悬崖</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-3">生态合作 / 备用</td>
+                                    <td class="py-2 pr-3 text-right font-mono">2%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">420,000</td>
+                                    <td class="py-2">治理决议</td>
+                                </tr>
+                                <tr class="border-t font-semibold text-white" style="border-color:var(--border)">
+                                    <td class="py-2 pr-3">合计</td>
+                                    <td class="py-2 pr-3 text-right font-mono">100%</td>
+                                    <td class="py-2 pr-3 text-right font-mono">21,000,000</td>
+                                    <td class="py-2"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                        <!-- 60% Community Treasury -->
-                        <div class="sub-card p-4 text-center">
-                            <div class="text-3xl font-bold font-mono green-text mb-2">60%</div>
-                            <div class="font-semibold mb-1">Community Treasury</div>
-                            <div class="text-xs text-slate-500">社区治理，贡献者奖励，生态建设</div>
-                            <div class="text-xs text-slate-600 mt-2">12,600,000 GToken</div>
-                        </div>
+                    <div class="mt-3 p-3 rounded text-xs text-slate-400" style="background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.15)">
+                        <strong class="text-slate-300">设计逻辑：</strong>商业公司（20%）+ 核心建设者（12%）= 32%，永远低于 50% 治理门槛，防止中心化控制。
+                        完整 tokenomics 详见 <a href="https://docs.mushroom.cv/tokenomics" target="_blank" class="underline cyan-text">docs.mushroom.cv/tokenomics</a>
                     </div>
 
                     <div class="divider my-4"></div>
