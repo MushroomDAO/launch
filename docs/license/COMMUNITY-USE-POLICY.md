@@ -60,6 +60,13 @@ know who's using the software and can offer support:
 
 ## Larger organizations (>50 members): authorization process
 
+> **IMPORTANT: Authorization is FREE.** The review process is not a paywall —
+> it is a lightweight, transparent community check to verify non-commercial use.
+> If you are a non-commercial organization, you will be approved at no cost.
+> We guarantee a response within **7 days**. If we determine your use is
+> commercial in nature, we will recommend contacting HyperCapital for a
+> commercial license. Otherwise, you simply register and are approved.
+
 ### How to apply
 
 1. **Open an issue** in [MushroomDAO/.github](https://github.com/MushroomDAO/.github/issues)

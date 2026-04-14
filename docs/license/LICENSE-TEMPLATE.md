@@ -16,7 +16,7 @@ with exceptions for SDK/tools (pure Apache 2.0) and documentation (CC BY-SA 4.0)
 |-----------|--------|-----------|
 | **Individual** | Free — clone, use, learn, modify, deploy | Automatic via LICENSE |
 | **Small community (≤50 members)** | Free — same as individual | Self-declared, no authorization needed |
-| **Larger organization (>50 members)** | Free for non-commercial use, requires **Community Use Authorization** | Apply → Committee review → public record |
+| **Larger organization (>50 members)** | **Free** for non-commercial use, requires **Community Use Authorization** (free review, 7-day response guaranteed) | Apply → Committee review (not a paywall!) → public record |
 | **Commercial company** | Must license through HyperCapital (jason@aastar.io) | Commercial contract |
 
 > "Members" means active participants, self-declared by the organization.
