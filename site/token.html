@@ -461,7 +461,98 @@
 
                     <div class="text-sm text-slate-400 text-center">
                         <i class="fas fa-fire orange-text mr-2"></i>
-                        销毁机制：每次 join/exit 协议均消耗 GToken，社区多签控制销毁率
+                        门票机制：加入协议时 burn GToken（回归国库），终生有效，无退出概念
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider mb-16"></div>
+
+            <!-- SECTION: GToken 使用场景 — 公园门票 -->
+            <section class="mb-16">
+                <div class="mb-8">
+                    <span class="tag mb-3" style="background:rgba(34,211,238,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.08)">Usage</span>
+                    <h2 class="text-2xl cyan-text mt-2">GToken 使用场景 <span class="text-slate-400 text-lg font-normal">/ What Can You Do With GToken</span></h2>
+                    <p class="text-slate-500 text-sm mt-2">GToken = 数字公共物品的门票。公园（Park）的入场券。</p>
+                </div>
+
+                <div class="glass-card p-6">
+                    <!-- 核心类比 -->
+                    <div class="p-5 rounded-lg mb-6" style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2)">
+                        <div class="text-center mb-4">
+                            <div class="text-2xl mb-2">🎫</div>
+                            <div class="font-bold text-lg green-text">GToken = 协议门票</div>
+                            <div class="text-sm text-slate-400 mt-1">买票 → 验票（burn）→ 入场 → 终生有效</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center text-xs">
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,0.03)">
+                                <div class="font-bold text-slate-300 mb-1">🧑 个体票</div>
+                                <div class="font-mono cyan-text text-lg">~0.3 GT</div>
+                                <div class="text-slate-500 mt-1">个人加入协议<br/>终生有效，所有公共设施免费</div>
+                            </div>
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,0.03)">
+                                <div class="font-bold text-slate-300 mb-1">👥 社区票（团体）</div>
+                                <div class="font-mono cyan-text text-lg">~30 GT</div>
+                                <div class="text-slate-500 mt-1">社区接入协议<br/>获得公共服务和治理参与权</div>
+                            </div>
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,0.03)">
+                                <div class="font-bold text-slate-300 mb-1">🏗️ 特殊票</div>
+                                <div class="font-mono cyan-text text-lg">按场景定价</div>
+                                <div class="text-slate-500 mt-1">注册 SuperPaymaster<br/>启动子协议等高级操作</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 门票机制说明 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                        <div class="p-4 rounded-lg" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15)">
+                            <div class="font-bold text-sm yellow-text mb-2"><i class="fas fa-ticket-alt mr-1"></i>买票验票，不退不出</div>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li>· 买了 GToken = 持有未使用的门票（在你钱包里）</li>
+                                <li>· 加入协议 = 验票入场（burn GT → 回归国库）</li>
+                                <li>· 入场后终生有效，无退出机制</li>
+                                <li>· 正如公园没有"退园"——票已撕，你已是协议成员</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-lg" style="background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.15)">
+                            <div class="font-bold text-sm cyan-text mb-2"><i class="fas fa-recycle mr-1"></i>经济永续循环</div>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li>· Burn 的 GT 不是消失，是回归社区国库</li>
+                                <li>· 国库将 GT 发放给节点运营者（基础设施挖矿）</li>
+                                <li>· 节点运营者参与生态 → GT 流回市场</li>
+                                <li>· 21,000,000 GT 永恒恒定，只在容器间流转</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 公园内的设施 -->
+                    <div class="p-4 rounded-lg mb-4" style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15)">
+                        <div class="font-bold text-sm purple-text mb-2"><i class="fas fa-tree mr-1"></i>公园内：免费 vs 收费</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-400">
+                            <div>
+                                <div class="text-slate-300 font-semibold mb-1">🆓 免费公共设施（持票即享）</div>
+                                <div>协议治理投票 · 铸造声誉 SBT · 任务广场 · 社区注册 · 生态优先访问</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-300 font-semibold mb-1">💰 收费项目（用 PNTs 支付）</div>
+                                <div>跨社区积分兑换 · 高级 AI 算力 · 企业级 SLA · 商业积分发行</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 早买早便宜的核心逻辑 -->
+                    <div class="p-4 rounded-lg mb-4" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15)">
+                        <div class="font-bold text-sm yellow-text mb-2"><i class="fas fa-chart-line mr-1"></i>为什么早加入更划算？</div>
+                        <div class="text-xs text-slate-400 space-y-2">
+                            <p><strong class="text-slate-300">公共物品只会越来越多。</strong>协议持续产出新的数字公共物品——新协议、新工具、新服务。今天加入，你用 ~0.3 GT（约 $0.045）买一张终生门票。未来公园里有更多设施，门票需求增加，GToken 价格自然上涨。</p>
+                            <p><strong class="text-slate-300">同样一张门票，越晚越贵。</strong>来得晚的人能享受更丰富的公共物品，但门票价格也更高。这是早期支持者的合理回报——你在公园只有草地的时候就买了票，现在公园有了摩天轮、游泳池、图书馆，你全部终生免费享用。</p>
+                            <p><strong class="text-slate-300">这是 GToken 价值自洽的核心逻辑：</strong>公共物品越多 → 协议越受欢迎 → 门票越有价值 → 早期参与者受益最大。</p>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-500 text-center">
+                        <i class="fas fa-cog mr-1"></i>
+                        门票价格（burn 数量）由社区治理投票调整。不同场景、不同票价，社区可随时提案修改。
                     </div>
                 </div>
             </section>
