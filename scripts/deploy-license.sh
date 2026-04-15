@@ -8,14 +8,13 @@ LICENSE_FILE="docs/license/LICENSE-commons-clause.txt"  # Now pure Apache 2.0
 NOTICE_TEMPLATE="docs/license/NOTICE-template.txt"
 TRADEMARK_FILE="docs/license/TRADEMARK.md"
 
-COMMIT_MSG="chore: add Apache 2.0 license + NOTICE + TRADEMARK
+COMMIT_MSG="chore: clean Apache 2.0 license + NOTICE + TRADEMARK
 
-- Apache 2.0 (OSI-approved open source)
-- NOTICE: attribution requirement per Section 4(d)
+- LICENSE: pure Apache 2.0 standard text (no appended content)
+- NOTICE: attribution, trademark, access model, CLA info
 - TRADEMARK.md: brand protection policy
-- CLA required for all contributions
 
-Part of MushroomDAO license unification.
+Fixes: removed non-license content from LICENSE for SPDX compliance.
 See: https://github.com/MushroomDAO/launch/tree/main/docs/license"
 
 # Tier 4 repos get CC BY-SA 4.0 instead
