@@ -7,13 +7,14 @@
 
 ## Why this policy exists
 
-Our license (Apache 2.0 + Commons Clause) prohibits selling the software
-as a commercial service. But between "individual use" and "obvious commercial
-resale" there is a gray area. This policy defines a clear, fair boundary.
+Our code is licensed under Apache 2.0 (fully permissive, OSI-approved).
+However, accessing the live Mycelium Protocol **network** requires a GToken
+ticket, and MushroomDAO trademarks are separately protected. This policy
+governs network access authorization for larger organizations.
 
-Our philosophy: **help those who need help, while preventing commercial
-free-riding.** We aim for maximum permissionless access with minimum
-necessary safeguards.
+Our philosophy: **help those who need help, while ensuring fair use of
+shared network infrastructure.** We aim for maximum permissionless access
+with minimum necessary safeguards.
 
 ---
 
