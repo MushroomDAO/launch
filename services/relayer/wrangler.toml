@@ -1,0 +1,29 @@
+name = "mycelium-relayer"
+main = "src/index.ts"
+compatibility_date = "2024-12-05"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+CHAIN_ID = "11155111"
+SALE_CONTRACT = "0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA"
+USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"
+ENTRY_POINT = "0x0000000071727De22E5E9d8BAf0edAc6f37da032"
+# ── Set after SP PR merge + Sepolia deploy ─────────────────
+# REGISTRY_ADDRESS = "TODO"
+# MPNTS_ADDRESS = "TODO"
+# AIRACCOUNT_DELEGATE = "TODO"
+# MUSHROOM_COMMUNITY = "TODO"
+
+# Limits
+MAX_GAS_PER_TX_USD = "5"
+RATE_LIMIT_PER_ADDRESS_PER_HOUR = "5"
+RATE_LIMIT_GLOBAL_PER_HOUR = "100"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "TODO_replace_after_wrangler_kv_create"
+preview_id = "TODO_replace_after_wrangler_kv_create"
+
+# Secrets (set via: wrangler secret put OPERATOR_PK)
+# OPERATOR_PK        -- hot wallet private key
+# RPC_URL            -- Alchemy/Infura Sepolia endpoint
