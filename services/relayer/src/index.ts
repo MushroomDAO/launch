@@ -96,13 +96,15 @@ async function handleRelay(
     return error(preflight.error, preflight.code, 422, corsHeaders)
   }
 
-  // 5. Check infra readiness (post SP deploy gates)
+  // 5. Check infra readiness (registry/mpnts/airAccountDelegate must all be deployed)
   const infraReady = !!(config.registry && config.mpnts && config.airAccountDelegate)
   if (!infraReady) {
-    // Infra not yet deployed — log warning, proceed with D-only (handleOps only, no SBT/MPNTs)
-    // This means the UserOp will fail at EntryPoint (no xPNTs → SuperPaymaster rejects).
-    // TODO: remove this gate once SP deploy is done.
-    console.warn('INFRA NOT READY: registry/mpnts/airAccountDelegate not configured. Relayer running in degraded mode.')
+    return error(
+      'Relayer infra not yet deployed (SuperPaymaster + Registry). Check back after mainnet launch.',
+      'INFRA_NOT_READY',
+      503,
+      corsHeaders,
+    )
   }
 
   // 6. Build Type-4 tx

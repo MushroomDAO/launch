@@ -15,25 +15,31 @@ export async function preflightChecks(
 ): Promise<ValidationResult> {
   const client = createPublicClient({ transport: http(rpcUrl) })
 
-  const [inventory, usdcBalance, expectedTokens] = await Promise.all([
-    client.readContract({
-      address: config.saleContract,
-      abi: SALE_CONTRACT_ABI,
-      functionName: 'availableInventory',
-    }),
-    client.readContract({
-      address: config.usdc,
-      abi: ERC20_ABI,
-      functionName: 'balanceOf',
-      args: [purchase.buyer],
-    }),
-    client.readContract({
-      address: config.saleContract,
-      abi: SALE_CONTRACT_ABI,
-      functionName: 'getTokensForUSD',
-      args: [purchase.usdAmount],
-    }),
-  ])
+  let inventory: bigint, usdcBalance: bigint, expectedTokens: bigint
+  try {
+    ;[inventory, usdcBalance, expectedTokens] = await Promise.all([
+      client.readContract({
+        address: config.saleContract,
+        abi: SALE_CONTRACT_ABI,
+        functionName: 'availableInventory',
+      }) as Promise<bigint>,
+      client.readContract({
+        address: config.usdc,
+        abi: ERC20_ABI,
+        functionName: 'balanceOf',
+        args: [purchase.buyer],
+      }) as Promise<bigint>,
+      client.readContract({
+        address: config.saleContract,
+        abi: SALE_CONTRACT_ABI,
+        functionName: 'getTokensForUSD',
+        args: [purchase.usdAmount],
+      }) as Promise<bigint>,
+    ])
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    return { ok: false, error: `Preflight RPC error: ${msg}`, code: 'RELAY_FAILED' }
+  }
 
   // User must have enough USDC
   if (usdcBalance < purchase.usdAmount) {

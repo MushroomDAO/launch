@@ -36,6 +36,7 @@ const BUY_TOKENS_ABI = parseAbi([
 export function validatePurchaseShape(
   callData: Hex,
   config: ChainConfig,
+  sender: Address,
 ): { result: ValidationResult; purchase?: PurchaseCallData } {
   // 1. Must be executeBatch
   let calls: readonly { target: Address; value: bigint; data: Hex }[]
@@ -154,7 +155,7 @@ export function validatePurchaseShape(
     purchase: {
       usdAmount,
       minTokensOut,
-      buyer: buyCall.target, // sender of the UserOp will be the buyer
+      buyer: sender,
     },
   }
 }

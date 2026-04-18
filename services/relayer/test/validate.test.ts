@@ -63,8 +63,9 @@ function buildExecuteBatch(
 describe('validatePurchaseShape', () => {
   it('accepts valid executeBatch([approve, buyTokens])', () => {
     const callData = buildExecuteBatch(50_000_000n, 50_000_000n)
-    const { result } = validatePurchaseShape(callData, config)
+    const { result, purchase } = validatePurchaseShape(callData, config, BUYER)
     expect(result.ok).toBe(true)
+    expect(purchase?.buyer.toLowerCase()).toBe(BUYER.toLowerCase())
   })
 
   it('rejects non-executeBatch callData', () => {
@@ -93,7 +94,7 @@ describe('validatePurchaseShape', () => {
         ],
       ],
     })
-    const { result } = validatePurchaseShape(callData, config)
+    const { result } = validatePurchaseShape(callData, config, BUYER)
     expect(result.ok).toBe(false)
   })
 
@@ -127,7 +128,7 @@ describe('validatePurchaseShape', () => {
         ],
       ],
     })
-    const { result } = validatePurchaseShape(callData, config)
+    const { result } = validatePurchaseShape(callData, config, BUYER)
     expect(result.ok).toBe(false)
   })
 
@@ -137,13 +138,13 @@ describe('validatePurchaseShape', () => {
       50_000_000n,
       '0x0000000000000000000000000000000000000001' as Address,
     )
-    const { result } = validatePurchaseShape(callData, config)
+    const { result } = validatePurchaseShape(callData, config, BUYER)
     expect(result.ok).toBe(false)
   })
 
   it('rejects approve amount < usdAmount', () => {
     const callData = buildExecuteBatch(10_000_000n, 50_000_000n) // approve < buy
-    const { result } = validatePurchaseShape(callData, config)
+    const { result } = validatePurchaseShape(callData, config, BUYER)
     expect(result.ok).toBe(false)
   })
 })
