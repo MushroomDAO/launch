@@ -117,7 +117,8 @@ export function buildTx(
             signature: userOp.signature,
           },
         ],
-        // Beneficiary set to zero here; submit.ts replaces with hot wallet address.
+        // Zero beneficiary on Sepolia — relayer accepts the slight over-payment.
+        // TODO(mainnet): pass relayer address here so EntryPoint gas refunds accrue correctly.
         '0x0000000000000000000000000000000000000000' as Address,
       ],
     }),

@@ -32,7 +32,9 @@ export function validateRequest(
     }
   }
 
-  // 3. authorization contractAddress must be AirAccountDelegate
+  // 3. authorization contractAddress must be AirAccountDelegate.
+  // Guard is skipped when airAccountDelegate is not yet deployed (INFRA_NOT_READY phase).
+  // In that phase, steps A-C in build.ts are also skipped, so the authorization is a no-op.
   if (
     config.airAccountDelegate &&
     auth.contractAddress.toLowerCase() !== config.airAccountDelegate.toLowerCase()
@@ -54,7 +56,7 @@ export function validateRequest(
   }
 
   // 5. callData shape: executeBatch([approve, buyTokens])
-  const shapeCheck = validatePurchaseShape(userOp.callData, config)
+  const shapeCheck = validatePurchaseShape(userOp.callData, config, userOp.sender)
   if (!shapeCheck.result.ok) return shapeCheck
 
   const purchase = shapeCheck.purchase!
@@ -69,9 +71,6 @@ export function validateRequest(
       },
     }
   }
-
-  // 7. buyer in purchase must match userOp.sender
-  purchase.buyer = userOp.sender
 
   return { result: { ok: true }, purchase }
 }
