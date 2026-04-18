@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍄</text></svg>" />
+    <title>获取 GToken — Mycelium Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --bg: #020617;
+            --cyan: #22d3ee;
+            --green: #4ade80;
+            --yellow: #fbbf24;
+            --purple: #a78bfa;
+            --glass: rgba(15,23,42,0.85);
+            --border: rgba(34,211,238,0.25);
+        }
+        body { background: var(--bg); color: #f8fafc; font-family: "Courier New", monospace; overflow-x: hidden; }
+        .bg-grid {
+            position: fixed; inset: 0; z-index: -1;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at 50% 40%, black, transparent 75%);
+            opacity: .1;
+        }
+        .glass  { border: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(12px); border-radius: 8px; }
+        .term   { border: 1px solid rgba(34,211,238,.35); background: rgba(2,6,23,.97); border-radius: 8px; font-family: "Courier New", monospace; }
+        .th     { background: rgba(34,211,238,.07); border-bottom: 1px solid rgba(34,211,238,.2); padding: 8px 16px; display:flex; align-items:center; gap:8px; border-radius:8px 8px 0 0; }
+        .dot    { width:10px; height:10px; border-radius:50%; }
+        .c-r    { background:#ef4444; } .c-y { background:#fbbf24; } .c-g { background:#4ade80; }
+        .c      { color:var(--cyan); } .g { color:var(--green); } .y { color:var(--yellow); } .p { color:var(--purple); } .s { color:#94a3b8; }
+        .glow   { text-shadow: 0 0 20px rgba(34,211,238,.5); }
+        .nav-link { color:#94a3b8; text-decoration:none; font-size:.85rem; transition:color .2s; }
+        .nav-link:hover { color:var(--cyan); }
+        .divider { height:1px; background:linear-gradient(to right, transparent, var(--border), transparent); margin:16px 0; }
+        .log-line { font-size:.8rem; padding:2px 0; line-height:1.5; }
+        .log-line.info    { color:#94a3b8; }
+        .log-line.success { color:var(--green); }
+        .log-line.error   { color:#f87171; }
+        .log-line.warn    { color:var(--yellow); }
+        .log-line.sign    { color:var(--purple); }
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(34,211,238,.15), rgba(34,211,238,.08));
+            border: 1px solid rgba(34,211,238,.5);
+            color: var(--cyan); padding: 10px 24px; border-radius:6px;
+            cursor:pointer; font-family:inherit; font-size:.9rem; transition:all .2s;
+            width:100%;
+        }
+        .btn-primary:hover:not(:disabled) { background:rgba(34,211,238,.25); box-shadow:0 0 16px rgba(34,211,238,.3); }
+        .btn-primary:disabled { opacity:.4; cursor:not-allowed; }
+        .btn-secondary {
+            background: transparent; border: 1px solid rgba(148,163,184,.3);
+            color:#94a3b8; padding:8px 16px; border-radius:6px;
+            cursor:pointer; font-family:inherit; font-size:.8rem; transition:all .2s;
+        }
+        .btn-secondary:hover { border-color:var(--cyan); color:var(--cyan); }
+        .input-field {
+            background: rgba(2,6,23,.8); border: 1px solid rgba(34,211,238,.3);
+            color:#f8fafc; padding:10px 14px; border-radius:6px;
+            font-family:"Courier New",monospace; font-size:1rem; width:100%;
+            outline:none; transition:border .2s;
+        }
+        .input-field:focus { border-color:var(--cyan); box-shadow:0 0 10px rgba(34,211,238,.15); }
+        .step-dot {
+            width:28px; height:28px; border-radius:50%; border:2px solid rgba(34,211,238,.3);
+            display:flex; align-items:center; justify-content:center; font-size:.75rem; flex-shrink:0;
+        }
+        .step-dot.active { border-color:var(--cyan); background:rgba(34,211,238,.15); color:var(--cyan); }
+        .step-dot.done   { border-color:var(--green); background:rgba(74,222,128,.15); color:var(--green); }
+        .step-dot.idle   { color:#475569; }
+        .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:.65rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+        .badge-gasless { background:rgba(34,211,238,.12); color:var(--cyan); border:1px solid rgba(34,211,238,.3); }
+        .badge-classic { background:rgba(74,222,128,.1); color:var(--green); border:1px solid rgba(74,222,128,.3); }
+        .badge-warn   { background:rgba(251,191,36,.1); color:var(--yellow); border:1px solid rgba(251,191,36,.3); }
+    </style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<!-- NAV -->
+<nav class="border-b sticky top-0 z-50" style="border-color:var(--border);background:rgba(2,6,23,.92);backdrop-filter:blur(12px)">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 text-sm c glow font-bold">🍄 Mycelium</a>
+        <div class="hidden md:flex items-center gap-6">
+            <a href="token.html" class="nav-link">Token</a>
+            <a href="cold-launch.html" class="nav-link">冷启动</a>
+            <a href="dashboard.html" class="nav-link">数据</a>
+            <span id="network-badge" class="text-xs" style="color:#475569">● 未连接</span>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10">
+
+    <!-- HERO -->
+    <div class="text-center mb-10">
+        <div class="flex items-center justify-center gap-3 mb-3">
+            <span class="badge badge-gasless">Gas 全免</span>
+            <span class="badge badge-warn">Sepolia 测试网</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2 c glow">获取 GToken</h1>
+        <p class="s text-sm max-w-md mx-auto">只需 USDC / USDT，无需持有 ETH。一次签名，Gas 由 Mycelium 社区赞助。</p>
+    </div>
+
+    <div class="grid md:grid-cols-5 gap-6">
+
+        <!-- LEFT: Purchase card -->
+        <div class="md:col-span-3 flex flex-col gap-4">
+
+            <!-- Milestone progress -->
+            <div class="glass p-4">
+                <div class="flex justify-between items-center text-xs s mb-2">
+                    <span id="milestone-label" class="c font-bold">加载中…</span>
+                    <span>当前价格 <span id="current-price" class="y font-bold">—</span></span>
+                </div>
+                <div class="rounded-full overflow-hidden" style="height:6px;background:rgba(34,211,238,.1)">
+                    <div id="milestone-fill" class="h-full rounded-full transition-all" style="width:0%;background:linear-gradient(to right,#22d3ee,#4ade80)"></div>
+                </div>
+                <div class="flex justify-between text-xs s mt-1">
+                    <span>已募 <span id="total-revenue" class="g">—</span></span>
+                    <span>目标 <span id="next-cap" class="y">—</span></span>
+                </div>
+            </div>
+
+            <!-- Buy card -->
+            <div class="term">
+                <div class="th">
+                    <div class="dot c-r"></div><div class="dot c-y"></div><div class="dot c-g"></div>
+                    <span class="c text-xs ml-2 font-bold">purchase.sh</span>
+                    <span id="wallet-addr-badge" class="ml-auto text-xs s hidden"></span>
+                </div>
+                <div class="p-5">
+
+                    <!-- Wallet section -->
+                    <div id="wallet-section">
+                        <p class="s text-xs mb-4">连接钱包以查看余额并购买 GToken</p>
+                        <button class="btn-primary" onclick="connectWallet()">
+                            <i class="fas fa-plug mr-2"></i>连接钱包
+                        </button>
+                    </div>
+
+                    <!-- Connected section -->
+                    <div id="connected-section" class="hidden">
+
+                        <!-- Balances -->
+                        <div class="grid grid-cols-2 gap-3 mb-4 text-xs">
+                            <div class="glass p-3 rounded">
+                                <div class="s mb-1">USDC 余额</div>
+                                <div id="usdc-bal" class="g font-bold text-sm">—</div>
+                            </div>
+                            <div class="glass p-3 rounded">
+                                <div class="s mb-1">ETH 余额</div>
+                                <div id="eth-bal" class="font-bold text-sm">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Mode badge -->
+                        <div id="mode-gasless" class="hidden mb-3 text-xs p-2 rounded" style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2)">
+                            <span class="c font-bold">⚡ Gas Free 模式</span>
+                            <span class="s ml-2">你的 ETH = 0，Gas 由社区赞助</span>
+                        </div>
+                        <div id="mode-classic" class="hidden mb-3 text-xs p-2 rounded" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2)">
+                            <span class="g font-bold">💳 标准模式</span>
+                            <span class="s ml-2">检测到 ETH，走常规 approve→buy 流程</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Amount input -->
+                        <div class="mb-3">
+                            <label class="s text-xs mb-1 block">购买金额 (USD)</label>
+                            <input id="usd-input" type="number" min="5" step="1" placeholder="例：50"
+                                   class="input-field" oninput="updateEstimate()" />
+                            <div class="flex gap-2 mt-2">
+                                <button class="btn-secondary flex-1" onclick="setAmount(15)">$15</button>
+                                <button class="btn-secondary flex-1" onclick="setAmount(50)">$50</button>
+                                <button class="btn-secondary flex-1" onclick="setAmount(150)">$150</button>
+                                <button class="btn-secondary flex-1" onclick="setAmount(500)">$500</button>
+                            </div>
+                        </div>
+
+                        <!-- Estimate -->
+                        <div class="glass p-3 mb-4 text-xs">
+                            <div class="flex justify-between mb-1">
+                                <span class="s">预计获得</span>
+                                <span id="token-estimate" class="c font-bold text-sm">— GT</span>
+                            </div>
+                            <div class="flex justify-between mb-1">
+                                <span class="s">社区入会费 (SBT)</span>
+                                <span class="y">0.3 GT</span>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="flex justify-between">
+                                <span class="s font-bold">到账净值</span>
+                                <span id="token-net" class="g font-bold">— GT</span>
+                            </div>
+                        </div>
+
+                        <!-- Action button -->
+                        <button id="btn-buy" class="btn-primary" onclick="startPurchase()" disabled>
+                            <span id="btn-text">输入金额后可购买</span>
+                        </button>
+
+                        <button class="btn-secondary mt-2 w-full" onclick="disconnectWallet()">断开连接</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Signing steps (hidden until purchase starts) -->
+            <div id="sign-steps" class="term hidden">
+                <div class="th">
+                    <div class="dot c-r"></div><div class="dot c-y"></div><div class="dot c-g"></div>
+                    <span class="c text-xs ml-2 font-bold">signing.log</span>
+                </div>
+                <div class="p-4">
+                    <div class="flex flex-col gap-3 text-xs mb-4">
+                        <div class="flex items-center gap-3">
+                            <div id="step1-dot" class="step-dot idle">1</div>
+                            <div>
+                                <div class="font-bold" style="color:#f8fafc">EIP-7702 授权</div>
+                                <div class="s">允许本次交易使用智能账户能力（可随时撤销）</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div id="step2-dot" class="step-dot idle">2</div>
+                            <div>
+                                <div class="font-bold" style="color:#f8fafc">购买意向签名</div>
+                                <div class="s">确认购买数量及支付金额（离链签名，不花 Gas）</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div id="step3-dot" class="step-dot idle">✓</div>
+                            <div>
+                                <div class="font-bold" style="color:#f8fafc">链上确认</div>
+                                <div class="s">Relayer 代付 Gas，等待交易上链</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tx-log" class="space-y-0 text-xs max-h-40 overflow-y-auto" style="min-height:60px"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: Info sidebar -->
+        <div class="md:col-span-2 flex flex-col gap-4">
+
+            <!-- How it works -->
+            <div class="glass p-4 text-xs">
+                <div class="c font-bold mb-3 text-sm">⚡ Gasless 购买流程</div>
+                <ol class="space-y-2 s list-none">
+                    <li class="flex gap-2"><span class="c">①</span><span>签名 EIP-7702 授权（将 EOA 临时升级为智能账户）</span></li>
+                    <li class="flex gap-2"><span class="c">②</span><span>签名购买意向（确认金额 · 不花 Gas）</span></li>
+                    <li class="flex gap-2"><span class="c">③</span><span>Relayer 打包上链，Gas 由 Mycelium 社区 aPNTs 池支付</span></li>
+                    <li class="flex gap-2"><span class="g">✓</span><span>GToken + SBT 会员身份同时到账</span></li>
+                </ol>
+            </div>
+
+            <!-- What you get -->
+            <div class="glass p-4 text-xs">
+                <div class="g font-bold mb-3 text-sm">你将获得</div>
+                <ul class="space-y-2 s">
+                    <li class="flex gap-2"><span class="g">✓</span><span>GToken (扣 SBT 入会费后净值)</span></li>
+                    <li class="flex gap-2"><span class="g">✓</span><span>Mycelium 社区 SBT 会员 NFT</span></li>
+                    <li class="flex gap-2"><span class="g">✓</span><span>EOA 升级为智能账户（可撤销 7702 委托）</span></li>
+                    <li class="flex gap-2"><span class="g">✓</span><span>ETH 余额不变（全程 0 Gas）</span></li>
+                </ul>
+            </div>
+
+            <!-- Classic mode info -->
+            <div id="classic-info" class="glass p-4 text-xs hidden">
+                <div class="y font-bold mb-2 text-sm">💳 标准购买说明</div>
+                <p class="s mb-2">你的钱包有 ETH，将走两步标准流程：</p>
+                <ol class="space-y-1 s list-decimal list-inside">
+                    <li>授权 USDC（approve）</li>
+                    <li>调用 buyTokens</li>
+                </ol>
+                <p class="s mt-2">SBT 注册将在社区基础设施上线后补发。</p>
+            </div>
+
+            <!-- Infra status -->
+            <div class="glass p-4 text-xs">
+                <div class="p font-bold mb-2 text-sm">基础设施状态</div>
+                <div class="space-y-1 s">
+                    <div class="flex justify-between">
+                        <span>SaleContract v1.2.1</span>
+                        <span class="g">✓ Sepolia</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>SuperPaymaster</span>
+                        <span id="sp-status" class="y">待部署</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Relayer</span>
+                        <span id="relay-status" class="y">待部署</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>AirAccountDelegate</span>
+                        <span id="aad-status" class="y">待配置</span>
+                    </div>
+                </div>
+                <div id="infra-warn" class="mt-3 p-2 rounded text-xs" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)">
+                    <span class="y font-bold">⚠ </span>
+                    <span class="s">Gasless 基础设施尚未就绪。目前仅支持有 ETH 的用户通过标准流程购买。</span>
+                </div>
+            </div>
+
+            <!-- Legal -->
+            <div class="glass p-3 text-xs s">
+                <ul class="space-y-1">
+                    <li>· GToken 为 Utility Token，非投资品</li>
+                    <li>· USDC 直接转入 Treasury 多签钱包</li>
+                    <li>· 当前为 Sepolia 测试网，仅作演示</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="border-t mt-10" style="border-color:var(--border);background:rgba(2,6,23,.8)">
+    <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="s text-xs">MYCELIUM PROTOCOL · Sepolia · SaleContract v1.2.1</div>
+        <div class="flex gap-6 text-sm">
+            <a href="token.html" class="nav-link">Token</a>
+            <a href="cold-launch.html" class="nav-link">冷启动</a>
+            <a href="https://github.com/MushroomDAO/launch" class="nav-link" target="_blank">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+<!-- viem v2 via ESM CDN -->
+<script type="module">
+import {
+    createPublicClient, createWalletClient, custom, http,
+    encodeFunctionData, parseAbi, formatUnits, parseUnits,
+    encodeAbiParameters, parseAbiParameters, keccak256, concat,
+    toHex, pad, getAddress,
+} from 'https://esm.sh/viem@2.21.54';
+import { sepolia } from 'https://esm.sh/viem@2.21.54/chains';
+
+// ── Config ────────────────────────────────────────────────────────────────
+const CHAIN_ID      = 11155111;
+const SALE          = '0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA';
+const USDC          = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
+const GTOKEN        = '0xa592eC5a05C3909917d038AB01AAF7bcCF2D90f0';
+const ENTRY_POINT   = '0x0000000071727De22E5E9d8BAf0edAc6f37da032';
+const RELAYER_URL   = 'https://mycelium-relayer.workers.dev'; // TODO: update after deploy
+
+// ── Post SP-deploy: fill these ────────────────────────────────────────────
+const SUPERPAYMASTER     = null; // TODO
+const MUSHROOM_OPERATOR  = null; // TODO
+const AIRACCOUNT_DELEGATE = null; // TODO
+const MPNTS              = null; // TODO
+
+const INFRA_READY = !!(SUPERPAYMASTER && MUSHROOM_OPERATOR && AIRACCOUNT_DELEGATE && MPNTS);
+
+const PER_CAP_USD = 864_000_000n; // $864 in 6-dec USDC
+const SBT_FEE_GT  = 300_000_000_000_000_000n; // 0.3 GT in wei
+
+// ── ABIs ──────────────────────────────────────────────────────────────────
+const SALE_ABI = parseAbi([
+    'function getCurrentPriceUSD() view returns (uint256)',
+    'function getTokensForUSD(uint256) view returns (uint256)',
+    'function totalRevenue() view returns (uint256)',
+    'function currentMilestone() view returns (uint256)',
+    'function availableInventory() view returns (uint256)',
+    'function userTotalSpent(address) view returns (uint256)',
+    'function buyTokens(uint256 usdAmount, address paymentToken, uint256 minTokensOut)',
+]);
+const ERC20_ABI = parseAbi([
+    'function balanceOf(address) view returns (uint256)',
+    'function allowance(address,address) view returns (uint256)',
+    'function approve(address,uint256) returns (bool)',
+]);
+const EXECUTE_BATCH_ABI = parseAbi([
+    'function executeBatch((address target, uint256 value, bytes data)[] calls)',
+]);
+const APPROVE_ABI  = parseAbi(['function approve(address,uint256) returns (bool)']);
+const BUY_ABI      = parseAbi(['function buyTokens(uint256,address,uint256)']);
+
+const MILESTONE_NAMES = ['M0 · Genesis','M1 · Phase 2','M2 · Phase 3 前段','M3 · Phase 3','M4 · Phase 4','M5 · Phase 5'];
+const MILESTONE_CAPS  = [0n,1_200_000_000n,4_800_000_000n,12_800_000_000n,49_400_000_000n,135_800_000_000n];
+
+// ── State ─────────────────────────────────────────────────────────────────
+let pub = null, wallet = null, account = null;
+let currentPrice = 150_000n; // $0.15 default
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function log(msg, type = 'info') {
+    const el = document.getElementById('tx-log');
+    const d = document.createElement('div');
+    d.className = `log-line ${type}`;
+    d.textContent = '> ' + msg;
+    el.appendChild(d);
+    el.scrollTop = el.scrollHeight;
+    document.getElementById('sign-steps').classList.remove('hidden');
+}
+function fmtUSD(v) { return '$' + (Number(v)/1e6).toLocaleString('zh-CN',{minimumFractionDigits:2}); }
+function fmtGT(v)  { return (Number(v)/1e18).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:4})+' GT'; }
+function short(a)  { return a.slice(0,6)+'…'+a.slice(-4); }
+function stepDot(id, state) {
+    const el = document.getElementById(id);
+    el.className = 'step-dot ' + state;
+    if (state === 'done') el.textContent = '✓';
+}
+
+// ── Chain state ───────────────────────────────────────────────────────────
+async function refreshMilestone() {
+    if (!pub) return;
+    try {
+        const [ms, rev, price] = await Promise.all([
+            pub.readContract({ address: SALE, abi: SALE_ABI, functionName: 'currentMilestone' }),
+            pub.readContract({ address: SALE, abi: SALE_ABI, functionName: 'totalRevenue' }),
+            pub.readContract({ address: SALE, abi: SALE_ABI, functionName: 'getCurrentPriceUSD' }),
+        ]);
+        currentPrice = price;
+        document.getElementById('milestone-label').textContent = MILESTONE_NAMES[Number(ms)] ?? `M${ms}`;
+        document.getElementById('current-price').textContent   = '$'+(Number(price)/1e6).toFixed(5);
+        document.getElementById('total-revenue').textContent   = fmtUSD(rev);
+        const nextCap = MILESTONE_CAPS[Number(ms)+1];
+        if (nextCap) {
+            document.getElementById('next-cap').textContent = fmtUSD(nextCap);
+            const pct = nextCap > 0n ? Math.min(Number(rev*100n/nextCap), 100) : 100;
+            document.getElementById('milestone-fill').style.width = pct + '%';
+        }
+    } catch(e) { log('无法读取链上状态: '+e.message, 'error'); }
+}
+
+async function refreshBalances() {
+    if (!pub || !account) return;
+    const [usdcBal, ethBal] = await Promise.all([
+        pub.readContract({ address: USDC, abi: ERC20_ABI, functionName: 'balanceOf', args: [account] }),
+        pub.getBalance({ address: account }),
+    ]);
+    document.getElementById('usdc-bal').textContent = fmtUSD(usdcBal) + ' USDC';
+    const hasEth = ethBal > 0n;
+    document.getElementById('eth-bal').textContent  = formatUnits(ethBal, 18).slice(0,8) + ' ETH';
+    document.getElementById('eth-bal').className    = hasEth ? 'g font-bold text-sm' : 'y font-bold text-sm';
+
+    if (INFRA_READY && !hasEth) {
+        document.getElementById('mode-gasless').classList.remove('hidden');
+        document.getElementById('mode-classic').classList.add('hidden');
+        document.getElementById('classic-info').classList.add('hidden');
+    } else {
+        document.getElementById('mode-classic').classList.remove('hidden');
+        document.getElementById('mode-gasless').classList.add('hidden');
+        document.getElementById('classic-info').classList.remove('hidden');
+    }
+}
+
+// ── Wallet ────────────────────────────────────────────────────────────────
+window.connectWallet = async function() {
+    const provider = window.airaccount ?? window.ethereum;
+    if (!provider) { log('未检测到钱包，请安装 MetaMask', 'error'); return; }
+
+    try {
+        const accounts = await provider.request({ method: 'eth_requestAccounts' });
+        account = getAddress(accounts[0]);
+
+        const chainHex = await provider.request({ method: 'eth_chainId' });
+        if (parseInt(chainHex, 16) !== CHAIN_ID) {
+            log('请切换到 Sepolia (11155111)', 'warn');
+            try {
+                await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xaa36a7' }] });
+            } catch { log('网络切换失败，请手动切换到 Sepolia', 'error'); return; }
+        }
+
+        pub    = createPublicClient({ chain: sepolia, transport: http() });
+        wallet = createWalletClient({ account, chain: sepolia, transport: custom(provider) });
+
+        document.getElementById('network-badge').textContent = '● Sepolia';
+        document.getElementById('network-badge').style.color = 'var(--green)';
+        document.getElementById('wallet-addr-badge').textContent = short(account);
+        document.getElementById('wallet-addr-badge').classList.remove('hidden');
+        document.getElementById('wallet-section').classList.add('hidden');
+        document.getElementById('connected-section').classList.remove('hidden');
+
+        // Infra readiness notice
+        if (!INFRA_READY) {
+            document.getElementById('infra-warn').classList.remove('hidden');
+        }
+
+        log('已连接: ' + short(account), 'success');
+        await Promise.all([refreshMilestone(), refreshBalances()]);
+    } catch(e) { log('连接失败: '+(e.message||e), 'error'); }
+};
+
+window.disconnectWallet = function() {
+    account = pub = wallet = null;
+    document.getElementById('wallet-section').classList.remove('hidden');
+    document.getElementById('connected-section').classList.add('hidden');
+    document.getElementById('sign-steps').classList.add('hidden');
+    document.getElementById('network-badge').textContent = '● 未连接';
+    document.getElementById('network-badge').style.color = '#475569';
+};
+
+// ── Estimate ──────────────────────────────────────────────────────────────
+window.setAmount = function(v) {
+    document.getElementById('usd-input').value = v;
+    updateEstimate();
+};
+
+window.updateEstimate = function() {
+    const raw = parseFloat(document.getElementById('usd-input').value);
+    if (!raw || raw < 5) {
+        document.getElementById('token-estimate').textContent = '— GT';
+        document.getElementById('token-net').textContent = '— GT';
+        document.getElementById('btn-buy').disabled = true;
+        document.getElementById('btn-text').textContent = '输入金额后可购买';
+        return;
+    }
+    const usdRaw = BigInt(Math.round(raw * 1e6));
+    const tokens  = (usdRaw * BigInt(1e18)) / currentPrice;
+    const net     = tokens > SBT_FEE_GT ? tokens - SBT_FEE_GT : tokens;
+    document.getElementById('token-estimate').textContent = fmtGT(tokens);
+    document.getElementById('token-net').textContent      = fmtGT(net);
+
+    if (account) {
+        document.getElementById('btn-buy').disabled = false;
+        document.getElementById('btn-text').textContent = INFRA_READY ? '⚡ Gasless 购买（2 次签名）' : '💳 标准购买（需 ETH）';
+    }
+};
+
+// ── Main purchase entry ───────────────────────────────────────────────────
+window.startPurchase = async function() {
+    const raw = parseFloat(document.getElementById('usd-input').value);
+    if (!raw || raw < 5 || !account) return;
+    const usdRaw = BigInt(Math.round(raw * 1e6));
+
+    document.getElementById('btn-buy').disabled = true;
+    document.getElementById('sign-steps').classList.remove('hidden');
+
+    if (INFRA_READY) {
+        await gaslessPurchase(usdRaw);
+    } else {
+        await classicPurchase(usdRaw);
+    }
+
+    document.getElementById('btn-buy').disabled = false;
+    await refreshBalances();
+    await refreshMilestone();
+};
+
+// ── Gasless purchase (EIP-7702 + UserOp + Relayer) ────────────────────────
+async function gaslessPurchase(usdRaw) {
+    try {
+        log('开始 Gasless 购买流程…', 'info');
+
+        // ── Step 1: Sign EIP-7702 authorization ──────────────────────────
+        stepDot('step1-dot', 'active');
+        log('① 请在钱包中签名 EIP-7702 授权…', 'sign');
+
+        const userNonce = Number(await pub.getTransactionCount({ address: account }));
+        const authorization = await wallet.signAuthorization({
+            contractAddress: AIRACCOUNT_DELEGATE,
+            chainId: CHAIN_ID,
+            nonce: userNonce,
+        });
+        stepDot('step1-dot', 'done');
+        log('EIP-7702 授权签名完成', 'success');
+
+        // ── Step 2: Build UserOp and sign ────────────────────────────────
+        stepDot('step2-dot', 'active');
+        log('② 请在钱包中签名购买意向…', 'sign');
+
+        // Expected token amount with 1% slippage
+        const expectedTokens = await pub.readContract({
+            address: SALE, abi: SALE_ABI, functionName: 'getTokensForUSD', args: [usdRaw],
+        });
+        const minTokensOut = expectedTokens * 99n / 100n;
+
+        // Build executeBatch callData
+        const callData = encodeFunctionData({
+            abi: EXECUTE_BATCH_ABI,
+            functionName: 'executeBatch',
+            args: [[
+                {
+                    target: USDC,
+                    value: 0n,
+                    data: encodeFunctionData({ abi: APPROVE_ABI, functionName: 'approve', args: [SALE, usdRaw] }),
+                },
+                {
+                    target: SALE,
+                    value: 0n,
+                    data: encodeFunctionData({ abi: BUY_ABI, functionName: 'buyTokens', args: [usdRaw, USDC, minTokensOut] }),
+                },
+            ]],
+        });
+
+        // Build paymasterAndData:
+        // [paymaster(20)][verGasLim(16)][postGasLim(16)][operator(20)][maxRate(32)]
+        const pmData = concat([
+            SUPERPAYMASTER,
+            pad(toHex(500_000n), { size: 16 }), // verificationGasLimit
+            pad(toHex(200_000n), { size: 16 }), // postOpGasLimit
+            MUSHROOM_OPERATOR,
+            pad(toHex(BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')), { size: 32 }),
+        ]);
+
+        // Gas fees from RPC
+        const feeData = await pub.estimateFeesPerGas();
+        const maxFee  = feeData.maxFeePerGas ?? 2_000_000_000n;
+        const tip     = feeData.maxPriorityFeePerGas ?? 1_000_000_000n;
+        const gasFees = concat([pad(toHex(tip), {size:16}), pad(toHex(maxFee), {size:16})]);
+        const acctGasLimits = concat([
+            pad(toHex(500_000n), {size:16}), // verificationGasLimit
+            pad(toHex(600_000n), {size:16}), // callGasLimit
+        ]);
+
+        // Build unsigned UserOp
+        const userOpNoSig = {
+            sender:             account,
+            nonce:              toHex(await pub.readContract({
+                                    address: ENTRY_POINT,
+                                    abi: parseAbi(['function getNonce(address,uint192) view returns (uint256)']),
+                                    functionName: 'getNonce',
+                                    args: [account, 0n],
+                                })),
+            initCode:           '0x',
+            callData,
+            accountGasLimits:   acctGasLimits,
+            preVerificationGas: toHex(50_000n),
+            gasFees,
+            paymasterAndData:   pmData,
+        };
+
+        // Compute UserOpHash (ERC-4337 v0.7 PackedUserOperation)
+        const userOpHash = computeUserOpHash(userOpNoSig);
+
+        // Sign: AirAccountDelegate expects eth_sign (personal_sign of raw hash)
+        const signature = await wallet.signMessage({ message: { raw: userOpHash } });
+
+        stepDot('step2-dot', 'done');
+        log('购买意向签名完成', 'success');
+
+        // ── Step 3: POST to relayer ───────────────────────────────────────
+        stepDot('step3-dot', 'active');
+        log('③ 提交到 Relayer…', 'info');
+
+        const resp = await fetch(RELAYER_URL + '/relay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                authorization,
+                userOp: { ...userOpNoSig, signature },
+                skipSbt: false,
+            }),
+        });
+
+        const data = await resp.json();
+        if (!resp.ok) {
+            log('Relayer 拒绝: ' + (data.error ?? resp.statusText), 'error');
+            stepDot('step3-dot', 'idle');
+            return;
+        }
+
+        log('TX 已提交: ' + data.txHash, 'info');
+        log('等待链上确认…', 'info');
+
+        const receipt = await pub.waitForTransactionReceipt({ hash: data.txHash, timeout: 120_000 });
+        if (receipt.status === 'success') {
+            stepDot('step3-dot', 'done');
+            log('✓ 购买成功！约 '+fmtGT(expectedTokens)+' GToken 已到账', 'success');
+            log('TX: ' + data.txHash, 'success');
+            log('Etherscan: https://sepolia.etherscan.io/tx/' + data.txHash, 'success');
+        } else {
+            log('链上交易 reverted，请查看 Etherscan', 'error');
+        }
+
+    } catch(e) {
+        log('错误: ' + (e.shortMessage ?? e.message ?? String(e)), 'error');
+        stepDot('step1-dot', 'idle'); stepDot('step2-dot', 'idle'); stepDot('step3-dot', 'idle');
+    }
+}
+
+// ── Classic purchase (approve + buyTokens) ────────────────────────────────
+async function classicPurchase(usdRaw) {
+    log('标准流程：需要 2 笔交易（需持有 ETH）', 'info');
+    try {
+        // 1. Approve
+        log('① 授权 USDC…', 'sign');
+        const approveHash = await wallet.writeContract({
+            address: USDC, abi: ERC20_ABI, functionName: 'approve', args: [SALE, usdRaw],
+        });
+        log('Approve TX: ' + approveHash, 'info');
+        await pub.waitForTransactionReceipt({ hash: approveHash });
+        log('USDC 授权成功', 'success');
+
+        // 2. Buy
+        const expected = await pub.readContract({
+            address: SALE, abi: SALE_ABI, functionName: 'getTokensForUSD', args: [usdRaw],
+        });
+        const minOut = expected * 99n / 100n;
+        log('② 购买 GToken…', 'sign');
+        const buyHash = await wallet.writeContract({
+            address: SALE, abi: SALE_ABI, functionName: 'buyTokens', args: [usdRaw, USDC, minOut],
+        });
+        log('Buy TX: ' + buyHash, 'info');
+        const receipt = await pub.waitForTransactionReceipt({ hash: buyHash });
+        if (receipt.status === 'success') {
+            log('✓ 购买成功！获得约 ' + fmtGT(expected) + ' GT', 'success');
+            log('Etherscan: https://sepolia.etherscan.io/tx/' + buyHash, 'success');
+        } else {
+            log('交易 reverted', 'error');
+        }
+    } catch(e) {
+        log('标准购买失败: '+(e.shortMessage ?? e.message ?? String(e)), 'error');
+    }
+}
+
+// ── UserOpHash (ERC-4337 v0.7 PackedUserOperation) ────────────────────────
+function computeUserOpHash(op) {
+    // innerHash = keccak256(abi.encode(sender,nonce,keccak256(initCode),keccak256(callData),
+    //                       accountGasLimits,preVerificationGas,gasFees,keccak256(paymasterAndData)))
+    const inner = keccak256(
+        encodeAbiParameters(
+            parseAbiParameters('address,uint256,bytes32,bytes32,bytes32,uint256,bytes32,bytes32'),
+            [
+                op.sender,
+                BigInt(op.nonce),
+                keccak256(op.initCode),
+                keccak256(op.callData),
+                op.accountGasLimits,
+                BigInt(op.preVerificationGas),
+                op.gasFees,
+                keccak256(op.paymasterAndData),
+            ]
+        )
+    );
+    return keccak256(
+        encodeAbiParameters(
+            parseAbiParameters('bytes32,address,uint256'),
+            [inner, ENTRY_POINT, BigInt(CHAIN_ID)]
+        )
+    );
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+(async () => {
+    try {
+        pub = createPublicClient({ chain: sepolia, transport: http() });
+        await refreshMilestone();
+        // Update infra badges
+        if (INFRA_READY) {
+            document.getElementById('sp-status').textContent  = '✓';
+            document.getElementById('sp-status').className   = 'g';
+            document.getElementById('relay-status').textContent = '✓';
+            document.getElementById('relay-status').className   = 'g';
+            document.getElementById('aad-status').textContent = '✓';
+            document.getElementById('aad-status').className   = 'g';
+            document.getElementById('infra-warn').classList.add('hidden');
+        }
+    } catch(e) { /* silent — user sees connect button */ }
+})();
+</script>
+</body>
+</html>
