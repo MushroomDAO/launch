@@ -364,16 +364,16 @@
                     <div class="text-xs slate-text mb-2 uppercase tracking-widest">合约信息</div>
                     <div class="space-y-2 text-xs">
                         <div class="flex justify-between">
-                            <span class="slate-text">SaleContract</span>
-                            <a href="https://sepolia.etherscan.io/address/0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA"
+                            <span class="slate-text">SaleContract V2</span>
+                            <a href="https://sepolia.etherscan.io/address/0xD2E2566566D459115D4159993E96c45c0d2cE6CD"
                                 target="_blank" rel="noopener"
-                                class="cyan-text font-mono hover:underline">0x9cA2...dBA ↗</a>
+                                class="cyan-text font-mono hover:underline">0xD2E2...e6CD ↗</a>
                         </div>
                         <div class="flex justify-between">
                             <span class="slate-text">GToken</span>
-                            <a href="https://sepolia.etherscan.io/address/0xa592eC5a05C3909917d038AB01AAF7bcCF2D90f0"
+                            <a href="https://sepolia.etherscan.io/address/0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F"
                                 target="_blank" rel="noopener"
-                                class="cyan-text font-mono hover:underline">0xa592...0f0 ↗</a>
+                                class="cyan-text font-mono hover:underline">0x25c7...F37F ↗</a>
                         </div>
                         <div class="flex justify-between">
                             <span class="slate-text">USDC (Sepolia)</span>
@@ -381,7 +381,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="slate-text">版本</span>
-                            <span class="green-text font-mono">v1.2.1</span>
+                            <span class="green-text font-mono">v2.0.0</span>
                         </div>
                     </div>
                 </div>
@@ -465,8 +465,8 @@
             import { sepolia } from 'https://esm.sh/viem@2.21.54/chains';
 
             // ── Contract addresses ────────────────────────────────────────────────
-            const SALE_ADDRESS  = '0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA';
-            const GTOKEN_ADDRESS = '0xa592eC5a05C3909917d038AB01AAF7bcCF2D90f0';
+            const SALE_ADDRESS  = '0xD2E2566566D459115D4159993E96c45c0d2cE6CD';  // SaleContractV2
+            const GTOKEN_ADDRESS = '0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F'; // MockGToken (V2 stack)
             const USDC_ADDRESS  = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
             const PER_CAP_USD   = 864_000_000n; // Phase 4 cap ($864), owner updates per phase via setPerCapUSD()
 
