@@ -120,10 +120,16 @@ cast send $SALE2 'addMilestone(uint256,uint256)' 350000 400000000000 \
 
 ---
 
-## 下一步（路演前剩余）
+## 路演前进度（已完成）
 
-- [ ] **Phase 2**：Treasury 多签转 855K GT 到 SaleV2（你做）
-- [ ] **Etherscan 验证完成**（1-2 分钟自动）
-- [ ] **Phase 3（可选）**：选项 B，pause + recoverToken V1
-- [ ] **站点引用更新**（join.html / launch.html / token.html / relayer wrangler.toml）——等 Phase 2 完成后改
-- [ ] **launch.html + join.html 合并 + ETH 自动检测分流**——路演后做
+- [x] **Phase 2**：Treasury 多签转 855K GT 到 SaleV2 ✅
+- [x] **Etherscan 验证完成**（MockGToken + SaleContractV2 都已验证）✅
+- [x] **站点引用更新**（join.html / launch.html / token.html / relayer wrangler.toml + test）✅
+- [x] **生产部署**（launch.mushroom.cv 已切到 V2，via wrangler `--branch=main`）✅
+- [x] **Fork-Sepolia 集成测试**（5/5 实链合约买入测试通过）✅
+
+## 路演前剩余 / 路演后
+
+- [ ] **Phase 3（可选）**：pause + recoverToken V1（V1 那 4.2M 旧 GT 还挂着，路演后清理）
+- [ ] **launch.html + join.html 合并 + ETH 自动检测分流**——见 `07-sale-status-and-todos.md`
+- [ ] **Gasless 后端激活**——4 个外部依赖部署中，地址回填后接入
