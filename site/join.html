@@ -299,9 +299,15 @@
                                 <div class="text-xs slate-text mb-1">已连接钱包</div>
                                 <div class="text-sm font-mono cyan-text" id="wallet-address">0x...</div>
                             </div>
-                            <div class="text-right">
-                                <div class="text-xs slate-text mb-1">USDC 余额</div>
-                                <div class="text-sm font-mono green-text" id="usdc-balance">—</div>
+                            <div class="text-right space-y-1">
+                                <div>
+                                    <div class="text-xs slate-text">USDC 余额</div>
+                                    <div class="text-sm font-mono green-text" id="usdc-balance">—</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs slate-text">GToken 余额</div>
+                                    <div class="text-sm font-mono yellow-text" id="gt-balance">—</div>
+                                </div>
                             </div>
                         </div>
 
@@ -363,21 +369,39 @@
                 <div class="glass-card p-4">
                     <div class="text-xs slate-text mb-2 uppercase tracking-widest">合约信息</div>
                     <div class="space-y-2 text-xs">
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="slate-text">SaleContract V2</span>
-                            <a href="https://sepolia.etherscan.io/address/0xD2E2566566D459115D4159993E96c45c0d2cE6CD"
-                                target="_blank" rel="noopener"
-                                class="cyan-text font-mono hover:underline">0xD2E2...e6CD ↗</a>
+                            <span class="flex items-center gap-1.5">
+                                <a href="https://sepolia.etherscan.io/address/0xD2E2566566D459115D4159993E96c45c0d2cE6CD"
+                                    target="_blank" rel="noopener"
+                                    class="cyan-text font-mono hover:underline">0xD2E2...e6CD ↗</a>
+                                <button onclick="copyAddr('0xD2E2566566D459115D4159993E96c45c0d2cE6CD', this)"
+                                    class="text-slate-500 hover:text-cyan-400 transition-colors px-1.5 py-0.5 rounded"
+                                    style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:10px"
+                                    title="复制完整地址">📋</button>
+                            </span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="slate-text">GToken</span>
-                            <a href="https://sepolia.etherscan.io/address/0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F"
-                                target="_blank" rel="noopener"
-                                class="cyan-text font-mono hover:underline">0x25c7...F37F ↗</a>
+                        <div class="flex justify-between items-center">
+                            <span class="slate-text">GToken（导入到 MetaMask）</span>
+                            <span class="flex items-center gap-1.5">
+                                <a href="https://sepolia.etherscan.io/address/0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F"
+                                    target="_blank" rel="noopener"
+                                    class="cyan-text font-mono hover:underline">0x25c7...F37F ↗</a>
+                                <button onclick="copyAddr('0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F', this)"
+                                    class="text-slate-500 hover:text-cyan-400 transition-colors px-1.5 py-0.5 rounded"
+                                    style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:10px"
+                                    title="复制完整地址（粘贴到 MetaMask 的 Import Tokens）">📋</button>
+                            </span>
                         </div>
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="slate-text">USDC (Sepolia)</span>
-                            <span class="font-mono text-slate-400">0x1c7D...238</span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="font-mono text-slate-400">0x1c7D...238</span>
+                                <button onclick="copyAddr('0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', this)"
+                                    class="text-slate-500 hover:text-cyan-400 transition-colors px-1.5 py-0.5 rounded"
+                                    style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:10px"
+                                    title="复制完整地址">📋</button>
+                            </span>
                         </div>
                         <div class="flex justify-between">
                             <span class="slate-text">版本</span>
@@ -641,12 +665,14 @@
             async function refreshState() {
                 if (!publicClient || !account) return;
                 try {
-                    const [usdcBal, spent] = await Promise.all([
+                    const [usdcBal, gtBal, spent] = await Promise.all([
                         publicClient.readContract({ address: USDC_ADDRESS, abi: ERC20_ABI, functionName: 'balanceOf', args: [account] }),
+                        publicClient.readContract({ address: GTOKEN_ADDRESS, abi: ERC20_ABI, functionName: 'balanceOf', args: [account] }),
                         publicClient.readContract({ address: SALE_ADDRESS, abi: SALE_ABI, functionName: 'userTotalSpent', args: [account] }),
                     ]);
                     userSpent = spent;
                     document.getElementById('usdc-balance').textContent = formatUSD(usdcBal) + ' USDC';
+                    document.getElementById('gt-balance').textContent = formatGT(gtBal);
                     const remaining = PER_CAP_USD > spent ? PER_CAP_USD - spent : 0n;
                     document.getElementById('remaining-cap').textContent = formatUSD(remaining);
                     document.getElementById('btn-approve').disabled = false;
@@ -654,6 +680,22 @@
                     addLog('读取账户状态失败: ' + e.message, 'error');
                 }
             }
+
+            // ── Copy-to-clipboard helper ─────────────────────────────────────────
+            window.copyAddr = async function(addr, btn) {
+                try {
+                    await navigator.clipboard.writeText(addr);
+                    const orig = btn.textContent;
+                    btn.textContent = '✓';
+                    btn.style.color = '#4ade80';
+                    setTimeout(() => {
+                        btn.textContent = orig;
+                        btn.style.color = '';
+                    }, 1200);
+                } catch (e) {
+                    addLog('复制失败：请手动复制 ' + addr, 'warn');
+                }
+            };
 
             // ── Input helpers ─────────────────────────────────────────────────────
             window.setAmount = function(val) {
