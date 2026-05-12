@@ -23,17 +23,17 @@ import {
   encodeFunctionData,
   http,
   parseAbi,
-  toBytes,
   type Address,
   type Hex,
   type SignAuthorizationReturnType,
 } from 'viem'
+import { recoverAuthorizationAddress } from 'viem/utils'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
 
 import type { Call } from '../pipeline/extractIntent.js'
 import { extractTokenBuyIntent } from '../pipeline/extractIntent.js'
-import { verifyExecuteBatchSignature } from '../pipeline/verify712.js'
+import { verifyExecuteBatchSignature, verifyRevokeIntentSignature } from '../pipeline/verify712.js'
 import { matchWhitelist, RULES_SEPOLIA, SEPOLIA, type SponsorRule } from '../rules/whitelist.js'
 
 const EXECUTE_BATCH_ABI = parseAbi([
@@ -74,6 +74,10 @@ export type V2RevokeRequest = {
     s: Hex
     yParity: 0 | 1
   }
+  /** ADDED (Codex HIGH fix): EIP-712 RevokeIntent signature + nonce + deadline */
+  intentNonce: string | number
+  deadline: number
+  signature: Hex
 }
 
 export type V2Response =
@@ -92,6 +96,32 @@ export async function handleV2Relay(body: V2RelayRequest, env: V2Env): Promise<V
       ok: false,
       code: 'WRONG_DELEGATE',
       reason: `authorization.address must be AirAccountDelegate (${SEPOLIA.AIRACCOUNT_DELEGATE})`,
+    }
+  }
+  // Codex MEDIUM-1 fix: enforce chain id matches our configured chain
+  if (body.authorization.chainId !== sepolia.id) {
+    return {
+      ok: false,
+      code: 'CHAIN_ID_MISMATCH',
+      reason: `authorization.chainId ${body.authorization.chainId} ≠ ${sepolia.id}`,
+    }
+  }
+  // Codex MEDIUM-2 fix: recover authorization signer and require == buyer
+  const authSigner = await recoverAuthorizationAddress({
+    authorization: {
+      chainId: body.authorization.chainId,
+      address: body.authorization.address,
+      nonce: body.authorization.nonce,
+      r: body.authorization.r,
+      s: body.authorization.s,
+      yParity: body.authorization.yParity,
+    },
+  }).catch(() => null)
+  if (!authSigner || authSigner.toLowerCase() !== body.buyer.toLowerCase()) {
+    return {
+      ok: false,
+      code: 'AUTH_SIGNER_MISMATCH',
+      reason: `authorization signer ${authSigner} ≠ buyer ${body.buyer}`,
     }
   }
 
@@ -167,6 +197,51 @@ export async function handleV2Revoke(body: V2RevokeRequest, env: V2Env): Promise
       code: 'INVALID_REVOKE_AUTH',
       reason: 'authorization.address must be 0x0...0 for revoke',
     }
+  }
+  // Codex MEDIUM-1 fix: enforce chain id matches our configured chain
+  if (body.authorization.chainId !== sepolia.id) {
+    return {
+      ok: false,
+      code: 'CHAIN_ID_MISMATCH',
+      reason: `authorization.chainId ${body.authorization.chainId} ≠ ${sepolia.id}`,
+    }
+  }
+  // Codex MEDIUM-2 fix: recover authorization signer == buyer
+  const authSigner = await recoverAuthorizationAddress({
+    authorization: {
+      chainId: body.authorization.chainId,
+      address: body.authorization.address,
+      nonce: body.authorization.nonce,
+      r: body.authorization.r,
+      s: body.authorization.s,
+      yParity: body.authorization.yParity,
+    },
+  }).catch(() => null)
+  if (!authSigner || authSigner.toLowerCase() !== body.buyer.toLowerCase()) {
+    return {
+      ok: false,
+      code: 'AUTH_SIGNER_MISMATCH',
+      reason: `authorization signer ${authSigner} ≠ buyer ${body.buyer}`,
+    }
+  }
+  // Codex HIGH fix: verify RevokeIntent EIP-712 signature (consent boundary)
+  if (!body.signature || body.deadline == null || body.intentNonce == null) {
+    return {
+      ok: false,
+      code: 'INVALID_SHAPE',
+      reason: 'revoke requires signed RevokeIntent (signature + deadline + intentNonce)',
+    }
+  }
+  const intentVerify = await verifyRevokeIntentSignature({
+    buyer: body.buyer,
+    chainId: sepolia.id,
+    verifyingContract: body.buyer,
+    nonce: BigInt(body.intentNonce),
+    deadline: BigInt(body.deadline),
+    signature: body.signature,
+  })
+  if (!intentVerify.ok) {
+    return { ok: false, code: 'SIGNATURE_INVALID', reason: intentVerify.reason }
   }
 
   // 2. Whitelist match (just confirms REVOKE rule is enabled)

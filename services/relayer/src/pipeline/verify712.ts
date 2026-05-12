@@ -37,6 +37,21 @@ export const EXECUTE_BATCH_TYPES = {
   ],
 } as const
 
+/**
+ * EIP-712 typed data for the RevokeIntent primary type.
+ *
+ * Spec §5.3: separate from ExecuteBatch because revoke has no calls.
+ * Domain is identical (AirAccountDelegate v1) so the same MetaMask UI displays cleanly.
+ */
+export const REVOKE_INTENT_TYPES = {
+  RevokeIntent: [
+    { name: 'buyer', type: 'address' },
+    { name: 'kind', type: 'string' }, // must be literal "REVOKE"
+    { name: 'nonce', type: 'uint256' },
+    { name: 'deadline', type: 'uint256' },
+  ],
+} as const
+
 export type VerifyParams = {
   /** EOA expected to have signed. */
   buyer: Address
@@ -119,5 +134,55 @@ export async function verifyExecuteBatchSignature(
     return { ok: true, recovered: getAddress(recovered) }
   } catch (e: any) {
     return { ok: false, reason: `signature verification threw: ${e?.message ?? String(e)}` }
+  }
+}
+
+// ─── Revoke intent verification (HIGH fix — Codex) ──────────────────────────
+
+export type VerifyRevokeParams = {
+  buyer: Address
+  chainId: number
+  verifyingContract: Address
+  nonce: bigint
+  deadline: bigint
+  signature: Hex
+}
+
+export async function verifyRevokeIntentSignature(
+  params: VerifyRevokeParams,
+): Promise<VerifyResult> {
+  if (params.buyer.toLowerCase() !== params.verifyingContract.toLowerCase()) {
+    return {
+      ok: false,
+      reason: `buyer ${params.buyer} ≠ verifyingContract ${params.verifyingContract}`,
+    }
+  }
+  if (params.signature.length !== 132) {
+    return { ok: false, reason: `signature must be 65 bytes` }
+  }
+  const nowSec = BigInt(Math.floor(Date.now() / 1000))
+  if (params.deadline < nowSec) {
+    return { ok: false, reason: `deadline ${params.deadline} is in the past` }
+  }
+
+  try {
+    const recovered = await recoverTypedDataAddress({
+      domain: buildDomain(params.chainId, params.verifyingContract),
+      types: REVOKE_INTENT_TYPES,
+      primaryType: 'RevokeIntent',
+      message: {
+        buyer: params.buyer,
+        kind: 'REVOKE',
+        nonce: params.nonce,
+        deadline: params.deadline,
+      },
+      signature: params.signature,
+    })
+    if (recovered.toLowerCase() !== params.buyer.toLowerCase()) {
+      return { ok: false, reason: `recovered ${recovered} ≠ buyer ${params.buyer}` }
+    }
+    return { ok: true, recovered: getAddress(recovered) }
+  } catch (e: any) {
+    return { ok: false, reason: `revoke signature verification threw: ${e?.message ?? String(e)}` }
   }
 }

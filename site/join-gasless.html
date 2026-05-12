@@ -201,7 +201,11 @@ const log = (msg, kind = 'info') => {
   const t = new Date().toTimeString().slice(0, 8)
   const color = kind === 'error' ? '#f87171' : kind === 'success' ? '#4ade80' : kind === 'warn' ? '#fbbf24' : '#cbd5e1'
   const el = document.getElementById('log')
-  el.innerHTML += `<div style="color:${color}">[${t}] ${msg}</div>`
+  // Codex LOW fix: build via DOM, never innerHTML — provider/relayer error strings are untrusted
+  const row = document.createElement('div')
+  row.style.color = color
+  row.textContent = `[${t}] ${msg}`
+  el.appendChild(row)
   el.scrollTop = el.scrollHeight
 }
 const setBadge = (text, color) => {
@@ -434,7 +438,34 @@ window.signAndRelay = async function() {
 // ─── Revoke ──────────────────────────────────────────────────────────────
 window.revokeDelegation = async function() {
   if (!account) { log('请先连接钱包', 'warn'); return }
-  log('签 EIP-7702 Authorization (contract = 0x0, 清除委托)...', 'warn')
+
+  // Codex HIGH fix: sign RevokeIntent (EIP-712) for consent boundary
+  const deadline = BigInt(Math.floor(Date.now() / 1000) + 600) // 10min
+  const intentNonce = BigInt(Math.floor(Math.random() * 1e18)) // anti-replay nonce
+
+  log('① 请在 MetaMask 中签署 EIP-712 RevokeIntent...', 'warn')
+  let revokeSig
+  try {
+    revokeSig = await walletClient.signTypedData({
+      domain: { name: 'AirAccountDelegate', version: '1', chainId: SEPOLIA_CHAIN_ID, verifyingContract: account },
+      types: {
+        RevokeIntent: [
+          { name: 'buyer', type: 'address' },
+          { name: 'kind', type: 'string' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+      },
+      primaryType: 'RevokeIntent',
+      message: { buyer: account, kind: 'REVOKE', nonce: intentNonce, deadline },
+    })
+    log('✓ RevokeIntent 已签', 'success')
+  } catch (e) {
+    log('用户取消签名: ' + (e.shortMessage || e.message), 'error')
+    return
+  }
+
+  log('② 签 EIP-7702 Authorization (contract = 0x0, 清除委托)...', 'warn')
   try {
     const auth = await walletClient.signAuthorization({
       account,
@@ -442,12 +473,15 @@ window.revokeDelegation = async function() {
       contractAddress: '0x0000000000000000000000000000000000000000',
       nonce: Number(await publicClient.getTransactionCount({ address: account })),
     })
-    log('提交到 relayer /v2/revoke...', 'warn')
+    log('③ 提交到 relayer /v2/revoke...', 'warn')
     const resp = await fetch(RELAYER_URL + '/v2/revoke', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         buyer: account,
+        intentNonce: intentNonce.toString(),
+        deadline: Number(deadline),
+        signature: revokeSig,
         authorization: {
           chainId: auth.chainId,
           address: auth.contractAddress ?? auth.address,
