@@ -452,9 +452,26 @@ Relayer 在构造 UserOp 时填 `paymasterAndData = abi.encodePacked(SP_ADDRESS,
 
 ## 12. 附录：相关文档 / 历史决策
 
-- 同目录 `01-whitelist-rules.md` — 白名单当前规则的完整列表（待开发后填）
-- 同目录 `02-eip712-schemas.md` — typed-data schema 的完整 JSON（待开发后填）
-- 同目录 `03-deploy-record.md` — Sepolia 部署回执（每次部署后追加）
-- 同目录 `RUNBOOK.md` — 上线后 oncall 手册（待开发后写）
+- 同目录 [`RUNBOOK.md`](./RUNBOOK.md) — 上线后 oncall 手册（健康检查 / 库存 / 紧急停售 / 故障排查）✅
+- 同目录 [`ACCEPTANCE.md`](./ACCEPTANCE.md) — **验收测试手册**（按步骤手动测三流程 + 反例）✅
 - `5-18/07-sale-status-and-todos.md` — 销售路径整体现状（含 USDC 直购）
 - `docs/gasless-buy-plan.md` — 早期 gasless 设计稿（被本 spec 取代/继承）
+
+## 13. 实施进度（截至 2026-05-12）
+
+| 组件 | 状态 |
+|------|------|
+| P1-C1 AirAccountDelegate 合约 + 14/14 单元测试 | ✅ |
+| P1-C2 部署 + verified Sepolia | ✅ `0x41FdE128...` |
+| P1-C3a SaleContractV2 (gToken-bound) 重部署 + 注入 100 GT | ✅ `0x3e4e0A66...` |
+| P1-C3b APNTsSaleContract 部署 + 注入 1000 aPNTs | ✅ `0xf1a5FE67...` |
+| P2-C4 Relayer 白名单 + 11/11 vitest | ✅ |
+| P2-C5 EIP-712 verify + `/v2/relay` + `/v2/revoke` + 15/15 vitest | ✅ |
+| P3-C6/7/8 join-gasless.html 三流程 UI + nav 接入 | ✅ |
+| P4-C9 fork-Sepolia E2E 集成测试 4/4 | ✅ |
+| P5 RUNBOOK + 验收文档 | ✅ |
+| **wrangler deploy relayer + RELAYER_URL 替换** | ⏸️ 等 user / 路演后 |
+| **launch.mushroom.cv 切到本 branch** | ⏸️ 等 PR merge |
+| **Codex security review** | ⏸️ |
+
+**测试总计**：合约 14 + 5 + 4 = 23 个 Foundry test, Relayer 11 + 8 + 7 = 26 vitest. 全部通过。
