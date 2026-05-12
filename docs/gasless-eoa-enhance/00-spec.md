@@ -54,7 +54,7 @@
 - `MockGToken` = `0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F`（V2 销售用，与上面 gToken 不同）
 - `SaleContractV2` = `0xD2E2566566D459115D4159993E96c45c0d2cE6CD`（绑定 MockGToken）
 - `APNTsSaleContract` = **待部署**（绑定 aPNTs `0x4C4EC2e8...`）
-- `AirAccountDelegate` = **待部署**（EIP-7702 委托目标）
+- **`AirAccountDelegate`** = `0x41FdE128d7a7196B968875cA1491816D360D38B7`（已部署 + verified, 2026-05-12, owner-less / immutable）
 
 ⚠ **未决问题**：
 - 是否把 SaleContractV2 重新部署绑定到新 gToken `0x4e6A1125...`（替换 MockGToken）？或保持现状（USDC 直购走 MockGToken，gasless 也走同一个 sale）？— 见 §9 决策点 D1
