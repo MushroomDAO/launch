@@ -58,3 +58,9 @@ cd contracts && forge install && forge test
 - 概述：23年4月Zuzalu与Vitalik沟通后，Plancker^建立的AAStar（账户抽象）小组，专注AA和infra。
 3. 到哪去？
 - 愿景：通过倡导和探索建立Mycelium开放协议，赋能社区，自由个体，聚焦区块链的动机问题，赋能社区从而激发更多创新和协作。
+
+## License
+
+This project is licensed under the [Apache License, Version 2.0](LICENSE).  
+Copyright 2024-present MushroomDAO Contributors.  
+See [NOTICE](./NOTICE) · [TRADEMARK.md](./TRADEMARK.md) · [LICENSE-zh.md](./LICENSE-zh.md) · [TRADEMARK-zh.md](./TRADEMARK-zh.md) for details.
