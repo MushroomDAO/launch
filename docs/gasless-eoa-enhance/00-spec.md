@@ -53,7 +53,8 @@
 - `USDC (Sepolia)` = `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`（Circle 官方）
 - `MockGToken` = `0x25c78eF9830b9b7a705B1E5b19939dFB465fF37F`（V2 销售用，与上面 gToken 不同）
 - `SaleContractV2` = `0xD2E2566566D459115D4159993E96c45c0d2cE6CD`（绑定 MockGToken）
-- `APNTsSaleContract` = **待部署**（绑定 aPNTs `0x4C4EC2e8...`）
+- **`SaleContractV2` (NEW, gToken-bound)** = `0x3e4e0a663682a2d58d626d0057142328ef0b626a`（已部署 + verified, owner=ANNI, 库存 100 GT）— 取代 MockGToken 版本作为 gasless 流程的目标
+- **`APNTsSaleContract`** = `0xf1a5fe670dbf6c5219000b30500a98f772ef1f14`（已部署 + verified, owner=ANNI, 价格 $0.02 / aPNTs, 库存 1000 aPNTs）
 - **`AirAccountDelegate`** = `0x41FdE128d7a7196B968875cA1491816D360D38B7`（已部署 + verified, 2026-05-12, owner-less / immutable）
 
 ⚠ **未决问题**：
@@ -220,7 +221,7 @@ interface SponsorRule {
 const RULES: SponsorRule[] = [
   {
     kind: 'TOKEN_BUY',
-    target: '0xD2E2566566D459115D4159993E96c45c0d2cE6CD',  // SaleContractV2
+    target: '0x3e4e0a663682a2d58d626d0057142328ef0b626a',  // SaleContractV2-new (gToken-bound)
     functionSelector: 'buyTokens(uint256,address,uint256)',
     paymentTokens: ['0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'],  // USDC
     maxAmountPerTx: 864_000_000n,  // $864 per-person cap aligned with on-chain
@@ -228,8 +229,8 @@ const RULES: SponsorRule[] = [
   },
   {
     kind: 'TOKEN_BUY',
-    target: '<APNTsSaleContract — 待部署填入>' as Address,
-    functionSelector: 'buyTokens(uint256,address,uint256)',
+    target: '0xf1a5fe670dbf6c5219000b30500a98f772ef1f14',  // APNTsSaleContract
+    functionSelector: 'buyAPNTs(uint256,address)',          // note: different selector from SaleV2
     paymentTokens: ['0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'],
     maxAmountPerTx: 864_000_000n,
     enabled: true,
