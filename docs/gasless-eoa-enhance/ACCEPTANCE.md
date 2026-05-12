@@ -277,6 +277,147 @@ POST 到 `/v2/relay` 时把 calls 里的 sale target 改成一个**其他合约*
 
 ---
 
+## 5.5 运维补充：如何**增加库存**
+
+### 背景
+
+当前 SaleV2 + APNTsSale 的初始库存（100 GT + 1000 aPNTs）是我用 **deployer 私钥**（`0xb5600060`，gToken/aPNTs 的 owner）从它的余额直接 transfer 到 sale 合约的。这是一次性的"启动"操作。
+
+**未来要增加库存**有两条路径——你拍板用哪条：
+
+| 路径 | 操作者 | 适合场景 |
+|---|---|---|
+| **A. Deployer 直接 transfer**（简单）| Jason / Anni 用 deployer 私钥 | 测试网快速补货 |
+| **B. Treasury Safe 多签 transfer**（推荐）| Safe 多签人按门槛签 | **主网 + 路演后期资金透明操作** |
+
+---
+
+### 路径 A — Deployer 直接 transfer（当前用的方式）
+
+**适用**：Sepolia 测试网，少量补货（如再加 200 GT）。
+
+```bash
+# 1. 加载 deployer 私钥（仅本地内存，不打印）
+DEPLOYER_PK=$(grep '^DEPLOYER_PRIVATE_KEY=' /Users/jason/Dev/aastar/SuperPaymaster/.env.sepolia | cut -d'"' -f2)
+RPC=$SEPOLIA_RPC_URL2   # from launch/.env.sepolia
+
+# 2. 看 deployer 还剩多少
+cast call 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67 \
+  'balanceOf(address)(uint256)' 0xb5600060e6de5E11D3636731964218E53caadf0E \
+  --rpc-url $RPC
+# 预期：约 1773e18 GT 剩余（deployer 持有 ~1873 - 100 已转）
+
+cast call 0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772 \
+  'balanceOf(address)(uint256)' 0xb5600060e6de5E11D3636731964218E53caadf0E \
+  --rpc-url $RPC
+# 预期：约 16493e18 aPNTs 剩余
+
+# 3. 补 200 GT 给 SaleV2
+cast send 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67 \
+  'transfer(address,uint256)' \
+  0x3e4e0A663682a2d58d626D0057142328Ef0b626a \
+  200000000000000000000 \
+  --private-key $DEPLOYER_PK --rpc-url $RPC
+
+# 4. 补 5000 aPNTs 给 APNTsSale
+cast send 0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772 \
+  'transfer(address,uint256)' \
+  0xf1a5FE670dbf6c5219000B30500a98F772EF1F14 \
+  5000000000000000000000 \
+  --private-key $DEPLOYER_PK --rpc-url $RPC
+
+# 5. 验证
+cast call 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67 \
+  'balanceOf(address)(uint256)' 0x3e4e0A663682a2d58d626D0057142328Ef0b626a \
+  --rpc-url $RPC
+# 预期：300e18（原 100 + 新 200）
+```
+
+**优点**：单签，一行 cast 命令，秒级。
+**缺点**：deployer 私钥控制所有库存——单点故障。
+
+---
+
+### 路径 B — Treasury Safe 多签 transfer（生产推荐）
+
+**适用**：主网，或路演后想强化"资金 100% 走 Safe 多签"叙事时。
+
+**前置一次性步骤（Bootstrap）**：把 deployer 手里的 token 挪到 Safe。
+
+```bash
+# Bootstrap-1: deployer 把所有剩余 GT 转给 Treasury Safe
+DEPLOYER_PK=$(grep '^DEPLOYER_PRIVATE_KEY=' /Users/jason/Dev/aastar/SuperPaymaster/.env.sepolia | cut -d'"' -f2)
+TREASURY=0x51eDf11fDb0A4F66220eFb8efA54Eca77232E114
+RPC=$SEPOLIA_RPC_URL2
+
+# 先看 deployer 还有多少
+DEPLOYER_GT=$(cast call 0x4e6A1125... 'balanceOf(address)(uint256)' \
+  0xb5600060e6de5E11D3636731964218E53caadf0E --rpc-url $RPC)
+
+# 全部转给 Safe
+cast send 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67 \
+  'transfer(address,uint256)' $TREASURY $DEPLOYER_GT \
+  --private-key $DEPLOYER_PK --rpc-url $RPC
+
+# 同样把 deployer 的 aPNTs 全部转给 Safe
+DEPLOYER_AP=$(cast call 0x4C4EC2e8... 'balanceOf(address)(uint256)' \
+  0xb5600060e6de5E11D3636731964218E53caadf0E --rpc-url $RPC)
+
+cast send 0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772 \
+  'transfer(address,uint256)' $TREASURY $DEPLOYER_AP \
+  --private-key $DEPLOYER_PK --rpc-url $RPC
+```
+
+**Bootstrap 完成后**：未来所有补货都从 Safe 多签发起。
+
+**日常补货流程**（Sepolia 上同样适用，Safe 链支持完全相同）：
+
+1. 打开 Sepolia Safe UI：
+   🔗 https://app.safe.global/home?safe=sep:0x51eDf11fDb0A4F66220eFb8efA54Eca77232E114
+
+2. 点 **New transaction → Transaction Builder**（不是 Send tokens！因为 Safe UI 默认不识别 MockGToken / 新 gToken 这种 token，需要走自定义合约调用）
+
+3. 填：
+   - **Enter Address or ENS**: `0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67`（要补 GToken）或 `0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772`（要补 aPNTs）
+   - **Enter ABI**（清空后粘下面这段）：
+
+     ```json
+     [{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]
+     ```
+
+   - **Method**: 选 `transfer`
+   - **to (address)**:
+     - 补 GToken → `0x3e4e0A663682a2d58d626D0057142328Ef0b626a`（SaleV2）
+     - 补 aPNTs  → `0xf1a5FE670dbf6c5219000B30500a98F772EF1F14`（APNTsSale）
+   - **amount (uint256)**: 数值 × 10^18（例：补 200 个 token 写 `200000000000000000000`）
+   - **ETH value**: `0`
+
+4. **Add transaction → Create batch → Sign** → 等其他签名人达到多签门槛 → **Execute**
+
+5. 验证库存：
+```bash
+cast call 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67 \
+  'balanceOf(address)(uint256)' 0x3e4e0A663682a2d58d626D0057142328Ef0b626a \
+  --rpc-url $RPC
+```
+
+**优点**：多签透明、链上 trail 清晰、单签人丢私钥不影响、和 PR #6 路演叙事一致（"所有资金 Gnosis Safe 多签"）。
+**缺点**：每次都要至少 2 个 owner 签（看你的 Safe 门槛配置），约 5–10 分钟。
+
+---
+
+### 决策建议（我的看法）
+
+| 阶段 | 推荐路径 |
+|---|---|
+| **现在（路演前测试）** | 路径 A 直接 transfer，秒级补货，节省协作成本 |
+| **路演后（5月底前）** | 跑一次 Bootstrap 把 deployer 余额全部转 Safe |
+| **主网上线时** | 强制路径 B，deployer 私钥永远不持库存 |
+
+要不要现在就跑 Bootstrap？跑完后这个文档里的"如何补货"操作步骤换成路径 B（更干净的故事），你说一声我立即操作。
+
+---
+
 ## 6. 已知限制 + 后续
 
 | 项 | 状态 |

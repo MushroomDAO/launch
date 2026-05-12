@@ -51,15 +51,19 @@ cast call $GTOKEN 'balanceOf(address)(uint256)' $SALE_V2 --rpc-url $RPC
 cast call $APNTS  'balanceOf(address)(uint256)' $APNTS_SALE --rpc-url $RPC
 ```
 
-### 4.2 补充库存（owner-only operation）
+### 4.2 补充库存
+
+**完整步骤（含路径 A / B 对比 + Safe Transaction Builder 操作）** 见
+[`ACCEPTANCE.md §5.5 — 运维补充：如何增加库存`](./ACCEPTANCE.md#55-运维补充如何增加库存)。
+
+简要回顾：
+- **路径 A**（当前用，测试网）：deployer 单签 cast send
+- **路径 B**（推荐，主网必须）：Treasury Safe 多签 Transaction Builder
+- **Bootstrap**（路径 A → B 的迁移）：deployer 一次性把所有库存转到 Safe，之后只走 Safe
 
 ```bash
-# 从 deployer 转 100 GT 给 SaleV2
-cast send $GTOKEN 'transfer(address,uint256)' $SALE_V2 100000000000000000000 \
-  --private-key $DEPLOYER_PK --rpc-url $RPC
-
-# 从 deployer 转 1000 aPNTs 给 APNTsSale
-cast send $APNTS 'transfer(address,uint256)' $APNTS_SALE 1000000000000000000000 \
+# 路径 A 速查：deployer 直接转 X 个 token 给 sale
+cast send $TOKEN 'transfer(address,uint256)' $SALE $AMOUNT_18DEC \
   --private-key $DEPLOYER_PK --rpc-url $RPC
 ```
 
