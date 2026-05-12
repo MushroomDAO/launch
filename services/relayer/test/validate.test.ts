@@ -6,7 +6,7 @@ import type { ChainConfig } from '../src/config.js'
 import type { RelayRequest } from '../src/types.js'
 
 const USDC: Address = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
-const SALE: Address = '0x9cA2520D4Fa7e207211Ef5903E7918F06B3faDBA'
+const SALE: Address = '0xD2E2566566D459115D4159993E96c45c0d2cE6CD'
 const DELEGATE: Address = '0xAirAccountDelegate00000000000000000000001'
 const BUYER: Address = '0xBuyer0000000000000000000000000000000001'
 
