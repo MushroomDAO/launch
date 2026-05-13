@@ -23,11 +23,11 @@ import {
   encodeFunctionData,
   http,
   parseAbi,
-  toBytes,
   type Address,
   type Hex,
   type SignAuthorizationReturnType,
 } from 'viem'
+import { recoverAuthorizationAddress } from 'viem/utils'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
 
@@ -65,7 +65,13 @@ export type V2RelayRequest = {
 
 export type V2RevokeRequest = {
   buyer: Address
-  /** EIP-7702 authorization with `address: 0x0...0` to clear delegation. */
+  /** EIP-7702 authorization with `address: 0x0...0` to clear delegation.
+   *  EIP-7702's chainId + nonce + contract-address fields provide the protocol-
+   *  level replay protection: the auth is single-use (consumed on first tx),
+   *  chain-bound, and the captured-replay scenario yields zero damage since
+   *  the user already intended to revoke. Industry standard is single-sign;
+   *  no separate EIP-712 RevokeIntent is added (verified by reviewing
+   *  Alchemy / Revoke.cash / MetaMask flows). */
   authorization: {
     chainId: number
     address: Address // expected to be address(0)
@@ -92,6 +98,32 @@ export async function handleV2Relay(body: V2RelayRequest, env: V2Env): Promise<V
       ok: false,
       code: 'WRONG_DELEGATE',
       reason: `authorization.address must be AirAccountDelegate (${SEPOLIA.AIRACCOUNT_DELEGATE})`,
+    }
+  }
+  // Codex MEDIUM-1 fix: enforce chain id matches our configured chain
+  if (body.authorization.chainId !== sepolia.id) {
+    return {
+      ok: false,
+      code: 'CHAIN_ID_MISMATCH',
+      reason: `authorization.chainId ${body.authorization.chainId} ≠ ${sepolia.id}`,
+    }
+  }
+  // Codex MEDIUM-2 fix: recover authorization signer and require == buyer
+  const authSigner = await recoverAuthorizationAddress({
+    authorization: {
+      chainId: body.authorization.chainId,
+      address: body.authorization.address,
+      nonce: body.authorization.nonce,
+      r: body.authorization.r,
+      s: body.authorization.s,
+      yParity: body.authorization.yParity,
+    },
+  }).catch(() => null)
+  if (!authSigner || authSigner.toLowerCase() !== body.buyer.toLowerCase()) {
+    return {
+      ok: false,
+      code: 'AUTH_SIGNER_MISMATCH',
+      reason: `authorization signer ${authSigner} ≠ buyer ${body.buyer}`,
     }
   }
 
@@ -124,10 +156,14 @@ export async function handleV2Relay(body: V2RelayRequest, env: V2Env): Promise<V
     onChainNonce = 0n
   }
 
-  // 5. Verify EIP-712 signature (off-chain pre-check; on-chain re-checks anyway)
+  // 5. Verify EIP-712 signature (off-chain pre-check; on-chain re-checks anyway).
+  //    verifyingContract = AirAccountDelegate IMPLEMENTATION address (constant,
+  //    not the EOA). MetaMask refuses to sign typed data where verifyingContract
+  //    equals one of the user's own accounts, so the on-chain domain is pinned
+  //    to the impl address via an immutable.
   const verify = await verifyExecuteBatchSignature({
     buyer: body.buyer,
-    verifyingContract: body.buyer, // per EIP-7702 semantics: domain.verifyingContract = the EOA itself
+    verifyingContract: SEPOLIA.AIRACCOUNT_DELEGATE,
     chainId: body.authorization.chainId,
     calls: body.calls,
     nonce: onChainNonce,
@@ -168,7 +204,32 @@ export async function handleV2Revoke(body: V2RevokeRequest, env: V2Env): Promise
       reason: 'authorization.address must be 0x0...0 for revoke',
     }
   }
-
+  // Codex MEDIUM-1 fix: enforce chain id matches our configured chain
+  if (body.authorization.chainId !== sepolia.id) {
+    return {
+      ok: false,
+      code: 'CHAIN_ID_MISMATCH',
+      reason: `authorization.chainId ${body.authorization.chainId} ≠ ${sepolia.id}`,
+    }
+  }
+  // Codex MEDIUM-2 fix: recover authorization signer == buyer
+  const authSigner = await recoverAuthorizationAddress({
+    authorization: {
+      chainId: body.authorization.chainId,
+      address: body.authorization.address,
+      nonce: body.authorization.nonce,
+      r: body.authorization.r,
+      s: body.authorization.s,
+      yParity: body.authorization.yParity,
+    },
+  }).catch(() => null)
+  if (!authSigner || authSigner.toLowerCase() !== body.buyer.toLowerCase()) {
+    return {
+      ok: false,
+      code: 'AUTH_SIGNER_MISMATCH',
+      reason: `authorization signer ${authSigner} ≠ buyer ${body.buyer}`,
+    }
+  }
   // 2. Whitelist match (just confirms REVOKE rule is enabled)
   const match = matchWhitelist({
     kind: 'REVOKE',

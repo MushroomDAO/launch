@@ -1,5 +1,11 @@
 # EOA-Enhance Gasless Purchase — Specification
 
+> ⚠️ **STATUS: PAUSED (2026-05-13)** — the EIP-7702 + custom relayer design described in this file is **architecturally sound but operationally blocked**: no browser-extension wallet (MetaMask, Rabby, OKX, Coinbase Wallet) currently exposes a JSON-RPC method for dApps to pre-sign an EIP-7702 Authorization. See [`02-architecture-decision-eip3009.md`](02-architecture-decision-eip3009.md) for full evidence and the EIP-3009-based replacement (active).
+>
+> Code in this branch (`AirAccountDelegate.sol`, `v2/handler.ts`, `join-gasless.html`, `GaslessE2E_ForkSepolia.t.sol`) is kept as v2 reference for the day wallet vendors adopt `wallet_signAuthorization`. Do not delete.
+
+---
+
 > **目标**：让一个钱包里**只有 USDC（或将来 USDT）、没有 ETH 的 EOA 用户**，在 launch.mushroom.cv/join 上**完全 gasless** 地买到 GToken 或 aPNTs；并能随时**主权式撤销**自己的 EIP-7702 委托。
 >
 > **设计原则**：开源透明白名单（"我们只赞助这两件事"）+ 可扩展（未来加 token / NFT / 支付币种 / 费率）+ 标准合规（EIP-7702 + EIP-712 + ERC-4337 v0.7）+ MetaMask 友好。
@@ -55,7 +61,7 @@
 - `SaleContractV2` = `0xD2E2566566D459115D4159993E96c45c0d2cE6CD`（绑定 MockGToken）
 - **`SaleContractV2` (NEW, gToken-bound)** = `0x3e4e0a663682a2d58d626d0057142328ef0b626a`（已部署 + verified, owner=ANNI, 库存 100 GT）— 取代 MockGToken 版本作为 gasless 流程的目标
 - **`APNTsSaleContract`** = `0xf1a5fe670dbf6c5219000b30500a98f772ef1f14`（已部署 + verified, owner=ANNI, 价格 $0.02 / aPNTs, 库存 1000 aPNTs）
-- **`AirAccountDelegate`** = `0x41FdE128d7a7196B968875cA1491816D360D38B7`（已部署 + verified, 2026-05-12, owner-less / immutable）
+- **`AirAccountDelegate`** = `0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc`（已部署 + verified, 2026-05-12, owner-less / immutable）
 
 ⚠ **未决问题**：
 - 是否把 SaleContractV2 重新部署绑定到新 gToken `0x4e6A1125...`（替换 MockGToken）？或保持现状（USDC 直购走 MockGToken，gasless 也走同一个 sale）？— 见 §9 决策点 D1
@@ -452,9 +458,26 @@ Relayer 在构造 UserOp 时填 `paymasterAndData = abi.encodePacked(SP_ADDRESS,
 
 ## 12. 附录：相关文档 / 历史决策
 
-- 同目录 `01-whitelist-rules.md` — 白名单当前规则的完整列表（待开发后填）
-- 同目录 `02-eip712-schemas.md` — typed-data schema 的完整 JSON（待开发后填）
-- 同目录 `03-deploy-record.md` — Sepolia 部署回执（每次部署后追加）
-- 同目录 `RUNBOOK.md` — 上线后 oncall 手册（待开发后写）
+- 同目录 [`RUNBOOK.md`](./RUNBOOK.md) — 上线后 oncall 手册（健康检查 / 库存 / 紧急停售 / 故障排查）✅
+- 同目录 [`ACCEPTANCE.md`](./ACCEPTANCE.md) — **验收测试手册**（按步骤手动测三流程 + 反例）✅
 - `5-18/07-sale-status-and-todos.md` — 销售路径整体现状（含 USDC 直购）
 - `docs/gasless-buy-plan.md` — 早期 gasless 设计稿（被本 spec 取代/继承）
+
+## 13. 实施进度（截至 2026-05-12）
+
+| 组件 | 状态 |
+|------|------|
+| P1-C1 AirAccountDelegate 合约 + 14/14 单元测试 | ✅ |
+| P1-C2 部署 + verified Sepolia | ✅ `0x0BC1A36d...` (redeploy 2026-05-13 — domain pinned to IMPLEMENTATION for MetaMask compat) |
+| P1-C3a SaleContractV2 (gToken-bound) 重部署 + 注入 100 GT | ✅ `0x3e4e0A66...` |
+| P1-C3b APNTsSaleContract 部署 + 注入 1000 aPNTs | ✅ `0xf1a5FE67...` |
+| P2-C4 Relayer 白名单 + 11/11 vitest | ✅ |
+| P2-C5 EIP-712 verify + `/v2/relay` + `/v2/revoke` + 15/15 vitest | ✅ |
+| P3-C6/7/8 join-gasless.html 三流程 UI + nav 接入 | ✅ |
+| P4-C9 fork-Sepolia E2E 集成测试 4/4 | ✅ |
+| P5 RUNBOOK + 验收文档 | ✅ |
+| **wrangler deploy relayer + RELAYER_URL 替换** | ⏸️ 等 user / 路演后 |
+| **launch.mushroom.cv 切到本 branch** | ⏸️ 等 PR merge |
+| **Codex security review** | ⏸️ |
+
+**测试总计**：合约 14 + 5 + 4 = 23 个 Foundry test, Relayer 11 + 8 + 7 = 26 vitest. 全部通过。

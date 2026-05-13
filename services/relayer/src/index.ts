@@ -20,6 +20,7 @@ import { buildTx } from './pipeline/build.js'
 import { submitTx } from './pipeline/submit.js'
 import { checkRateLimit } from './rateLimit.js'
 import { handleV2Relay, handleV2Revoke, type V2RelayRequest, type V2RevokeRequest } from './v2/handler.js'
+import { handleV3Relay, type V3RelayRequest } from './v3/handler.js'
 import type { Hex } from 'viem'
 
 // Predicted MPNTs = 1 ether — a safe over-estimate; SuperPaymaster refunds the diff.
@@ -58,7 +59,7 @@ export default {
       return handleRelay(request, env, corsHeaders)
     }
 
-    // ── v2 (EIP-7702 + EIP-712 gasless purchase) ─────────────────────────
+    // ── v2 (EIP-7702 + EIP-712 gasless purchase) — paused, blocked by wallet RPC gap ─
     if (url.pathname === '/v2/relay' && request.method === 'POST') {
       return handleV2(request, env, corsHeaders, 'relay')
     }
@@ -66,8 +67,57 @@ export default {
       return handleV2(request, env, corsHeaders, 'revoke')
     }
 
+    // ── v3 (EIP-3009 + BuyIntent gasless purchase via BuyHelper) — active ─────
+    if (url.pathname === '/v3/relay' && request.method === 'POST') {
+      return handleV3(request, env, corsHeaders)
+    }
+
     return json({ error: 'Not found' }, 404, corsHeaders)
   },
+}
+
+// ── /v3/relay router (rate limit + dispatch) ─────────────────────────────────
+
+async function handleV3(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  let body: V3RelayRequest
+  try {
+    body = await request.json() as V3RelayRequest
+  } catch {
+    return error('Invalid JSON body', 'INVALID_SHAPE', 400, corsHeaders)
+  }
+
+  const rl = await checkRateLimit(body.intent?.buyer ?? '0x0', env)
+  if (!rl.allowed) {
+    return error(rl.reason ?? 'Rate limited', 'RATE_LIMITED', 429, corsHeaders)
+  }
+
+  const v3Env = { RPC_URL: env.RPC_URL, OPERATOR_PK: env.OPERATOR_PK as Hex }
+  const result = await handleV3Relay(body, v3Env)
+
+  if (!result.ok) {
+    const httpStatus = pickV3HttpStatus(result.code)
+    return json({ error: result.reason, code: result.code }, httpStatus, corsHeaders)
+  }
+  return json({ txHash: result.txHash, matchedRule: result.matchedRule, status: 'submitted' }, 200, corsHeaders)
+}
+
+function pickV3HttpStatus(code: string): number {
+  switch (code) {
+    case 'INVALID_SHAPE':
+    case 'EXPIRED':
+    case 'SIGNATURE_INVALID':
+      return 400
+    case 'NOT_WHITELISTED':
+      return 403
+    case 'SUBMIT_FAILED':
+      return 502
+    default:
+      return 500
+  }
 }
 
 // ── /v2/* router (rate limit + dispatch) ─────────────────────────────────────

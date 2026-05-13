@@ -42,7 +42,11 @@ export type VerifyParams = {
   buyer: Address
   /** Chain id (Sepolia = 11155111). */
   chainId: number
-  /** AirAccountDelegate address — used as `verifyingContract` per EIP-712 / EIP-7702. */
+  /** AirAccountDelegate IMPLEMENTATION address — pinned `verifyingContract`.
+   *  Must equal the deployed delegate contract address; the on-chain
+   *  AirAccountDelegate.domainSeparator() bakes this in as an immutable
+   *  (so MetaMask doesn't refuse to sign — MM blocks typed data where
+   *  `verifyingContract` equals one of the user's own accounts). */
   verifyingContract: Address
   /** Batched calls. */
   calls: Call[]
@@ -71,21 +75,14 @@ export function buildDomain(chainId: number, verifyingContract: Address): TypedD
 /**
  * Verify an ExecuteBatch signature off-chain.
  *
- * Note: this expects `verifyingContract` to equal `buyer` when the EOA is
- *   delegated via EIP-7702. The frontend MUST use buyer == verifyingContract
- *   when signing. The relayer passes both here and confirms they match.
+ * `verifyingContract` MUST equal the deployed AirAccountDelegate implementation
+ * address (the contract's `IMPLEMENTATION` immutable, baked into runtime
+ * bytecode). The relayer enforces this in its caller (handleV2Relay), so this
+ * function just trusts the value passed in.
  */
 export async function verifyExecuteBatchSignature(
   params: VerifyParams,
 ): Promise<VerifyResult> {
-  // Sanity: per EIP-7702 semantics, the EOA being delegated IS the verifyingContract.
-  if (params.buyer.toLowerCase() !== params.verifyingContract.toLowerCase()) {
-    return {
-      ok: false,
-      reason: `buyer ${params.buyer} ≠ verifyingContract ${params.verifyingContract}; ` +
-              `EIP-7702 requires the signed domain.verifyingContract to be the EOA itself`,
-    }
-  }
   if (params.calls.length === 0) {
     return { ok: false, reason: 'empty calls' }
   }
@@ -121,3 +118,4 @@ export async function verifyExecuteBatchSignature(
     return { ok: false, reason: `signature verification threw: ${e?.message ?? String(e)}` }
   }
 }
+

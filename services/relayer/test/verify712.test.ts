@@ -12,6 +12,10 @@ import type { Call } from '../src/pipeline/extractIntent.js'
 const TEST_PK = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' as const // anvil#0
 const TEST_ADDR = privateKeyToAddress(TEST_PK)
 
+// IMPLEMENTATION pin: AirAccountDelegate contract address used as
+// EIP-712 domain.verifyingContract (constant; MetaMask-compatible).
+const IMPL = SEPOLIA.AIRACCOUNT_DELEGATE
+
 const APPROVE = parseAbi(['function approve(address spender, uint256 amount)'])
 
 function buildCall(): Call {
@@ -46,11 +50,11 @@ describe('verifyExecuteBatchSignature', () => {
   const calls = [buildCall()]
   const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600)
 
-  it('accepts a valid signature where buyer == verifyingContract (EIP-7702 model)', async () => {
-    const sig = await sign(calls, 0n, deadline, TEST_ADDR)
+  it('accepts a valid signature (domain pinned to IMPLEMENTATION address)', async () => {
+    const sig = await sign(calls, 0n, deadline, IMPL)
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: TEST_ADDR,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls,
       nonce: 0n,
@@ -61,11 +65,12 @@ describe('verifyExecuteBatchSignature', () => {
     if (r.ok) expect(r.recovered.toLowerCase()).toBe(TEST_ADDR.toLowerCase())
   })
 
-  it('rejects when buyer ≠ verifyingContract (violates EIP-7702 model)', async () => {
-    const sig = await sign(calls, 0n, deadline, TEST_ADDR)
+  it('rejects when domain.verifyingContract differs between signer and verifier', async () => {
+    // Frontend signed with a wrong verifyingContract — recovered signer won't match the buyer.
+    const sig = await sign(calls, 0n, deadline, '0x0000000000000000000000000000000000000001' as Address)
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: '0x0000000000000000000000000000000000000001' as Address,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls,
       nonce: 0n,
@@ -73,15 +78,15 @@ describe('verifyExecuteBatchSignature', () => {
       signature: sig,
     })
     expect(r.ok).toBe(false)
-    if (!r.ok) expect(r.reason).toMatch(/buyer.*≠.*verifyingContract/)
+    if (!r.ok) expect(r.reason).toMatch(/recovered.*≠.*buyer/)
   })
 
   it('rejects expired deadline', async () => {
     const past = BigInt(Math.floor(Date.now() / 1000) - 60)
-    const sig = await sign(calls, 0n, past, TEST_ADDR)
+    const sig = await sign(calls, 0n, past, IMPL)
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: TEST_ADDR,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls,
       nonce: 0n,
@@ -92,10 +97,10 @@ describe('verifyExecuteBatchSignature', () => {
   })
 
   it('rejects empty calls', async () => {
-    const sig = await sign([], 0n, deadline, TEST_ADDR)
+    const sig = await sign([], 0n, deadline, IMPL)
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: TEST_ADDR,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls: [],
       nonce: 0n,
@@ -106,12 +111,11 @@ describe('verifyExecuteBatchSignature', () => {
   })
 
   it('rejects wrong signature (bit-flipped)', async () => {
-    let sig = await sign(calls, 0n, deadline, TEST_ADDR)
-    // Flip a byte in the middle
+    let sig = await sign(calls, 0n, deadline, IMPL)
     const flipped = (sig.slice(0, 30) + (sig[30] === '0' ? '1' : '0') + sig.slice(31)) as Hex
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: TEST_ADDR,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls,
       nonce: 0n,
@@ -122,10 +126,10 @@ describe('verifyExecuteBatchSignature', () => {
   })
 
   it('rejects nonce-mismatched signature', async () => {
-    const sig = await sign(calls, 0n, deadline, TEST_ADDR)
+    const sig = await sign(calls, 0n, deadline, IMPL)
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: TEST_ADDR,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls,
       nonce: 1n, // signed for 0, verifying as 1
@@ -138,7 +142,7 @@ describe('verifyExecuteBatchSignature', () => {
   it('rejects invalid signature length', async () => {
     const r = await verifyExecuteBatchSignature({
       buyer: TEST_ADDR,
-      verifyingContract: TEST_ADDR,
+      verifyingContract: IMPL,
       chainId: 11155111,
       calls,
       nonce: 0n,
