@@ -283,7 +283,11 @@ window.connectWallet = async function() {
 
     document.getElementById('w-addr').textContent = shortAddr(account)
     document.getElementById('wallet-info').classList.remove('hidden')
-    setBadge('● Sepolia', '#4ade80')
+    setBadge('● Sepolia · 已连接', '#4ade80')
+    const btn = document.getElementById('btn-connect')
+    btn.textContent = '✓ Connected · ' + shortAddr(account)
+    btn.disabled = true
+    btn.style.opacity = '0.7'
     log('钱包已连接: ' + shortAddr(account), 'success')
 
     await refreshBalances()
