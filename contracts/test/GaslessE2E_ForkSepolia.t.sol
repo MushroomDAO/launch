@@ -26,7 +26,7 @@ import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
  */
 contract GaslessE2EForkSepoliaTest is Test {
     // Canonical deployed addresses
-    address constant DELEGATE   = 0x41FdE128d7a7196B968875cA1491816D360D38B7;
+    address constant DELEGATE   = 0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc;
     address constant SALE_V2    = 0x3e4e0A663682a2d58d626D0057142328Ef0b626a;
     address constant APNTS_SALE = 0xf1a5FE670dbf6c5219000B30500a98F772EF1F14;
     address constant GTOKEN     = 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67;

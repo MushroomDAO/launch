@@ -55,7 +55,7 @@
 - `SaleContractV2` = `0xD2E2566566D459115D4159993E96c45c0d2cE6CD`（绑定 MockGToken）
 - **`SaleContractV2` (NEW, gToken-bound)** = `0x3e4e0a663682a2d58d626d0057142328ef0b626a`（已部署 + verified, owner=ANNI, 库存 100 GT）— 取代 MockGToken 版本作为 gasless 流程的目标
 - **`APNTsSaleContract`** = `0xf1a5fe670dbf6c5219000b30500a98f772ef1f14`（已部署 + verified, owner=ANNI, 价格 $0.02 / aPNTs, 库存 1000 aPNTs）
-- **`AirAccountDelegate`** = `0x41FdE128d7a7196B968875cA1491816D360D38B7`（已部署 + verified, 2026-05-12, owner-less / immutable）
+- **`AirAccountDelegate`** = `0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc`（已部署 + verified, 2026-05-12, owner-less / immutable）
 
 ⚠ **未决问题**：
 - 是否把 SaleContractV2 重新部署绑定到新 gToken `0x4e6A1125...`（替换 MockGToken）？或保持现状（USDC 直购走 MockGToken，gasless 也走同一个 sale）？— 见 §9 决策点 D1
@@ -462,7 +462,7 @@ Relayer 在构造 UserOp 时填 `paymasterAndData = abi.encodePacked(SP_ADDRESS,
 | 组件 | 状态 |
 |------|------|
 | P1-C1 AirAccountDelegate 合约 + 14/14 单元测试 | ✅ |
-| P1-C2 部署 + verified Sepolia | ✅ `0x41FdE128...` |
+| P1-C2 部署 + verified Sepolia | ✅ `0x0BC1A36d...` (redeploy 2026-05-13 — domain pinned to IMPLEMENTATION for MetaMask compat) |
 | P1-C3a SaleContractV2 (gToken-bound) 重部署 + 注入 100 GT | ✅ `0x3e4e0A66...` |
 | P1-C3b APNTsSaleContract 部署 + 注入 1000 aPNTs | ✅ `0xf1a5FE67...` |
 | P2-C4 Relayer 白名单 + 11/11 vitest | ✅ |

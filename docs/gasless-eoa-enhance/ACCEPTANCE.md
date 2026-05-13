@@ -18,7 +18,7 @@
 
 | 名称 | 地址 | 用途 |
 |------|------|------|
-| AirAccountDelegate | `0x41FdE128d7a7196B968875cA1491816D360D38B7` | EIP-7702 委托目标 |
+| AirAccountDelegate | `0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc` | EIP-7702 委托目标 |
 | SaleContractV2 (GToken) | `0x3e4e0A663682a2d58d626D0057142328Ef0b626a` | 买 GToken |
 | APNTsSaleContract | `0xf1a5FE670dbf6c5219000B30500a98F772EF1F14` | 买 aPNTs |
 | GToken | `0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67` | 治理 + 门票 token |
@@ -103,7 +103,7 @@ Message
 
 ```
 Authorize delegation
-  Contract: 0x41FdE128...DELEGATE
+  Contract: 0x0BC1A36d...DELEGATE
   Chain: Sepolia (11155111)
   Nonce: <your-tx-nonce>
 ```

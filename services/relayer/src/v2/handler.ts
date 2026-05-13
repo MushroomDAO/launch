@@ -156,10 +156,14 @@ export async function handleV2Relay(body: V2RelayRequest, env: V2Env): Promise<V
     onChainNonce = 0n
   }
 
-  // 5. Verify EIP-712 signature (off-chain pre-check; on-chain re-checks anyway)
+  // 5. Verify EIP-712 signature (off-chain pre-check; on-chain re-checks anyway).
+  //    verifyingContract = AirAccountDelegate IMPLEMENTATION address (constant,
+  //    not the EOA). MetaMask refuses to sign typed data where verifyingContract
+  //    equals one of the user's own accounts, so the on-chain domain is pinned
+  //    to the impl address via an immutable.
   const verify = await verifyExecuteBatchSignature({
     buyer: body.buyer,
-    verifyingContract: body.buyer, // per EIP-7702 semantics: domain.verifyingContract = the EOA itself
+    verifyingContract: SEPOLIA.AIRACCOUNT_DELEGATE,
     chainId: body.authorization.chainId,
     calls: body.calls,
     nonce: onChainNonce,

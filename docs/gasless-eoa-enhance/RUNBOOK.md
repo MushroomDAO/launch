@@ -6,7 +6,7 @@
 
 | 合约 | 地址 | 验证 |
 |---|---|---|
-| AirAccountDelegate | `0x41FdE128d7a7196B968875cA1491816D360D38B7` | ✅ Etherscan |
+| AirAccountDelegate | `0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc` | ✅ Etherscan |
 | SaleContractV2 (gToken-bound) | `0x3e4e0A663682a2d58d626D0057142328Ef0b626a` | ✅ |
 | APNTsSaleContract | `0xf1a5FE670dbf6c5219000B30500a98F772EF1F14` | ✅ |
 | gToken (verified) | `0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67` | ✅ |
@@ -30,7 +30,7 @@ curl https://mycelium-relayer.workers.dev/health
 # Expected: {"status":"ok","chain":"11155111"}
 
 # 2. AirAccountDelegate alive
-cast call 0x41FdE128d7a7196B968875cA1491816D360D38B7 'NAME()(string)' \
+cast call 0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc 'NAME()(string)' \
   --rpc-url $SEPOLIA_RPC_URL2
 # Expected: "AirAccountDelegate"
 

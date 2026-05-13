@@ -79,7 +79,7 @@ contract AirAccountDelegateTest is Test {
                 keccak256(bytes("AirAccountDelegate")),
                 keccak256(bytes("1")),
                 block.chainid,
-                eoa // verifyingContract = the EOA itself, per EIP-7702 semantics
+                address(logic) // verifyingContract = IMPLEMENTATION address (constant; MM-compatible)
             )
         );
         return keccak256(abi.encodePacked("\x19\x01", domSep, structHash));
@@ -256,9 +256,10 @@ contract AirAccountDelegateTest is Test {
         assertEq(onchain, offchain);
     }
 
-    function test_domain_separator_includes_eoa_address() public view {
+    function test_domain_separator_uses_implementation_address() public view {
+        // Pinned to IMPLEMENTATION so MetaMask (which blocks signing when
+        // verifyingContract == one of the user's accounts) accepts it.
         bytes32 sep = AirAccountDelegate(payable(eoa)).domainSeparator();
-        // verifyingContract slot is `eoa`, so different EOA → different separator.
         bytes32 DOMAIN_TYPEHASH = keccak256(
             "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
         );
@@ -268,10 +269,12 @@ contract AirAccountDelegateTest is Test {
                 keccak256(bytes("AirAccountDelegate")),
                 keccak256(bytes("1")),
                 block.chainid,
-                eoa
+                address(logic)
             )
         );
         assertEq(sep, expected);
+        // Sanity: IMPLEMENTATION() view returns the same constant from both copies.
+        assertEq(AirAccountDelegate(payable(eoa)).IMPLEMENTATION(), address(logic));
     }
 
     function test_version_strings() public view {

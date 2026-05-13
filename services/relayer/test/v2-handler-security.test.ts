@@ -51,10 +51,16 @@ function buildBuyGTokenCalls() {
   ]
 }
 
-async function signExecuteBatch(calls: any[], nonce: bigint, deadline: bigint, pk: `0x${string}`, signer: `0x${string}` = BUYER) {
+async function signExecuteBatch(
+  calls: any[],
+  nonce: bigint,
+  deadline: bigint,
+  pk: `0x${string}`,
+  verifyingContract: `0x${string}` = SEPOLIA.AIRACCOUNT_DELEGATE,
+) {
   return signTypedData({
     privateKey: pk,
-    domain: buildDomain(11155111, signer),
+    domain: buildDomain(11155111, verifyingContract),
     types: EXECUTE_BATCH_TYPES,
     primaryType: 'ExecuteBatch',
     message: { calls, nonce, deadline },
