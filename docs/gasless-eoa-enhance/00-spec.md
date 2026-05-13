@@ -1,5 +1,11 @@
 # EOA-Enhance Gasless Purchase — Specification
 
+> ⚠️ **STATUS: PAUSED (2026-05-13)** — the EIP-7702 + custom relayer design described in this file is **architecturally sound but operationally blocked**: no browser-extension wallet (MetaMask, Rabby, OKX, Coinbase Wallet) currently exposes a JSON-RPC method for dApps to pre-sign an EIP-7702 Authorization. See [`02-architecture-decision-eip3009.md`](02-architecture-decision-eip3009.md) for full evidence and the EIP-3009-based replacement (active).
+>
+> Code in this branch (`AirAccountDelegate.sol`, `v2/handler.ts`, `join-gasless.html`, `GaslessE2E_ForkSepolia.t.sol`) is kept as v2 reference for the day wallet vendors adopt `wallet_signAuthorization`. Do not delete.
+
+---
+
 > **目标**：让一个钱包里**只有 USDC（或将来 USDT）、没有 ETH 的 EOA 用户**，在 launch.mushroom.cv/join 上**完全 gasless** 地买到 GToken 或 aPNTs；并能随时**主权式撤销**自己的 EIP-7702 委托。
 >
 > **设计原则**：开源透明白名单（"我们只赞助这两件事"）+ 可扩展（未来加 token / NFT / 支付币种 / 费率）+ 标准合规（EIP-7702 + EIP-712 + ERC-4337 v0.7）+ MetaMask 友好。

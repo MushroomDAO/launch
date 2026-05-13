@@ -71,6 +71,7 @@ export const SEPOLIA = {
   SALE_V2_NEW: getAddress('0x3e4e0a663682a2d58d626d0057142328ef0b626a'),
   APNTS_SALE: getAddress('0xf1a5fe670dbf6c5219000b30500a98f772ef1f14'),
   AIRACCOUNT_DELEGATE: getAddress('0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc'),
+  BUY_HELPER: getAddress('0x578D6f74d8bDA18Cc3b834C1bd74674c529250e7'),
 } as const
 
 // ─── Helper: build a rule with auto-computed selector ───────────────────────
