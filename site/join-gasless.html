@@ -467,8 +467,27 @@ window.signAndRelay = async function() {
     if (resp.ok && j.txHash) {
       log(`✓ tx 已提交: ${j.txHash}`, 'success')
       log(`匹配规则: ${j.matchedRule}`, 'info')
-      log(`等待确认 → https://sepolia.etherscan.io/tx/${j.txHash}`, 'info')
-      setTimeout(() => refreshBalances().catch(() => {}), 15000)
+      log(`等待链上确认 → https://sepolia.etherscan.io/tx/${j.txHash}`, 'info')
+
+      // Poll for receipt and surface success / failure to the user
+      try {
+        const receipt = await publicClient.waitForTransactionReceipt({
+          hash: j.txHash,
+          timeout: 120_000,
+          pollingInterval: 3_000,
+        })
+        if (receipt.status === 'success') {
+          log(`✅ 已上链 · block ${receipt.blockNumber} · gas ${receipt.gasUsed}`, 'success')
+          await refreshBalances().catch(() => {})
+          log(`余额已刷新`, 'info')
+        } else {
+          log(`⚠ tx 上链但 revert,请到 Etherscan 查看原因`, 'error')
+        }
+      } catch (e) {
+        log(`等待确认超时 (120s),请手动 Etherscan 查看: ${e.shortMessage || e.message}`, 'warn')
+        // Best-effort balance refresh even if polling failed
+        refreshBalances().catch(() => {})
+      }
     } else {
       log(`relayer 拒绝: [${j.code}] ${j.error}`, 'error')
     }
