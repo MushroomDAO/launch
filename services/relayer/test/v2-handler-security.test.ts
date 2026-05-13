@@ -2,20 +2,24 @@
  * @file v2-handler-security.test.ts
  * @description
  *   Codex security review post-fix tests:
- *   - HIGH:   /v2/revoke requires valid RevokeIntent EIP-712 signature
- *   - MEDIUM: /v2/relay enforces chainId == sepolia.id
- *   - MEDIUM: /v2/relay verifies authorization signer == buyer
+ *   - MEDIUM: /v2/relay  enforces chainId == sepolia.id
+ *   - MEDIUM: /v2/relay  verifies authorization signer == buyer
+ *   - MEDIUM: /v2/revoke enforces chainId == sepolia.id
+ *   - MEDIUM: /v2/revoke verifies authorization signer == buyer
+ *
+ *   The HIGH "RevokeIntent EIP-712" test was removed: industry standard
+ *   (Alchemy, Revoke.cash, MetaMask) is a single EIP-7702 Authorization
+ *   for revoke. The authorization's chainId + nonce (single-use) +
+ *   contract-address fields provide sufficient protocol-level replay
+ *   protection; layering a second EIP-712 signature is overengineering
+ *   and hurts UX.
  */
 
 import { describe, it, expect } from 'vitest'
 import { encodeFunctionData, parseAbi, type Hex } from 'viem'
 import { privateKeyToAccount, signTypedData, signAuthorization } from 'viem/accounts'
 import { handleV2Relay, handleV2Revoke } from '../src/v2/handler.js'
-import {
-  EXECUTE_BATCH_TYPES,
-  REVOKE_INTENT_TYPES,
-  buildDomain,
-} from '../src/pipeline/verify712.js'
+import { EXECUTE_BATCH_TYPES, buildDomain } from '../src/pipeline/verify712.js'
 import { SEPOLIA } from '../src/rules/whitelist.js'
 
 const BUYER_PK = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' as const
@@ -116,106 +120,8 @@ describe('handleV2Relay — Codex MEDIUM fixes', () => {
   })
 })
 
-describe('handleV2Revoke — Codex HIGH fix (RevokeIntent required)', () => {
-  it('rejects when RevokeIntent fields are missing', async () => {
-    const auth = await signAuthorization({
-      privateKey: BUYER_PK,
-      chainId: 11155111,
-      address: '0x0000000000000000000000000000000000000000',
-      nonce: 0,
-    })
-    const r = await handleV2Revoke({
-      buyer: BUYER,
-      authorization: {
-        chainId: auth.chainId,
-        address: (auth.contractAddress ?? (auth as any).address),
-        nonce: auth.nonce,
-        r: auth.r as Hex,
-        s: auth.s as Hex,
-        yParity: (auth.yParity ?? (auth as any).v) as 0 | 1,
-      },
-      // RevokeIntent fields intentionally undefined
-    } as any, ENV)
-    expect(r.ok).toBe(false)
-    if (!r.ok) expect(r.code).toBe('INVALID_SHAPE')
-  })
-
-  it('rejects expired RevokeIntent', async () => {
-    const past = BigInt(Math.floor(Date.now() / 1000) - 100)
-    const revokeSig = await signTypedData({
-      privateKey: BUYER_PK,
-      domain: buildDomain(11155111, BUYER),
-      types: REVOKE_INTENT_TYPES,
-      primaryType: 'RevokeIntent',
-      message: { buyer: BUYER, kind: 'REVOKE', nonce: 1n, deadline: past },
-    })
-    const auth = await signAuthorization({
-      privateKey: BUYER_PK,
-      chainId: 11155111,
-      address: '0x0000000000000000000000000000000000000000',
-      nonce: 0,
-    })
-    const r = await handleV2Revoke({
-      buyer: BUYER,
-      intentNonce: '1',
-      deadline: Number(past),
-      signature: revokeSig,
-      authorization: {
-        chainId: auth.chainId,
-        address: (auth.contractAddress ?? (auth as any).address),
-        nonce: auth.nonce,
-        r: auth.r as Hex,
-        s: auth.s as Hex,
-        yParity: (auth.yParity ?? (auth as any).v) as 0 | 1,
-      },
-    }, ENV)
-    expect(r.ok).toBe(false)
-    if (!r.ok) expect(r.code).toBe('SIGNATURE_INVALID')
-  })
-
-  it('rejects RevokeIntent signed by non-buyer', async () => {
-    const deadline = BigInt(Math.floor(Date.now() / 1000) + 600)
-    // Sign with OTHER but claim BUYER
-    const revokeSig = await signTypedData({
-      privateKey: OTHER_PK,
-      domain: buildDomain(11155111, BUYER), // matches BUYER's domain
-      types: REVOKE_INTENT_TYPES,
-      primaryType: 'RevokeIntent',
-      message: { buyer: BUYER, kind: 'REVOKE', nonce: 1n, deadline },
-    })
-    const auth = await signAuthorization({
-      privateKey: BUYER_PK,
-      chainId: 11155111,
-      address: '0x0000000000000000000000000000000000000000',
-      nonce: 0,
-    })
-    const r = await handleV2Revoke({
-      buyer: BUYER,
-      intentNonce: '1',
-      deadline: Number(deadline),
-      signature: revokeSig,
-      authorization: {
-        chainId: auth.chainId,
-        address: (auth.contractAddress ?? (auth as any).address),
-        nonce: auth.nonce,
-        r: auth.r as Hex,
-        s: auth.s as Hex,
-        yParity: (auth.yParity ?? (auth as any).v) as 0 | 1,
-      },
-    }, ENV)
-    expect(r.ok).toBe(false)
-    if (!r.ok) expect(r.code).toBe('SIGNATURE_INVALID')
-  })
-
+describe('handleV2Revoke — Codex MEDIUM fixes', () => {
   it('rejects revoke with chainId mismatch', async () => {
-    const deadline = BigInt(Math.floor(Date.now() / 1000) + 600)
-    const revokeSig = await signTypedData({
-      privateKey: BUYER_PK,
-      domain: buildDomain(11155111, BUYER),
-      types: REVOKE_INTENT_TYPES,
-      primaryType: 'RevokeIntent',
-      message: { buyer: BUYER, kind: 'REVOKE', nonce: 1n, deadline },
-    })
     const auth = await signAuthorization({
       privateKey: BUYER_PK,
       chainId: 1, // wrong chain
@@ -224,9 +130,6 @@ describe('handleV2Revoke — Codex HIGH fix (RevokeIntent required)', () => {
     })
     const r = await handleV2Revoke({
       buyer: BUYER,
-      intentNonce: '1',
-      deadline: Number(deadline),
-      signature: revokeSig,
       authorization: {
         chainId: auth.chainId,
         address: (auth.contractAddress ?? (auth as any).address),
@@ -238,5 +141,28 @@ describe('handleV2Revoke — Codex HIGH fix (RevokeIntent required)', () => {
     }, ENV)
     expect(r.ok).toBe(false)
     if (!r.ok) expect(r.code).toBe('CHAIN_ID_MISMATCH')
+  })
+
+  it('rejects revoke authorization signed by non-buyer', async () => {
+    // OTHER signs the revoke auth, but request claims BUYER as the buyer
+    const auth = await signAuthorization({
+      privateKey: OTHER_PK,
+      chainId: 11155111,
+      address: '0x0000000000000000000000000000000000000000',
+      nonce: 0,
+    })
+    const r = await handleV2Revoke({
+      buyer: BUYER,
+      authorization: {
+        chainId: auth.chainId,
+        address: (auth.contractAddress ?? (auth as any).address),
+        nonce: auth.nonce,
+        r: auth.r as Hex,
+        s: auth.s as Hex,
+        yParity: (auth.yParity ?? (auth as any).v) as 0 | 1,
+      },
+    }, ENV)
+    expect(r.ok).toBe(false)
+    if (!r.ok) expect(r.code).toBe('AUTH_SIGNER_MISMATCH')
   })
 })

@@ -33,7 +33,7 @@ import { sepolia } from 'viem/chains'
 
 import type { Call } from '../pipeline/extractIntent.js'
 import { extractTokenBuyIntent } from '../pipeline/extractIntent.js'
-import { verifyExecuteBatchSignature, verifyRevokeIntentSignature } from '../pipeline/verify712.js'
+import { verifyExecuteBatchSignature } from '../pipeline/verify712.js'
 import { matchWhitelist, RULES_SEPOLIA, SEPOLIA, type SponsorRule } from '../rules/whitelist.js'
 
 const EXECUTE_BATCH_ABI = parseAbi([
@@ -65,7 +65,13 @@ export type V2RelayRequest = {
 
 export type V2RevokeRequest = {
   buyer: Address
-  /** EIP-7702 authorization with `address: 0x0...0` to clear delegation. */
+  /** EIP-7702 authorization with `address: 0x0...0` to clear delegation.
+   *  EIP-7702's chainId + nonce + contract-address fields provide the protocol-
+   *  level replay protection: the auth is single-use (consumed on first tx),
+   *  chain-bound, and the captured-replay scenario yields zero damage since
+   *  the user already intended to revoke. Industry standard is single-sign;
+   *  no separate EIP-712 RevokeIntent is added (verified by reviewing
+   *  Alchemy / Revoke.cash / MetaMask flows). */
   authorization: {
     chainId: number
     address: Address // expected to be address(0)
@@ -74,10 +80,6 @@ export type V2RevokeRequest = {
     s: Hex
     yParity: 0 | 1
   }
-  /** ADDED (Codex HIGH fix): EIP-712 RevokeIntent signature + nonce + deadline */
-  intentNonce: string | number
-  deadline: number
-  signature: Hex
 }
 
 export type V2Response =
@@ -224,26 +226,6 @@ export async function handleV2Revoke(body: V2RevokeRequest, env: V2Env): Promise
       reason: `authorization signer ${authSigner} ≠ buyer ${body.buyer}`,
     }
   }
-  // Codex HIGH fix: verify RevokeIntent EIP-712 signature (consent boundary)
-  if (!body.signature || body.deadline == null || body.intentNonce == null) {
-    return {
-      ok: false,
-      code: 'INVALID_SHAPE',
-      reason: 'revoke requires signed RevokeIntent (signature + deadline + intentNonce)',
-    }
-  }
-  const intentVerify = await verifyRevokeIntentSignature({
-    buyer: body.buyer,
-    chainId: sepolia.id,
-    verifyingContract: body.buyer,
-    nonce: BigInt(body.intentNonce),
-    deadline: BigInt(body.deadline),
-    signature: body.signature,
-  })
-  if (!intentVerify.ok) {
-    return { ok: false, code: 'SIGNATURE_INVALID', reason: intentVerify.reason }
-  }
-
   // 2. Whitelist match (just confirms REVOKE rule is enabled)
   const match = matchWhitelist({
     kind: 'REVOKE',
