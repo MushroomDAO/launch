@@ -1,4 +1,10 @@
-# 验收测试手册 — Gasless EOA-Enhance
+# 验收测试手册 — Gasless EOA-Enhance (v2 — PAUSED)
+
+> ⚠️ **STATUS: PAUSED (2026-05-13)** — 这份文档对应 EIP-7702 + relayer 路径，被钱包 RPC 标准空白阻塞。生产用 **v3 (EIP-3009 + BuyHelper)** 路径。验收请用 [ACCEPTANCE-v3.md](ACCEPTANCE-v3.md)。
+>
+> 本文档保留作为 v2 历史参考。
+
+---
 
 > **用法**：按这份文档**一步步**手动测试三条用户流程。每一步都有"做什么"+"看到什么"+"链上验证命令"。
 >
