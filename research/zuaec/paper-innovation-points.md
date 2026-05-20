@@ -8,9 +8,9 @@
 
 ## Paper 1：核心创新点
 
-### 一句话陈述（推荐版本）
+### 一句话陈述（推荐版本，Codex review 后修订）
 
-> **We bridge AI agent research with classical institutional theory (Ostrom, Bourdieu, Putnam) to diagnose that current multi-agent AI systems lack institutional embedding—not capability, not data, not alignment—and propose the first falsifiable three-pillar framework (collaboration protocol, quantified social capital, permissionless network) for AI agent socialization, grounded in a PRISMA-ScR scoping review of 2022-2026 literature.**
+> **We bridge AI agent research with classical institutional theory (Ostrom, Bourdieu, Putnam) to argue that capability, data, and alignment accounts of multi-agent AI failures are incomplete without institutional embedding, and offer a falsifiable three-pillar framework (collaboration protocol, quantified social capital, permissionless network) for AI agent socialization, grounded in a PRISMA-ScR scoping review of 2022-2026 literature.**
 
 中文版：
 > **本文将 AI Agent 研究与经典制度理论（Ostrom、Bourdieu、Putnam）相桥接，诊断出当前多智能体 AI 系统的根本缺口是缺乏"制度性嵌入"——不是能力、数据、或对齐问题——并基于 2022-2026 年文献的 PRISMA-ScR scoping review，提出第一个可证伪的"三要素框架"（协作协议、量化社会资本、无许可网络）来填补这一缺口。**
@@ -36,9 +36,9 @@
 
 ## Paper 2：核心创新点
 
-### 一句话陈述（推荐版本）
+### 一句话陈述（推荐版本，Codex review 后修订）
 
-> **We present ASM, the first agent communication protocol that simultaneously addresses verifiable human-authorization, privacy-preserving reputation accumulation, and permissionless multi-agent coordination—operationalizing the institutional embedding framework with a deployed reference implementation on public blockchain.**
+> **We present ASM, an agent communication protocol that integrates verifiable human-authorization, privacy-preserving reputation accumulation, and permissionless multi-agent coordination as joint design goals—operationalizing the institutional embedding framework with a reference implementation path on public blockchain (currently on Sepolia testnet with planned OP mainnet deployment).**
 
 中文版：
 > **本文提出 ASM，首个同时实现可验证人类授权、隐私保护声誉积累、与无许可多智能体协作三者的 Agent 通信协议——在公链上部署了 reference implementation，将"制度性嵌入"框架工程化落地。**
@@ -69,10 +69,10 @@ ASM 是唯一全 ✅ 的协议。
 
 把两篇论文当成一个 portfolio 卖给学术界，one-liner：
 
-> **We provide a complete stack for AI Agent socialization—from the conceptual framework grounded in classical sociology (Paper 1), through the protocol specification with privacy-preserving cryptographic primitives (Paper 2), to the deployed reference implementation on public blockchain (Mycelium Protocol). This is the first work to articulate "AI Agent Social Engineering" as a unified discipline with both theoretical and engineering contributions.**
+> **We provide a framework / protocol / implementation stack for socially-embedded AI agents—from the conceptual framework grounded in classical sociology (Paper 1), through the protocol specification with privacy-preserving cryptographic primitives (Paper 2), to the reference implementation on public blockchain (Mycelium Protocol, currently on Sepolia testnet with planned OP mainnet deployment).**
 
 中文：
-> **我们提供 AI Agent 社会化的完整技术栈：从基于经典社会学的概念框架（Paper 1），到含隐私保护密码学原语的协议规范（Paper 2），再到在公链上部署的 reference implementation（Mycelium Protocol）。这是首次将"Agent 社会工程学"作为一个兼具理论与工程贡献的统一学科明确提出。**
+> **我们为社会化嵌入的 AI Agent 提供框架 / 协议 / 实现三层栈：从基于经典社会学的概念框架（Paper 1），到含隐私保护密码学原语的协议规范（Paper 2），再到公链上的 reference implementation（Mycelium Protocol，当前在 Sepolia 测试网，OP mainnet 部署计划中）。**
 
 ---
 

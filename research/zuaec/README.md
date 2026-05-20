@@ -66,9 +66,16 @@
 
 | 文件 | 内容 | 优先级 |
 |------|------|------|
-| **[paper-innovation-points.md](paper-innovation-points.md)** | **两篇论文的一句话创新点**（Paper 1 桥接制度理论 + Paper 2 三属性同时满足）| 🔴 先读 |
+| **[paper-innovation-points.md](paper-innovation-points.md)** | **两篇论文的一句话创新点**（已按 Codex review 弱化 "first/唯一" 措辞）| 🔴 先读 |
 | **[user-review-queue.md](user-review-queue.md)** | **Jason 的 review 队列**——8 份文档按优先级 + 9 项决策清单 + 决策模板 | 🔴 先读 |
 | [master-execution-plan.md](master-execution-plan.md) | 14 周完整执行计划（文献检索策略 + Phase 0-8 + 分工 + 风险 + 里程碑）| 🟠 |
+
+### Codex Review 与 TODO 落地
+
+| 文件 | 内容 |
+|------|------|
+| [paper-review-codex-v1.md](paper-review-codex-v1.md) | Codex review v1（10 维度分析 + Top-10/Top-5/Top-5 修订项 + 评分）|
+| **[codex-feedback-todo-plan.md](codex-feedback-todo-plan.md)** | **Codex 反馈 → 14 周计划 TODO 映射**（每条 Must-Fix 落到具体 Phase + 责任人）|
 
 ---
 

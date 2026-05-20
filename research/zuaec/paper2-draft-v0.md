@@ -22,7 +22,7 @@
 
 ## Abstract
 
-Multi-agent AI systems increasingly require communication infrastructure that goes beyond ad-hoc message passing. We present **ASM (Agent Social Message)**, a native communication protocol for decentralized agent collaboration that integrates verifiable identity, authorization, and privacy-preserving reputation. ASM addresses three structural gaps in existing protocols (FIPA ACL, MCP, DIDComm): (1) lack of cryptographic accountability for human authorization, (2) absence of privacy-preserving reputation accumulation, and (3) inadequate threat coverage for decentralized agent ecosystems. We propose a dual-network model where a human subnet A authorizes agent operations in a permissionless agent subnet B, mediated by a verifiable social memory layer. The ASM protocol specification combines: a three-block message structure (Identity & Authorization Capsule, Capability & Resource Manifesto, Interaction Intent & Proof Payload); a finite state machine for two-phase interaction (relay-mediated discovery, direct WebRTC negotiation); and a privacy-preserving reputation system based on ZK proofs of accumulated credentials. We provide an adversary model covering eight attacker types and analyze safety/liveness properties against each. We describe a real-world deployment of ASM as part of Mycelium Protocol on Ethereum/Optimism mainnet, with full conflict-of-interest disclosure. This paper provides a protocol specification and security analysis; formal cryptographic proofs are deferred to future work pending cryptography-domain collaboration.
+Multi-agent AI systems increasingly require communication infrastructure that goes beyond ad-hoc message passing. We present **ASM (Agent Social Message)**, a native communication protocol for decentralized agent collaboration that integrates verifiable identity, authorization, and privacy-preserving reputation as joint design goals. To our knowledge, ASM is an early protocol specification that addresses three structural gaps observed in existing protocols (FIPA ACL, MCP, DIDComm): (1) lack of cryptographic accountability for human authorization, (2) absence of privacy-preserving reputation accumulation, and (3) inadequate threat coverage for decentralized agent ecosystems. We propose a dual-network model where a human subnet A authorizes agent operations in a permissionless agent subnet B, mediated by a verifiable social memory layer. The ASM protocol specification combines: a three-block message structure (Identity & Authorization Capsule, Capability & Resource Manifesto, Interaction Intent & Proof Payload); a finite state machine for two-phase interaction (relay-mediated discovery, direct WebRTC negotiation); and a privacy-preserving reputation system based on ZK proofs of accumulated credentials. We provide an adversary model covering eight attacker types and analyze safety/liveness properties against each. We describe an ongoing implementation of ASM as part of Mycelium Protocol (currently on Sepolia testnet with planned OP mainnet deployment), with full conflict-of-interest disclosure. This paper provides a protocol specification and security analysis; formal cryptographic proofs are deferred to future work pending cryptography-domain collaboration.
 
 **Keywords**: multi-agent systems; agent communication; decentralized identity; zero-knowledge proofs; protocol design; permissionless networks
 
@@ -131,18 +131,26 @@ This paper does **not** provide:
 
 ASM differs from all of the above by combining (a) cryptographic verifiability, (b) ZK-based privacy, and (c) explicit Sybil/collusion resistance.
 
-### 2.6 Why a New Protocol?
+### 2.6 Requirement Coverage for Decentralized Agent Socialization
 
-None of the above systems satisfies all six requirements identified in our companion paper [Authors, 2026, Paper 1]:
+We compare existing systems against the six requirements identified in our companion paper [Authors, 2026, Paper 1]. We note upfront that FIPA ACL, MCP, DIDComm, Nostr, and EigenTrust are designed for **different primary purposes** (agent communication language, tool/RPC interface, DID messaging, social relay, trust algorithm respectively); the comparison reflects coverage for our specific use case, not overall quality:
 
-| Requirement | FIPA ACL | MCP | DIDComm | Nostr | EigenTrust | **ASM** |
+| Requirement | FIPA ACL[^a] | MCP[^b] | DIDComm[^c] | Nostr[^d] | EigenTrust[^e] | **ASM** |
 |------------|----------|-----|---------|-------|-----------|---------|
-| Structured messaging | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
+| Structured messaging | ✅ | ✅ | ✅ | ⚠️[^d1] | ❌ | ✅ |
 | Cryptographic identity | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ |
-| Human authorization | ❌ | ❌ | ⚠️ | ❌ | ❌ | ✅ |
-| Privacy-preserving reputation | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Permissionless | ❌ | ❌ | ⚠️ | ✅ | ⚠️ | ✅ |
-| Multi-party coordination | ✅ | ❌ | ❌ | ⚠️ | ❌ | ✅ |
+| Human authorization | ❌ | ❌ | ⚠️[^c1] | ❌ | ❌ | ✅ |
+| Privacy-preserving reputation | ❌ | ❌ | ❌ | ❌ | ❌[^e1] | ✅ |
+| Permissionless | ❌ | ❌ | ⚠️[^c2] | ✅ | ⚠️[^e2] | ✅ |
+| Multi-party coordination | ✅ | ❌ | ❌ | ⚠️[^d2] | ❌ | ✅ |
+
+[^a]: FIPA ACL is designed for **agent communication language** with rich speech acts. Out of scope: cryptographic accountability, reputation. Why ASM needs more: ASM extends the speech-act paradigm with verifiable identity and privacy-preserving reputation.
+[^b]: Anthropic MCP is designed for **tool/RPC invocation between LLMs and resources**. Out of scope: multi-party social coordination, reputation.
+[^c]: DIDComm is designed for **bilateral DID-based messaging**. ⚠️[^c1]: supports identity but not the explicit human-agent authorization relation. ⚠️[^c2]: federation requires server-level coordination.
+[^d]: Nostr is designed for **censorship-resistant social messaging via relays**. ⚠️[^d1]: JSON events with custom kinds, but not formal structured-message grammar. ⚠️[^d2]: supports multi-party but not formal coordination protocol state machines.
+[^e]: EigenTrust is designed as a **transitive trust algorithm**. ❌[^e1]: exposes full trust scores; no privacy preservation. ⚠️[^e2]: computational decentralization but not permissionless in the protocol sense.
+
+ASM is **designed to integrate** all six requirements as joint goals; we do not claim ASM is the only possible such design.
 
 ---
 
@@ -511,7 +519,7 @@ This section follows the *transparent implementation case study* convention comm
 
 | Component | Mycelium Protocol Implementation |
 |-----------|--------------------------------|
-| Social Memory Layer | Ethereum/Optimism mainnet smart contracts |
+| Social Memory Layer | Sepolia testnet smart contracts (production-tested); planned OP mainnet |
 | Agent NFT identity | EIP-8004 (in development) → falls back to ERC-721 in production |
 | Authorization VCs | On-chain Registry.sol contract |
 | Reputation accumulator | aPNTs (Aggregated Personal Network Tokens) |
