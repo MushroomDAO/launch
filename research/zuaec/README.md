@@ -62,6 +62,14 @@
 |------|------|
 | [target-venues.md](target-venues.md) | Paper 1/2 候选投稿刊物分析（含 AAMAS / CSCW / ICDCS / ACM CSUR 等顶级 venue + 中期/长期投稿路径）|
 
+### 执行计划（Phase 0 起点）
+
+| 文件 | 内容 | 优先级 |
+|------|------|------|
+| **[paper-innovation-points.md](paper-innovation-points.md)** | **两篇论文的一句话创新点**（Paper 1 桥接制度理论 + Paper 2 三属性同时满足）| 🔴 先读 |
+| **[user-review-queue.md](user-review-queue.md)** | **Jason 的 review 队列**——8 份文档按优先级 + 9 项决策清单 + 决策模板 | 🔴 先读 |
+| [master-execution-plan.md](master-execution-plan.md) | 14 周完整执行计划（文献检索策略 + Phase 0-8 + 分工 + 风险 + 里程碑）| 🟠 |
+
 ---
 
 ## 关键日期
