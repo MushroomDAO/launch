@@ -48,6 +48,19 @@
 |------|------|----|
 | **[paper1-draft-v0.md](paper1-draft-v0.md)** | **Paper 1 初稿** — Three Pillars for AI Agent Socialization（~7000 词，10 章完整框架 + 35 篇核心文献）| 待 Codex review |
 | **[paper2-draft-v0.md](paper2-draft-v0.md)** | **Paper 2 初稿** — ASM Protocol（~6500 词，9 章完整框架 + 8 类攻击者模型 + 真实部署案例）| 待 Codex review |
+| [paper-revision-status.md](paper-revision-status.md) | v2 plan 各项 fix/improvement 在初稿中的落实情况对照表（~90% 完成度）| 跟踪用 |
+
+### Agent 协作网络架构（工程项目）
+
+| 文件 | 内容 |
+|------|------|
+| **[agent-network-architecture.md](agent-network-architecture.md)** | **Mycelium Protocol 系统架构 v0** — 三层架构 + 双网模型 + 实现状态矩阵 + 路线图 + 11 个核心设计决策 |
+
+### 投稿规划
+
+| 文件 | 内容 |
+|------|------|
+| [target-venues.md](target-venues.md) | Paper 1/2 候选投稿刊物分析（含 AAMAS / CSCW / ICDCS / ACM CSUR 等顶级 venue + 中期/长期投稿路径）|
 
 ---
 
