@@ -20,8 +20,8 @@
 | [3] | Chakraborty, S. (2026). A Co-Evolutionary Theory of Human-AI Coexistence: Mutualism, Governance, and Dynamics in Complex Societies. arXiv:2604.22227 | preprint | arXiv | ⚠️ 需核实 | 同上 |
 | [4] | Han, T.A. et al. (2026). Social physics in the age of artificial intelligence. arXiv:2603.16900 | preprint | arXiv | ⚠️ 需核实 | 同上 |
 | [5] | Mitchell, R.J. (2026). Beyond Symbolic Control: Societal Consequences of AI-Driven Workforce Displacement and the Imperative for Genuine Human Oversight Architectures. arXiv:2604.00081 | preprint | arXiv | ⚠️ 需核实 | 同上 |
-| [6] | Li, M. et al. (2026). Does Socialization Emerge in AI Agent Society? A Case Study of Moltbook. arXiv:2602.14299 | preprint | arXiv | ⚠️ 需核实 | "Moltbook" 名称疑似 AI 编造，需验证 |
-| [7] | Yee, B. et al. (2026). Molt Dynamics: Emergent Social Phenomena in Autonomous AI Agent Populations. arXiv:2603.03555 | preprint | arXiv | ⚠️ 需核实 | 同上，与 [6] 存在"77万 vs 90704"数据矛盾 |
+| [6] | Li, M. et al. (2026). Does Socialization Emerge in AI Agent Society? A Case Study of Moltbook. arXiv:2602.14299 | preprint | arXiv | ✅ **已核实**（2026-05-20 WebSearch）| Moltbook 是真实平台，2026 年 1 月上线，77万+ autonomous agents |
+| [7] | Yee, B. et al. (2026). Molt Dynamics: Emergent Social Phenomena in Autonomous AI Agent Populations. arXiv:2603.03555 | preprint | arXiv | ✅ **已核实** | Brandon Yee & Krishna Sharma；77万 vs 90704 不是矛盾，77万是 Moltbook 平台总量，90704 是 3 周窗口的 active subset；6.7% 协作成功率来自 164 个 multi-agent 协作事件 |
 | [8] | Huang, Y. et al. (2026). Emergent Social Intelligence Risks in Generative Multi-Agent Systems. arXiv:2603.27771 | preprint | arXiv | ⚠️ 需核实 | — |
 | [9] | Zhang, H. et al. (2026). Beyond Preset Identities: How Agents Form Stances and Boundaries in Generative Societies. arXiv:2603.23406 | preprint | arXiv | ⚠️ 需核实 | — |
 | [10] | Li, H. et al. (2025). The Emergence of Altruism in Large-Language-Model Agents Society. arXiv:2509.22537 | preprint | arXiv | ⚠️ 需核实 | — |
@@ -131,43 +131,98 @@
 
 ---
 
-## 四、文献检索范围声明（Scoping Review 方法论必备）
+## 四、PRISMA-ScR 方法论模板（Scoping Review 必备）
 
-正式 Paper 1 中必须包含以下 scoping review 方法论描述：
+正式 Paper 1 采用 **PRISMA-ScR (PRISMA extension for Scoping Reviews, Tricco et al. 2018)** 框架，必须包含以下方法论描述：
 
 ```
-## Methodology
+## 3. Methodology (PRISMA-ScR Compliant)
 
-### Search Strategy
+### 3.1 Research Questions
 
-We conducted a scoping review of frontier literature on AI Agent evolution
-and its sociological dimensions. The search was performed in [Month] 2026
-across the following databases:
+Following the population-concept-context (PCC) framework recommended by JBI
+for scoping reviews:
 
-- arXiv (cs.AI, cs.CY, cs.MA, cs.MAS, cs.HC categories)
-- Google Scholar
+- Population: AI agents (LLM-based or otherwise) in multi-agent settings
+- Concept: Evolution direction (replacement / human-AI collaboration /
+  machine-machine collaboration) and socialization
+- Context: 2022-2026, peer-reviewed venues and widely-cited preprints
+
+RQ1: What are the dominant research clusters in AI Agent evolution literature
+     during 2022-2026?
+RQ2: What structural gaps prevent Agent socialization in current systems?
+RQ3: What theoretical framework can address these gaps?
+
+### 3.2 Search Strategy
+
+Databases searched (May 20, 2026):
+- arXiv (cs.AI, cs.CY, cs.MA, cs.MAS, cs.HC)
+- Google Scholar (top 200 results per query)
 - ACM Digital Library
 - IEEE Xplore
+- Authors' personal academic sites (manually screened for working papers)
 
-Search keywords combined: "AI agent" OR "LLM agent" OR "multi-agent system"
-WITH "social", "collaboration", "society", "evolution", or "emergence".
+Search string (Boolean):
+("AI agent" OR "LLM agent" OR "multi-agent system" OR "autonomous agent")
+AND ("social" OR "collaboration" OR "society" OR "evolution" OR "emergence"
+     OR "cooperation" OR "socialization")
+AND year:[2022-2026]
 
-### Inclusion Criteria
-- Published between January 2022 and May 2026
-- Peer-reviewed papers OR widely-cited preprints (>50 citations or notable
-  community impact)
-- English language
-- Topic: AI Agent capability/behavior in social or multi-agent contexts
+### 3.3 Inclusion Criteria
+(I1) Published or preprinted between Jan 2022 and May 2026
+(I2) Peer-reviewed venue OR preprint with ≥50 citations OR notable community
+     impact (e.g., reproduced in major surveys)
+(I3) English language
+(I4) Substantive content on AI Agent socialization, multi-agent dynamics,
+     or human-AI collaboration
 
-### Exclusion Criteria
-- Purely technical papers without sociological/behavioral dimensions
-- Non-archived blog posts and personal websites (unless cross-referenced
-  with archived versions)
+### 3.4 Exclusion Criteria
+(E1) Purely technical papers (e.g., training optimization) without
+     sociological/behavioral dimensions
+(E2) Non-archived blog posts (unless cross-referenced with archived versions)
+(E3) Duplicates and overlapping conference/journal versions (keep latest)
+(E4) Position papers without literature engagement
 
-### Selection Process
-[N] initial results → [N] after deduplication → [N] after title/abstract
-screening → [N] final included papers
+### 3.5 Selection Process
+
+Following PRISMA-ScR flow:
+1. Identification: N records identified from databases (de-duplicated)
+2. Screening: Title/abstract screening by author
+3. Eligibility: Full-text review against I1-I4 and E1-E4
+4. Included: Final N papers for charting
+
+[A PRISMA-ScR flow diagram is included as Figure 1.]
+
+### 3.6 Data Charting
+
+For each included paper, the following data items were extracted:
+- Bibliographic details
+- Methodology type (theoretical / empirical / system / position)
+- Research cluster (replacement / human-AI collab / machine-machine collab)
+- Key findings relevant to RQ1-3
+- Notable limitations
+
+### 3.7 Synthesis Approach
+
+We adopt a narrative synthesis approach grouped by the three research
+clusters identified in RQ1. We do NOT perform meta-analysis, as the included
+studies use heterogeneous methods and outcome measures, which is appropriate
+for scoping reviews per PRISMA-ScR guidance.
+
+### 3.8 Reporting
+
+This review is reported following the PRISMA-ScR checklist (Tricco et al.
+2018, Ann Intern Med 169:467-473). The complete checklist is provided in
+Appendix A.
 ```
+
+**PRISMA-ScR 关键参考文献**（必须引用）：
+
+| BibKey | 完整引用 |
+|--------|---------|
+| `tricco2018prisma` | Tricco, A.C., Lillie, E., Zarin, W., O'Brien, K.K., Colquhoun, H., Levac, D., ... & Straus, S.E. (2018). PRISMA extension for scoping reviews (PRISMA-ScR): Checklist and explanation. *Annals of Internal Medicine*, 169(7), 467-473. |
+| `peters2020jbi` | Peters, M.D.J., Marnie, C., Tricco, A.C., Pollock, D., Munn, Z., Alexander, L., ... & Khalil, H. (2020). Updated methodological guidance for the conduct of scoping reviews. *JBI Evidence Synthesis*, 18(10), 2119-2126. |
+| `arksey2005scoping` | Arksey, H., & O'Malley, L. (2005). Scoping studies: towards a methodological framework. *International Journal of Social Research Methodology*, 8(1), 19-32. |
 
 ---
 

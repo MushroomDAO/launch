@@ -39,8 +39,15 @@
 
 | 文件 | 内容 |
 |------|------|
-| [paper1-bibliography.md](paper1-bibliography.md) | v1 文献逐条核查 + 2022-2024 必读补强 + 社会学经典文献 + Hilbert 处理预案 + Scoping Review 方法论模板 |
+| [paper1-bibliography.md](paper1-bibliography.md) | v1 文献核查（Hilbert/Moltbook/Feng 已 WebSearch 验证）+ 2022-2024 必读补强 + 社会学经典 + PRISMA-ScR 方法论模板 |
 | [paper1-framework-logic.md](paper1-framework-logic.md) | 三要素操作性定义 + P1-P5 可测试命题 + 与 Bourdieu/Putnam/Ostrom 显式区分 + E→G→F→P 论证链 + 边界条件 |
+
+### 论文初稿（v0 working drafts）
+
+| 文件 | 内容 | 状态 |
+|------|------|----|
+| **[paper1-draft-v0.md](paper1-draft-v0.md)** | **Paper 1 初稿** — Three Pillars for AI Agent Socialization（~7000 词，10 章完整框架 + 35 篇核心文献）| 待 Codex review |
+| **[paper2-draft-v0.md](paper2-draft-v0.md)** | **Paper 2 初稿** — ASM Protocol（~6500 词，9 章完整框架 + 8 类攻击者模型 + 真实部署案例）| 待 Codex review |
 
 ---
 
