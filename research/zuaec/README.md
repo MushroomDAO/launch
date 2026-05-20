@@ -35,6 +35,13 @@
 | [paper-suggestions-codex.md](paper-suggestions-codex.md) | Codex 视角的 Pre-submission Review（带行号引用） | 参考 |
 | **[paper-submission-plan-v2.md](paper-submission-plan-v2.md)** | **v2：合并双 review 后的修订计划**（定位/文献/时间线/删改清单） | **当前主线** |
 
+### Paper 1 写作前置交付物
+
+| 文件 | 内容 |
+|------|------|
+| [paper1-bibliography.md](paper1-bibliography.md) | v1 文献逐条核查 + 2022-2024 必读补强 + 社会学经典文献 + Hilbert 处理预案 + Scoping Review 方法论模板 |
+| [paper1-framework-logic.md](paper1-framework-logic.md) | 三要素操作性定义 + P1-P5 可测试命题 + 与 Bourdieu/Putnam/Ostrom 显式区分 + E→G→F→P 论证链 + 边界条件 |
+
 ---
 
 ## 关键日期
