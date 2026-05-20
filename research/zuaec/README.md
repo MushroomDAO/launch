@@ -28,9 +28,12 @@
 
 ### 论文规划
 
-| 文件 | 内容 |
-|------|------|
-| [paper-submission-plan.md](paper-submission-plan.md) | 2 篇 arXiv 预印本规划：理论框架论文 + 协议设计论文，含类型定位、结构、时间线 |
+| 文件 | 内容 | 状态 |
+|------|------|----|
+| [paper-submission-plan.md](paper-submission-plan.md) | v1：初版 2 篇论文规划 | 历史保留，已被 v2 取代 |
+| [paper-suggestions-local.md](paper-suggestions-local.md) | 本地资深博导视角的 Pre-submission Review | 参考 |
+| [paper-suggestions-codex.md](paper-suggestions-codex.md) | Codex 视角的 Pre-submission Review（带行号引用） | 参考 |
+| **[paper-submission-plan-v2.md](paper-submission-plan-v2.md)** | **v2：合并双 review 后的修订计划**（定位/文献/时间线/删改清单） | **当前主线** |
 
 ---
 
