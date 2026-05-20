@@ -9,11 +9,22 @@
 
 ## 目录
 
+### 参赛材料
+
 | 文件 | 内容 |
 |------|------|
 | [competition-info.md](competition-info.md) | 赛制、赛程、联系方式、报名流程 |
 | [registration-form.md](registration-form.md) | 报名表字段 + 我们的填写值 |
 | [project-concept.md](project-concept.md) | 参赛项目概念：Agent协作网络 |
+
+### 研究背景（DeepSeek对话整理）
+
+| 文件 | 内容 |
+|------|------|
+| [01-ai-agent-evolution-analysis.md](01-ai-agent-evolution-analysis.md) | AI Agent进化方向前沿综述：替代/人机协作/机机协作三路径分析 |
+| [02-human-ai-collaboration-framework.md](02-human-ai-collaboration-framework.md) | 人机协作框架：协作协议 + 社会资本量化 + 无许可网络 |
+| [03-dual-network-experiment.md](03-dual-network-experiment.md) | 双网实验设计：人类子网A + Agent子网B + 授权关系 |
+| [04-agent-communication-protocol.md](04-agent-communication-protocol.md) | Agent原生通信协议：Nostr + EIP-8004 + ZK声誉 + ASM消息格式 |
 
 ---
 
@@ -26,14 +37,3 @@
 | 2026-11-30 | 分区赛结束，100个项目晋级 | ⬜ 待 |
 | 2027-04-30 | 行业赛结束，20+项目晋级总决赛 | ⬜ 待 |
 | 2027-05 | 总决赛暨颁奖典礼 | ⬜ 待 |
-
----
-
-## 行动清单
-
-- [ ] 完成浙大校友身份认证（浙大校友微信小程序）
-- [ ] 准备项目LOGO（JPG/PNG，≤10M）
-- [ ] 撰写项目介绍（≤20字）+ 项目描述（≤200字）
-- [ ] 制作BP（商业计划书，PDF/PPT，≤20M）
-- [ ] 在官网提交报名：http://zuaec.zju.edu.cn
-- [ ] 等待当地组委会跟进
