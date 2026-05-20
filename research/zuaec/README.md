@@ -26,6 +26,12 @@
 | [03-dual-network-experiment.md](03-dual-network-experiment.md) | 双网实验设计：人类子网A + Agent子网B + 授权关系 |
 | [04-agent-communication-protocol.md](04-agent-communication-protocol.md) | Agent原生通信协议：Nostr + EIP-8004 + ZK声誉 + ASM消息格式 |
 
+### 论文规划
+
+| 文件 | 内容 |
+|------|------|
+| [paper-submission-plan.md](paper-submission-plan.md) | 2 篇 arXiv 预印本规划：理论框架论文 + 协议设计论文，含类型定位、结构、时间线 |
+
 ---
 
 ## 关键日期
