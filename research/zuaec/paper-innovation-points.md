@@ -58,6 +58,14 @@
 
 ## Paper 1：核心创新点
 
+### Title（v0.2 锁定）
+
+> *Three Pillars for an Agent Collaboration Network: A Paradigm Shift from Capability Invocation to Social Role Agency, with a Scoping Review of 2022-2026 Literature*
+>
+> 中文：*Agent 协作网络的三要素框架：从能力调用到社会角色代理的范式转换——基于 2022-2026 文献的 Scoping Review*
+
+
+
 ### 一句话陈述（v0.2 — 范式定位锁定）
 
 **中文**：
@@ -89,6 +97,18 @@
 ---
 
 ## Paper 2：核心创新点
+
+### Title（v0.2 锁定）
+
+**Primary (A)**：
+> *ASM: A Communication Protocol for Role-Bearing AI Agents in Decentralized Collaboration Networks*
+>
+> 中文：*ASM：去中心化协作网络中角色承载型 AI Agent 的通信协议*
+
+**Backup (B)** — 保留用于后续 venue-specific 调整：
+> *ASM: Operationalizing the Role-Bearing Agent Paradigm — Verifiable Identity, Privacy-Preserving Reputation, and Permissionless Coordination*
+
+
 
 ### 一句话陈述（v0.2 — 范式定位锁定）
 

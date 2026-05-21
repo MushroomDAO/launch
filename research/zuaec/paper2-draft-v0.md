@@ -10,7 +10,16 @@
 
 ---
 
-# ASM: A Native Communication Protocol for Decentralized Agent Collaboration with Verifiable Identity, Authorization, and Privacy-Preserving Reputation
+# ASM: A Communication Protocol for Role-Bearing AI Agents in Decentralized Collaboration Networks
+
+<!--
+Title options (locked 2026-05-21, primary: A):
+- A (primary, current): "ASM: A Communication Protocol for Role-Bearing AI Agents in Decentralized Collaboration Networks"
+- B (backup, kept for venue-specific adjustment): "ASM: Operationalizing the Role-Bearing Agent Paradigm — Verifiable Identity, Privacy-Preserving Reputation, and Permissionless Coordination"
+- C (deprecated, kept for traceability): "ASM: A Native Communication Protocol for Decentralized Agent Collaboration with Verifiable Identity, Authorization, and Privacy-Preserving Reputation"
+中文 (primary): "ASM：去中心化协作网络中角色承载型 AI Agent 的通信协议"
+-->
+
 
 **Authors**: [Jason Jiao, et al. — TBD]
 **Affiliation**: Mycelium Protocol Open Source Community; AAStar

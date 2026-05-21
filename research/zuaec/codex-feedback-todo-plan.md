@@ -269,7 +269,10 @@
   - paper1-draft-v0.md：title 改为 "Three Pillars for an Agent Collaboration Network..."；Abstract 重写以范式开篇；§1.0 加 Core Argument
   - paper2-draft-v0.md：Abstract 重写为协议层操作化；§1.0 加 Relationship to Companion Paper
   - agent-network-architecture.md：加 §〇 整体导览 + §1.1 范式区分表
-- [ ] Jason 完成 user-review-queue 中的 9 项决策
+- [x] **Paper Titles 锁定（2026-05-21）**：✅
+  - Paper 1: "Three Pillars for an Agent Collaboration Network: A Paradigm Shift from Capability Invocation to Social Role Agency..."
+  - Paper 2: Option A primary（"ASM: A Communication Protocol for Role-Bearing AI Agents in Decentralized Collaboration Networks"）+ Option B backup
+- [ ] Jason 完成 user-review-queue 中的 9 项决策（剩余）
 
 ### Phase 1 增强版（Week 2-3，5/27-6/9）— 文献密集
 
