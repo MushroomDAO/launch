@@ -61,7 +61,32 @@ PRISMA 最终计数（Phase 1 结束时更新）：
 
 ## 二、首批新文献候选库（2026-05-21 搜索）
 
-### 2.1 Group A + C：多智能体协作与社会涌现（Paper 1 核心）
+### 2.1 Group B：人机共演与混合社会（2026-05-21 完成）
+
+| ID | 标题 | 作者 | 年份 | arXiv | 相关性 | 对应位置 |
+|----|------|------|------|-------|--------|---------|
+| NEW-B01 | Super Co-alignment of Human and AI for Sustainable Symbiotic Society | Zeng et al. | 2025 | 2504.17404 | ⭐⭐⭐⭐ | §4人机协作集群 |
+| NEW-B02 | Human-AI Interaction Alignment: Bidirectional Reciprocal Futures | Shen, Knearem et al. | 2025 | 2512.21551 | ⭐⭐⭐⭐ | §4/§6 双向制度化 |
+| NEW-B03 | HAIF: Human-AI Integration Framework for Hybrid Team Operations | Bara | 2026 | 2602.07641 | ⭐⭐⭐⭐ | P1协作协议框架 |
+| NEW-B04 | Collaborating with AI Agents: Field Experiments (n=2234, +50% output) | Ju & Aral | 2025 | 2503.18238 | ⭐⭐⭐⭐⭐ | §4.1 实证：混合团队产出/同质化 |
+| NEW-B05 | Evolution of Fairness in Hybrid Populations with Specialised AI Agents | Song, Cimpeanu, Han | 2026 | 2602.18498 | ⭐⭐⭐⭐ | §4/P3演化博弈 |
+| NEW-B06 | Optimizing Delegation in Collaborative Human-AI Hybrid Teams | Fuchs, Passarella | 2024 | 2402.05605 | ⭐⭐⭐ | §4.1 委托/控制权分配 |
+| NEW-B07 | Multi-Agents are Social Groups: Social Influence in Human-Agent Interactions | Song, Tan et al. | 2024 | 2411.04578 | ⭐⭐⭐⭐⭐ | §2 Related Work核心 |
+
+### 2.2 Group E：社会资本理论应用于AI（2026-05-21 完成）⚠️ 重要
+
+| ID | 标题 | 作者 | 年份 | arXiv | 相关性 | 经典理论 | 关键意义 |
+|----|------|------|------|-------|--------|---------|---------|
+| NEW-E01 | Social Learning & Collective Norm Formation in LLM Multi-Agent Systems | Gupta, Zhong, Rahwan et al. | 2025 | 2510.14401 | ⭐⭐⭐⭐⭐ | **Ostrom** | 最直接将Ostrom应用于LLM agents |
+| NEW-E02 | From Firms to Computation: AI Governance & Evolution of Institutions | Harre | 2025 | 2507.13616 | ⭐⭐⭐⭐⭐ | **Ostrom+制度理论** | AI治理→制度演化问题 |
+| NEW-E03 | Synthetic Social Graph: Emergent Behavior in AI Agent Communities | (需核实) | 2026 | 2604.27271⚠️ | ⭐⭐⭐⭐ | **Putnam** | bonding/bridging在AI agent网络中 |
+| NEW-E04 | Governance by Design: Parsonian Institutional Architecture for Agent Societies | Ruan | 2026 | 2604.11337 | ⭐⭐⭐⭐⭐ | **Parsons AGIL** | 最直接将Parsons应用于智能体社会架构 |
+| NEW-E05 | Institutional AI: Governing LLM Collusion via Public Governance Graphs | Bracale Syrnikov et al. | 2026 | 2601.11369 | ⭐⭐⭐⭐ | 制度机制设计 | 制度嵌入→合谋从50%降至5.6% |
+| NEW-E06 | When Agents Evolve, Institutions Follow | Fei, Guo, Xiao | 2026 | 2604.27691 | ⭐⭐⭐⭐ | 历史制度比较 | 7种历史制度→治理拓扑影响57pp |
+| NEW-E07 | AgentReputation: Decentralized Agentic AI Reputation Framework (FSE 2026) | Chishti, Oyinloye, Li | 2026 | 2605.00073 | ⭐⭐⭐⭐ | 声誉/社会资本 | 声誉→制度参与资格 |
+| NEW-E08 | Agents Incorporating Identity and Dynamic Teams in Social Dilemmas | Tilbury, Hoey | 2022 | 2208.03293 | ⭐⭐⭐ | 身份理论 | 早期规范框架 |
+
+### 2.3 Group A + C：多智能体协作与社会涌现（Paper 1 核心）
 
 | ID | 标题 | 作者 | 年份 | arXiv | 相关性(1-5) | 对应命题 | 全文优先级 |
 |----|------|------|------|-------|-----------|---------|----------|
@@ -110,23 +135,27 @@ PRISMA 最终计数（Phase 1 结束时更新）：
 
 | 优先级 | 关键词组 | 数据库 | 目标篇数 | 状态 |
 |--------|---------|--------|---------|------|
-| **P1** | Group E：Bourdieu/Putnam/Ostrom + AI/Agent | Google Scholar | ~20 | ⬜ |
-| **P1** | Group B：Human-AI co-evolution + hybrid society | arXiv cs.AI+cs.CY | ~30 | ⬜ |
-| **P2** | Group D：自我演化LLM/ReAct/EvolveR | arXiv cs.AI | ~20 | ⬜ |
-| **P2** | Nowak 2006引用追踪 | Google Scholar 引用树 | ~15 | ⬜ |
+| ✅ | Group E：社会资本理论 + AI/Agent | Google Scholar + arXiv | 8 | **完成** |
+| ✅ | Group B：Human-AI co-evolution + hybrid society | arXiv cs.AI+cs.CY | 7 | **完成** |
+| **P1** | Group D：自我演化LLM/ReAct/EvolveR | arXiv cs.AI | ~20 | ⬜ |
+| **P2** | Nowak 2006引用追踪 + Granovetter | Google Scholar 引用树 | ~10 | ⬜ |
 | **P3** | Group G：EigenTrust/P2P reputation | arXiv cs.CR | ~15 | ⬜ |
-| **P3** | 直接访问：arXiv:2603.27771（Huang et al.核实）| arXiv | 1 | ⬜ |
-| **P3** | 直接访问：arXiv:2603.20639（Evans et al.核实）| arXiv | 1 | ⬜ |
-| **P3** | 直接访问：arXiv:2603.23406（Zhang et al.核实）| arXiv | 1 | ⬜ |
-| **P3** | CHI 2026 proceedings：Quan et al.核实 | ACM DL | 1 | ⬜ |
+| **P3** | Mitchell arXiv:2604.00081 直接核实 | arXiv | 1 | ⬜ |
 
-### 需要直接访问URL核实的arXiv ID
+### ⚠️ 重要发现：Paper 1 §2 需要调整
 
-```
-arXiv:2603.27771  → Huang et al. 2026 Emergent Social Intelligence Risks
-arXiv:2603.20639  → Evans et al. 2026 Agentic AI Intelligence Explosion
-arXiv:2603.23406  → Zhang et al. 2026 Beyond Preset Identities
-```
+**问题**：Group E 搜索发现已有多篇论文将单个经典社会学理论（Ostrom/Putnam/Parsons）应用于AI agents：
+- Gupta et al. 2025（Ostrom → LLM多智能体规范）
+- Harre 2025（Ostrom → AI治理）
+- Ruan 2026（Parsons AGIL → 智能体社会架构）
+- Synthetic Social Graph（Putnam → AI agent网络）
+
+**原有论断**："首次将制度理论桥接到AI" — **需要修改**
+
+**修改方向**：Paper 1的创新点不是"首个桥接"，而是：
+> "尽管近期已有工作将单个制度理论（Ostrom/Putnam/Parsons）分别应用于特定AI多智能体问题，**本文提出第一个统一三要素可证伪框架**——将三个理论整合为单一分析工具，并提供系统性诊断而非个案应用"
+
+这实际上**强化**了我们的论文：证明这个方向是有价值的（有人在做），但缺乏统一框架（我们来提供）。
 
 ---
 
@@ -140,23 +169,33 @@ arXiv:2603.23406  → Zhang et al. 2026 Beyond Preset Identities
 
 ---
 
-## 五、统计摘要（Phase 1 Day 1 — 2026-05-21 EOD）
+## 五、统计摘要（Phase 1 Day 1 完整版 — 2026-05-21 EOD）
 
 | 指标 | 数值 |
 |------|------|
-| 已核实文献（原草稿引用）| **18/19**（100% — 仅Hilbert需替换） |
-| 新发现强相关候选 | **26 篇** |
-| 阅读笔记已创建 | **5 篇**（xi2024、han2026、feng2026、acps2025、takata2024）|
-| 检索完成关键词组 | **4/7**（A+C+F+G完成；B+E进行中）|
-| 幻觉引用数量 | **0**（所有引用均为真实论文）|
-| 下一步（Day 2）| Group B+E检索结果整合；Mitchell 2604.00081 核实；开始全文阅读TOP5优先文献 |
+| 已核实文献（原草稿引用）| **18/19**（100%真实，0幻觉；仅Hilbert需替换）|
+| 新发现候选：Group A/C | 7 篇 |
+| 新发现候选：Group B | 7 篇 |
+| 新发现候选：Group E | 8 篇 |
+| 新发现候选：Group F/G | 14 篇 |
+| **新发现总计** | **36 篇** |
+| 阅读笔记已创建 | 5 篇 |
+| 检索完成关键词组 | **5/7**（A+B+C+E+F+G完成；D剩余）|
+
+### ⚠️ Paper 1 §2 修改提示（需在Phase 2写作中处理）
+
+**发现**：E01-E04 等论文已分别将Ostrom/Putnam/Parsons应用于AI agents → Paper 1"首次桥接"的论断需要降格为"首个统一框架"。
+
+**修改后的创新点表述**（更精准、更defensible）：
+> "While recent work has individually applied Ostrom's commons governance [E01], Parsonian institutional design [E04], and Putnam's social capital [E03] to specific multi-agent problems, **no unified testable framework integrates these three dimensions into a falsifiable model of agent collaboration networks.** This paper provides that framework."
 
 ### Day 2 全文阅读优先队列
 
 | 优先级 | 论文 | 原因 |
 |--------|------|------|
-| 1 | arXiv:2505.13523 (ACPs) | ASM直接竞争者，Paper 2比较表必须精确 |
-| 2 | arXiv:2411.03252 (Takata) | Hilbert替换候选；支持"无制度嵌入的涌现"论点 |
-| 3 | arXiv:2309.07864 (Xi et al. Survey) | Agent Society章节是范式转换出发点 |
-| 4 | arXiv:2603.16900 (Han et al.) | 6个方向列表完整提取 |
-| 5 | arXiv:2604.22227 (Chakraborty) | 共演化框架与我们的三要素对比 |
+| **1** | arXiv:2510.14401 (Gupta et al. — Ostrom+LLM agents) | 最直接竞争Paper 1 §6理论基础；需精读确认与我们框架的差异 |
+| **2** | arXiv:2604.11337 (Ruan — Parsons AGIL) | 同上；Parsons AGIL是我们三要素框架的最近竞争方案 |
+| **3** | arXiv:2411.04578 (Song & Tan — Multi-Agents are Social Groups) | §2必引；"智能体集体被视为社会群体"是我们范式的实证基础 |
+| **4** | arXiv:2503.18238 (Ju & Aral — Field Experiments n=2234) | 提供"混合团队+同质化风险"的最强实证数据；可写入§4 |
+| **5** | arXiv:2505.13523 (ACPs) | ASM竞争方案；Paper 2比较表必须精确 |
+| **6** | arXiv:2604.22227 (Chakraborty) | 共演化框架；与P+SC+N三要素对比 |
