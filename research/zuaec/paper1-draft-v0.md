@@ -10,7 +10,7 @@
 
 ---
 
-# Three Pillars for AI Agent Socialization: A Scoping Review and Conceptual Framework Based on 2022-2026 Literature
+# Three Pillars for an Agent Collaboration Network: A Paradigm Shift from Capability Invocation to Social Role Agency, with a Scoping Review of 2022-2026 Literature
 
 **Authors**: [Jason Jiao, et al. — TBD]
 **Affiliation**: Mycelium Protocol Open Source Community; AAStar
@@ -22,13 +22,28 @@
 
 ## Abstract
 
-The rapid advancement of AI Agents is pushing human society toward a new historical juncture. Three competing narratives describe the future: human *replacement*, *human-AI collaboration*, and *machine-machine collaboration*. We conduct a scoping review of frontier literature from 2022-2026 (N=[TODO] papers) following PRISMA-ScR guidance, and identify three research clusters that mirror these narratives. Synthesizing findings across clusters, we diagnose a **structural gap**: current multi-agent systems lack *institutional embedding*—the rule structures, accumulable social capital, and open access mechanisms that enable human societies to sustain large-scale cooperation. We propose a **Three-Pillar Framework** for AI Agent socialization: (1) *collaboration protocols* P = (R, M, S, V, T) encoding roles, message syntax, state machine, verification, and settlement; (2) *quantified social capital* SC = (Hist, Cred, Rel) as a computational approximation of Bourdieu's social capital; and (3) *permissionless networks* N satisfying entry-, participation-, and exit-permissionlessness. We articulate five testable propositions (P1-P5) and connect the framework to existing sociological theory (Putnam, Bourdieu, Ostrom). To anchor the framework empirically, we describe an ongoing open-source implementation (Mycelium Protocol) currently deployed on Sepolia testnet with planned OP mainnet deployment, discussed transparently as an authors' case study with full conflict-of-interest disclosure. Our contributions are threefold: a scoping review of 2022-2026 literature; a conceptual framework with operational definitions and testable propositions; and a research agenda for empirical validation.
+Traditional agent communication protocols (MCP, FIPA ACL, AutoGen, OpenAI function calling) position AI agents as **invocable capabilities**—stateless functions to be called over the internet. We propose a **paradigm shift**: positioning agents as **social actors with declared roles**, carrying verifiable social credentials from their principal (individual or organization)—KYC, business licenses, historical reputation—and operating within explicit authorization scope, privacy constraints, and auditability. This shift enables agents to engage in **long-chain economic and social transactions**—purchasing, partnership formation, cross-organization workflows—that require *mobilizing social resources*, not merely invoking capabilities. We conduct a scoping review of frontier literature from 2022-2026 (N=[TODO] papers) following PRISMA-ScR guidance, identifying three research clusters (replacement, human-AI collaboration, machine-machine collaboration) and diagnosing the **structural gap**: current systems lack institutional infrastructure at the network layer. Grounded in classical institutional theory (Ostrom, Bourdieu, Putnam), we propose a falsifiable **Three-Pillar Framework** for an Agent Collaboration Network: (1) *role-specific collaboration protocols* P = (R, M, S, V, T); (2) *quantified social capital* SC = (Hist, Cred, Rel) bound to principal identity; (3) *permissionless networks* N satisfying entry-, participation-, and exit-permissionlessness. We articulate five testable propositions (P1-P5) connecting the framework to empirical AI agent research. To anchor empirically, we describe an ongoing open-source implementation (Mycelium Protocol) currently on Sepolia testnet with planned OP mainnet deployment, discussed transparently with full conflict-of-interest disclosure. Our contributions: a paradigm shift articulation (capability container → social role agent); a scoping review of 2022-2026 literature; a conceptual framework with operational definitions and testable propositions; and a research agenda for empirical validation.
 
-**Keywords**: AI Agent; multi-agent systems; computational social science; human-AI collaboration; social capital; permissionless networks; scoping review
+**Keywords**: Agent Collaboration Network; AI Agent; multi-agent systems; social role agent; institutional infrastructure; computational social science; permissionless networks; scoping review
 
 ---
 
 ## 1. Introduction
+
+### 1.0 The Core Argument: A Paradigm Shift
+
+Current AI agent infrastructure treats agents as **capabilities to be invoked**: MCP exposes tool functions for LLM consumption; FIPA ACL formalizes message-level interactions; AutoGen orchestrates multi-agent workflows under a central coordinator. These protocols answer the question *"How can one process invoke another's capability?"*
+
+We argue this framing is insufficient for the next phase of AI agent deployment. Increasingly, AI agents must engage in transactions that require *mobilizing social resources*—signing purchase contracts on behalf of a foreign trade company, negotiating partnerships, organizing events across organizational boundaries, accumulating verifiable reputation over time. Such transactions require what we call **social role agency**: the agent must declare a social role (e.g., "purchasing agent for Company X"), carry verifiable credentials backing that role (KYC, business license, prior interaction history), and operate within authorized scope under privacy and auditability constraints.
+
+The shift from *capability container* to *social role agent* is the core paradigm proposal of this paper. We do not argue that AI agents will form societies; we argue they already need to **collaborate across organizational boundaries on social-level tasks**, and the existing capability-level infrastructure is insufficient.
+
+This paper proceeds in three movements:
+- **Paradigm articulation** (§1, §6): Why social role agency is the right next abstraction
+- **Diagnostic scoping review** (§2-5): What 2022-2026 frontier research reveals about why current systems fall short
+- **Framework proposal** (§6-7): The three-pillar framework as institutional infrastructure for an Agent Collaboration Network
+
+A companion paper [Authors, 2026, Paper 2] presents the protocol-level operationalization (ASM) and an empirical reference implementation. Section 8 of this paper provides a transparent description of that implementation, disclosed under conflict-of-interest constraints.
 
 ### 1.1 The Three-Path Question
 

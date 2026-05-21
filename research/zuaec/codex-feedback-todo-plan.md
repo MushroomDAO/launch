@@ -259,11 +259,16 @@
 ### Phase 0（本周，5/20-5/27）— 立即可做
 
 - [x] Codex review 触发并产出 paper-review-codex-v1.md ✅
-- [ ] 修订 paper-innovation-points.md：弱化 "first" 和 "唯一" 措辞，去掉 "AI Agent Social Engineering"
-- [ ] 修订 paper1-draft-v0 abstract 中 "Ethereum/Optimism mainnet" → "Sepolia testnet with planned OP mainnet"
-- [ ] 修订 paper1-draft-v0 §8.2 同样改
-- [ ] 修订 paper2-draft-v0 §2.6 表格标题 + 加脚注
-- [ ] 修订 paper2-draft-v0 abstract "first to simultaneously" → "an early protocol specification"
+- [x] 修订 paper-innovation-points.md：弱化 "first" 和 "唯一" 措辞，去掉 "AI Agent Social Engineering" ✅
+- [x] 修订 paper1-draft-v0 abstract 中 "Ethereum/Optimism mainnet" → "Sepolia testnet with planned OP mainnet" ✅
+- [x] 修订 paper1-draft-v0 §8.2 同样改 ✅
+- [x] 修订 paper2-draft-v0 §2.6 表格标题 + 加脚注 ✅
+- [x] 修订 paper2-draft-v0 abstract "first to simultaneously" → "an early protocol specification" ✅
+- [x] **范式重定位（2026-05-21）**：建立 7 层一致性视图，把 Paper 1 重新定位为"能力定位 vs 社会角色定位"的范式论文 ✅
+  - paper-innovation-points.md：加入 §〇 7 层视图 + 5 轮迭代追溯
+  - paper1-draft-v0.md：title 改为 "Three Pillars for an Agent Collaboration Network..."；Abstract 重写以范式开篇；§1.0 加 Core Argument
+  - paper2-draft-v0.md：Abstract 重写为协议层操作化；§1.0 加 Relationship to Companion Paper
+  - agent-network-architecture.md：加 §〇 整体导览 + §1.1 范式区分表
 - [ ] Jason 完成 user-review-queue 中的 9 项决策
 
 ### Phase 1 增强版（Week 2-3，5/27-6/9）— 文献密集

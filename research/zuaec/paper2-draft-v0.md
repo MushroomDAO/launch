@@ -22,13 +22,24 @@
 
 ## Abstract
 
-Multi-agent AI systems increasingly require communication infrastructure that goes beyond ad-hoc message passing. We present **ASM (Agent Social Message)**, a native communication protocol for decentralized agent collaboration that integrates verifiable identity, authorization, and privacy-preserving reputation as joint design goals. To our knowledge, ASM is an early protocol specification that addresses three structural gaps observed in existing protocols (FIPA ACL, MCP, DIDComm): (1) lack of cryptographic accountability for human authorization, (2) absence of privacy-preserving reputation accumulation, and (3) inadequate threat coverage for decentralized agent ecosystems. We propose a dual-network model where a human subnet A authorizes agent operations in a permissionless agent subnet B, mediated by a verifiable social memory layer. The ASM protocol specification combines: a three-block message structure (Identity & Authorization Capsule, Capability & Resource Manifesto, Interaction Intent & Proof Payload); a finite state machine for two-phase interaction (relay-mediated discovery, direct WebRTC negotiation); and a privacy-preserving reputation system based on ZK proofs of accumulated credentials. We provide an adversary model covering eight attacker types and analyze safety/liveness properties against each. We describe an ongoing implementation of ASM as part of Mycelium Protocol (currently on Sepolia testnet with planned OP mainnet deployment), with full conflict-of-interest disclosure. This paper provides a protocol specification and security analysis; formal cryptographic proofs are deferred to future work pending cryptography-domain collaboration.
+A companion paper [Authors, 2026, Paper 1] argues that AI agents should be positioned as **social role agents** carrying verifiable principal identity, rather than as invocable capability containers, and proposes a three-pillar framework (collaboration protocols, quantified social capital, permissionless networks) for an Agent Collaboration Network. This paper provides the protocol-level operationalization. We present **ASM (Agent Social Message)**, an agent communication protocol that operationalizes the role-bearing agent paradigm by integrating: (1) cryptographic binding of social roles and credentials from declared principals (individuals or organizations) to agents; (2) role-specific collaboration state machines (e.g., procurement protocol, partnership formation protocol, academic collaboration protocol); (3) privacy-preserving reputation accumulation via ZK proofs over accumulator-managed credentials; (4) permissionless multi-party coordination across organizational boundaries. ASM enables agents to engage in long-chain social and economic transactions—procurement contracts, partnership formation, cross-organization workflows—that current capability-level protocols (MCP, FIPA ACL, AutoGen) cannot support. We specify a dual-network model (human subnet A + social memory layer + permissionless agent subnet B), a three-block ASM message structure (Identity & Authorization Capsule, Capability & Resource Manifesto, Interaction Intent & Proof Payload), a finite state machine for two-phase interaction (relay-mediated discovery, direct negotiation), and an adversary model covering eight attacker types with safety and liveness analyses. We describe an ongoing implementation as part of Mycelium Protocol (currently on Sepolia testnet with planned OP mainnet), with full conflict-of-interest disclosure. This paper provides specification and security analysis; formal cryptographic proofs are deferred to future work.
 
 **Keywords**: multi-agent systems; agent communication; decentralized identity; zero-knowledge proofs; protocol design; permissionless networks
 
 ---
 
 ## 1. Introduction
+
+### 1.0 Relationship to the Companion Paper
+
+A companion paper [Authors, 2026, Paper 1] argues that the next phase of AI agent deployment requires a **paradigm shift**: from positioning agents as *invocable capabilities* (the current MCP / FIPA ACL / AutoGen paradigm) to positioning them as **social role agents**—entities that carry verifiable principal identity (KYC, business licenses, prior reputation) and operate within authorization scope to engage in long-chain economic and social transactions across organizational boundaries. The companion paper proposes a three-pillar framework (collaboration protocols, quantified social capital, permissionless networks) grounded in classical institutional theory (Ostrom, Bourdieu, Putnam) as the conceptual foundation for an Agent Collaboration Network.
+
+**This paper provides the protocol-level operationalization** of that framework. We focus on:
+- **L5 (Architecture)**: the dual-network model with social memory layer
+- **L6 (Protocol)**: the ASM message specification, state machine, and reputation system
+- **L7 (Implementation)**: a transparent description of the Mycelium Protocol reference implementation
+
+Readers seeking the underlying paradigm argument, scoping review of agent literature, and theoretical grounding should consult Paper 1.
 
 ### 1.1 Motivation
 

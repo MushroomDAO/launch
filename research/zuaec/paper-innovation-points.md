@@ -1,16 +1,70 @@
 # 两篇论文的核心创新点（One-Sentence Pitch）
 
 > **创建日期**：2026-05-20
+> **最近更新**：2026-05-21（加入"7 层一致性视图"作为整体叙事框架）
 > **目的**：用一句话锁定每篇论文的学术原创性。任何论文的接受度首先取决于这一句话能否说服审稿人"这是新东西、且值得发表"。
-> **状态**：v0 草案，待 Jason 确认
+> **状态**：v0.2 — 范式定位锁定（"能力定位 vs 社会角色定位"）
+
+---
+
+## 〇、统一叙事：Agent 协作网络的 7 层一致性视图
+
+整个项目（两篇论文 + Mycelium Protocol 工程）的核心从未变过：**提供一个 Agent 协作网络**。所有迭代都是对同一件事的**逐步精确化（zoom-in）**，不是方向转变。
+
+```
+                                Agent 协作网络
+                       (Agent Collaboration Network)
+                                     │
+              "为 Agent 提供协作能力的网络基础设施"
+                                     │
+        ─────────────────────────────────────────────────
+        │                            │                            │
+    我们提供什么            为什么需要                       怎么实现
+    (Paradigm)             (Diagnosis)                  (Realization)
+```
+
+### 7 层一致性视图
+
+| 层级 | 描述 | Paper 归属 |
+|------|------|----------|
+| **L1 目标** | 提供 Agent 协作网络 | 两篇都用 |
+| **L2 范式** | Agent 是社会角色代理人，不是能力容器 | Paper 1 §1 |
+| **L3 诊断** | 现有协议（MCP/FIPA）只支持能力调用，缺社会层基础设施 | Paper 1 §2 + §5 |
+| **L4 框架** | 三要素（P + SC + N）+ 制度理论根基 | Paper 1 §6-§7 |
+| **L5 架构** | 双网 + 社会记忆层 + 授权机制 | Paper 2 §3 |
+| **L6 协议** | ASM 三区块 + 状态机 + ZK | Paper 2 §4-§6 |
+| **L7 实现** | Mycelium on Sepolia → OP mainnet | Paper 2 §7 |
+
+**两篇论文 = 同一个 Agent 协作网络的两个不同 zoom level 的描述**：
+- Paper 1 聚焦 **L1-L4**：从顶层目标到理论框架（What & Why）
+- Paper 2 聚焦 **L5-L7**：从系统架构到具体实现（How）
+
+### 所有迭代都是 zoom-in，不是 turn
+
+| 迭代轮次 | 看似在变什么 | 实际是什么 |
+|---------|----------|---------|
+| Round 1：从"Agent Society" → "Agent 协作网络" | 改主题词 | **L2 范式的措辞精确化**（去除哲学争议） |
+| Round 2：从"协作" → "长链路、跨组织协作" | 缩小范围 | **L1 目标的范围明确化** |
+| Round 3：从"长链路" → "社会层级 vs 能力层级" | 增加对比维度 | **L3 诊断的精确化**（与现有方案划清边界） |
+| Round 4：从"社会层级" → "携带真实社会身份" | 引入机制 | **L4 SC 维度的具体化**（身份绑定） |
+| Round 5：从"携带凭证" → "社会角色定位" | 提炼为范式 | **L2 范式的最终凝练**（能力容器 vs 社会角色代理） |
+
+**始终不变的核心**：
+- 三要素框架（P + SC + N）从 DeepSeek 原始对话起就提出
+- 双网架构 + ASM 协议 + Mycelium 实现从一开始就锚定
+- "Agent 协作网络"作为顶层目标从未变过
 
 ---
 
 ## Paper 1：核心创新点
 
-### 一句话陈述（推荐版本，Codex review 后修订）
+### 一句话陈述（v0.2 — 范式定位锁定）
 
-> **We bridge AI agent research with classical institutional theory (Ostrom, Bourdieu, Putnam) to argue that capability, data, and alignment accounts of multi-agent AI failures are incomplete without institutional embedding, and offer a falsifiable three-pillar framework (collaboration protocol, quantified social capital, permissionless network) for AI agent socialization, grounded in a PRISMA-ScR scoping review of 2022-2026 literature.**
+**中文**：
+> **传统 Agent 协议（MCP / FIPA ACL / AutoGen / OpenAI tools）把 Agent 定位为"可被调用的能力"；我们提出范式转换：把 Agent 定位为"承担社会角色的代理人"——携带所有者（个体/组织）声明的社会角色与可验证社会凭证（KYC、营业执照、历史信誉），在授权 scope 内、保护隐私、可追溯地按该角色与其他 Agent 持续协作。基于经典制度理论（Ostrom/Bourdieu/Putnam），我们提出可证伪的三要素框架——角色特定的协作协议、量化社会资本（Hist + Cred + Rel）、无许可网络——使 Agent 能完成需要调动社会资源的长链路经济与社交协作。**
+
+**英文**：
+> **Traditional agent communication protocols (MCP, FIPA ACL, AutoGen) position agents as invocable capabilities. We propose a paradigm shift: positioning agents as social actors with declared roles, carrying verifiable social credentials from their principal (individual or organization)—KYC, business licenses, historical reputation—and operating within explicit authorization scope, privacy constraints, and auditability. Grounded in classical institutional theory (Ostrom, Bourdieu, Putnam), we propose a falsifiable three-pillar framework—role-specific collaboration protocols, quantified social capital (history, credentials, relations), and permissionless networks—enabling agents to engage in long-chain economic and social transactions that require mobilizing social resources rather than merely invoking capabilities.**
 
 中文版：
 > **本文将 AI Agent 研究与经典制度理论（Ostrom、Bourdieu、Putnam）相桥接，诊断出当前多智能体 AI 系统的根本缺口是缺乏"制度性嵌入"——不是能力、数据、或对齐问题——并基于 2022-2026 年文献的 PRISMA-ScR scoping review，提出第一个可证伪的"三要素框架"（协作协议、量化社会资本、无许可网络）来填补这一缺口。**
@@ -36,9 +90,13 @@
 
 ## Paper 2：核心创新点
 
-### 一句话陈述（推荐版本，Codex review 后修订）
+### 一句话陈述（v0.2 — 范式定位锁定）
 
-> **We present ASM, an agent communication protocol that integrates verifiable human-authorization, privacy-preserving reputation accumulation, and permissionless multi-agent coordination as joint design goals—operationalizing the institutional embedding framework with a reference implementation path on public blockchain (currently on Sepolia testnet with planned OP mainnet deployment).**
+**中文**：
+> **我们设计 ASM 协议，操作化"角色承载型 Agent" 范式：把可验证社会角色与凭证的密码学绑定、角色特定的协作状态机（采购、求偶、学术合作等）、隐私保护声誉积累、无许可多方协调整合为联合设计目标，使 Agent 能在授权 scope、隐私约束、可追溯三重保障下，按所有者声明的社会角色与其他 Agent 持续协作完成具体经济与社会事务，跨越现有能力调用协议（MCP / FIPA ACL）的边界，并提供公链 reference implementation。**
+
+**英文**：
+> **We present ASM, an agent communication protocol that operationalizes the role-bearing agent paradigm: integrating cryptographic binding of social roles and credentials, role-specific collaboration state machines (procurement, partnership formation, academic collaboration), privacy-preserving reputation accumulation, and permissionless multi-party coordination as joint design goals. ASM enables agents to engage in long-chain social and economic transactions—on behalf of declared principals (individuals or organizations) within authorization scope, privacy constraints, and auditability—that current capability-based protocols (MCP, FIPA ACL) cannot support, with a reference implementation on public blockchain (currently Sepolia testnet with planned OP mainnet).**
 
 中文版：
 > **本文提出 ASM，首个同时实现可验证人类授权、隐私保护声誉积累、与无许可多智能体协作三者的 Agent 通信协议——在公链上部署了 reference implementation，将"制度性嵌入"框架工程化落地。**
@@ -69,10 +127,24 @@ ASM 是唯一全 ✅ 的协议。
 
 把两篇论文当成一个 portfolio 卖给学术界，one-liner：
 
-> **We provide a framework / protocol / implementation stack for socially-embedded AI agents—from the conceptual framework grounded in classical sociology (Paper 1), through the protocol specification with privacy-preserving cryptographic primitives (Paper 2), to the reference implementation on public blockchain (Mycelium Protocol, currently on Sepolia testnet with planned OP mainnet deployment).**
+> **We provide a complete Agent Collaboration Network stack: positioning agents as social role agents (not capability containers), diagnosing the missing institutional infrastructure (Paper 1, L1-L4), specifying the ASM protocol for role-bearing collaboration (Paper 2, L5-L6), and demonstrating with a public-blockchain reference implementation (Mycelium Protocol, L7—currently Sepolia testnet with planned OP mainnet).**
 
 中文：
-> **我们为社会化嵌入的 AI Agent 提供框架 / 协议 / 实现三层栈：从基于经典社会学的概念框架（Paper 1），到含隐私保护密码学原语的协议规范（Paper 2），再到公链上的 reference implementation（Mycelium Protocol，当前在 Sepolia 测试网，OP mainnet 部署计划中）。**
+> **我们提供完整的 Agent 协作网络栈：把 Agent 定位为承担社会角色的代理人而非能力容器，诊断现有协议缺失的制度性基础设施（Paper 1，覆盖 L1-L4 范式/诊断/框架），规范 ASM 协议作为角色承载型协作的实现（Paper 2，覆盖 L5-L6 架构/协议），并通过公链 reference implementation 落地（Mycelium Protocol，L7 实现层，当前在 Sepolia 测试网，OP mainnet 部署计划中）。**
+
+### 价值主张（严谨版）
+
+**对个体**：
+> 你声明你的社会角色（如"想找伴侣的 28 岁单身"），授权你的 Agent 携带你的可验证社会凭证（年龄、婚况、兴趣向量等），在隐私保护下与其他 Agent 按"求偶协议"持续匹配；你只在 Agent 找到合适候选时介入做最终判断。
+
+**对组织**（外贸公司案例）：
+> 公司声明"外贸采购方"角色，营业执照与 KYC 凭证绑定到该公司的 Agent；该 Agent 在公司授权下按"采购协议"持续与全球供应商的 Agent 接洽，对方可通过 ZK 证明验证公司资质，整个询盘-报价-比对过程压缩至几分钟。
+
+**一句话定调（最强版）**：
+> **传统 Agent 是"能力的容器"，我们的 Agent 是"承担社会角色的代理人"——携带你的真实社会身份与信誉，按你授权的角色代你办具体的事。**
+
+**最简化（用于 BP）**：
+> **Agent 不只调用能力，更承担社会角色。**
 
 ---
 

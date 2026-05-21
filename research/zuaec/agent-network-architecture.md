@@ -1,10 +1,29 @@
-# Agent 协作网络 — 核心逻辑与架构（v0 初稿）
+# Agent 协作网络 — 核心逻辑与架构（v0.2）
 
 > **来源**：基于 [01-ai-agent-evolution-analysis.md](01-ai-agent-evolution-analysis.md) ~ [04-agent-communication-protocol.md](04-agent-communication-protocol.md) 四篇原始研究文档 + [project-concept.md](project-concept.md) 整理
 > **创建日期**：2026-05-20
+> **最近更新**：2026-05-21（加入 7 层一致性视图作为整体导览）
 > **定位**：工程项目本身的架构基线文档（独立于学术论文，但为 Paper 2 提供 reference implementation）
-> **状态**：v0 初稿，待 Jason review 后定稿
-> **关联**：[paper2-draft-v0.md](paper2-draft-v0.md) §7（实现案例引用本文档）
+> **状态**：v0.2 — 范式定位锁定（"能力定位 vs 社会角色定位"）
+> **关联**：[paper-innovation-points.md](paper-innovation-points.md) §〇（7 层视图） · [paper2-draft-v0.md](paper2-draft-v0.md) §7
+
+---
+
+## 〇、整体导览：7 层一致性视图
+
+**核心范式**：传统 Agent 是"能力的容器"（capability container），我们的 Agent 是"承担社会角色的代理人"（social role agent）——携带所有者的真实社会身份与可验证凭证，在授权 scope 内、保护隐私、可追溯地代办具体事务。
+
+| 层级 | 描述 | 文档归属 |
+|------|------|--------|
+| **L1 目标** | 提供 Agent 协作网络 | 本文档 §一 + Paper 1/2 §1 |
+| **L2 范式** | Agent 是社会角色代理人，不是能力容器 | Paper 1 §1.0 |
+| **L3 诊断** | 现有协议（MCP/FIPA）只支持能力调用，缺社会层基础设施 | Paper 1 §2 + §5 |
+| **L4 框架** | 三要素（P + SC + N）+ 制度理论根基 | Paper 1 §6-§7 |
+| **L5 架构** | 双网 + 社会记忆层 + 授权机制 | **本文档 §三 + Paper 2 §3** |
+| **L6 协议** | ASM 三区块 + 状态机 + ZK | Paper 2 §4-§6 |
+| **L7 实现** | Mycelium on Sepolia → OP mainnet | **本文档 §五 + Paper 2 §7** |
+
+**本文档主要聚焦 L1、L5、L7**：项目愿景、系统架构、实现状态。理论框架（L2-L4）和协议规范（L6）请参见对应论文文档。
 
 ---
 
@@ -12,7 +31,19 @@
 
 ### 1.1 一句话定义
 
-> **用区块链基础设施 + AI Agent 构建可定义协作协议的去中心化 Agent 协作网络，让任何人和组织都能低成本接入和使用 AI Agent 完成复杂任务。**
+> **用区块链基础设施 + AI Agent 构建一个去中心化的 Agent 协作网络，让 Agent 承担其所有者（个体/组织）声明的社会角色，携带可验证社会凭证，在授权 scope 内代办具体经济与社会事务。**
+
+**范式区分**（与现有方案的根本不同）：
+
+| 维度 | 传统 Agent（能力定位）| 我们的 Agent（社会角色定位）|
+|------|------------------|----------------------|
+| 本质 | 能力的容器（capability container）| 社会角色的代理人（social role agent）|
+| 被如何使用 | 被调用（API call）| 按角色行动（acts in role）|
+| 携带什么 | API spec + 模型权重 | 所有者真实社会身份 + 凭证 + 角色声明 |
+| 协议性质 | RPC / 工具调用 | 角色特定的协作协议 |
+| 运行模式 | 单次请求-响应 | 持续、自主、按角色长期运行 |
+| 示例 | "生成一张图" | "代我们外贸公司处理采购" |
+| 现有方案 | MCP / FIPA ACL / AutoGen | **目前缺失，我们填补** |
 
 ### 1.2 价值主张
 
