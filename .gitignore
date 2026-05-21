@@ -146,3 +146,7 @@ contracts/broadcast/
 
 # Wrangler
 .wrangler/
+_backup/
+
+# Research paper PDFs (large binary files, stored locally only)
+research/zuaec/papers/*.pdf
