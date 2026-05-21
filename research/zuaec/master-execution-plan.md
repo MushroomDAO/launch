@@ -2,7 +2,9 @@
 
 > **创建日期**：2026-05-20
 > **目标**：在 2026 年 8 月 31 日（ZUAEC 报名截止）前，完成 Paper 1 arXiv 提交 + Paper 2 初稿 + Mycelium Protocol 主网部署
-> **总时长**：14 周（2026-05-20 → 2026-08-31）
+> **总时长**：~~14 周~~ → **修订为 9 周**（2026-05-20 → 2026-07-22），基于 7-8 小时/天（≈50 小时/周）投入重新标定
+> **审阅者**：导师（学术判断）+ Codex（结构性反馈）— 不需要额外外部审阅者
+> **投稿路径**：Plan A 为主（arXiv → AAMAS/ICDCS → Journal），Plan B/C 备用仅在 A 被拒时触发
 > **关键约束**：ZK 由作者自行实现（不需要密码学合作者）；ZUAEC 报名截止时 BP 中可引用 arXiv 论文链接
 
 ---
@@ -112,13 +114,14 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 
 ### 1.4 每日工作量（Daily Quota）
 
+> **修订后节奏：7-8 小时/天，约 50 小时/周**
+
 | 阶段 | 标题筛选 | 摘要阅读 | 全文阅读 | 深度笔记 |
 |------|---------|---------|---------|---------|
-| Week 1（密集采集）| 100/day | 30/day | 2/day | 1/day |
-| Week 2-3（消化）| 50/day | 15/day | 3/day | 2/day |
-| Week 4（深度补充）| 20/day | 10/day | 4/day | 2-3/day |
+| Phase 1 密集采集（3-4天）| 150-200/day | 40/day | 3/day | 2/day |
+| Phase 1 消化（3-4天）| 50/day | 20/day | 5/day | 3/day |
 
-**每日总投入约 3-5 小时**（如果你有专门时间块；可压缩到 2 小时如果仅做核心 30 篇）
+**7-8 小时/天对应能力：每周文献检索约 50-60 篇全文阅读；写作日 3,000-5,000 词**
 
 ### 1.5 笔记模板（每篇全文阅读后产出）
 
@@ -153,7 +156,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 
 ## 二、整体阶段拆解（Phase Decomposition）
 
-### Phase 0：决策与对齐周（Week 1: 2026-05-20 → 2026-05-26）
+### Phase 0：决策与对齐周（Week 1: 2026-05-20 → 2026-05-21） ✅ COMPLETE
 
 **目标**：所有关键决策定稿，进入执行模式
 
@@ -173,7 +176,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 - ⬜ 系统架构 v0 中 6 个待定问题
 - ⬜ Codex review 反馈是否全部采纳
 
-### Phase 1：文献密集检索（Week 2-3: 2026-05-27 → 2026-06-09）
+### Phase 1：文献密集检索（Week 2: 2026-05-21 → 2026-05-28）🟡 IN PROGRESS
 
 **目标**：完成 800 候选库 → 100 摘要入围 → 30-50 全文阅读
 
@@ -191,7 +194,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 - `paper1-reading-notes/`：30-50 个独立笔记文件（按 §1.5 模板）
 - `paper1-bibliography.md` 更新：每条引用核实状态升级
 
-### Phase 2：Paper 1 v1 撰写（Week 4-5: 2026-06-10 → 2026-06-23）
+### Phase 2：Paper 1 v1 撰写（Week 3-4: 2026-05-29 → 2026-06-11）
 
 **目标**：基于阅读笔记，从 v0 升级到 v1（所有 [TODO] 消除，引用核实）
 
@@ -210,7 +213,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 
 **Phase 2 输出**：`paper1-draft-v1.md`（~12000-15000 词，无 [TODO]）
 
-### Phase 3：Paper 1 internal review + 修订（Week 6: 2026-06-24 → 2026-06-30）
+### Phase 3：Paper 1 internal review + 修订（Week 5: 2026-06-12 → 2026-06-18）
 
 **目标**：Paper 1 v1 → v2（提交 arXiv 前的版本）
 
@@ -226,7 +229,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 - ⬜ 是否邀请外部审阅者
 - ⬜ 是否需要英文 native speaker 润色
 
-### Phase 4：Paper 1 arXiv 提交（Week 7: 2026-07-01 → 2026-07-07）
+### Phase 4：Paper 1 arXiv 提交（Week 6: 2026-06-19 → 2026-06-25）
 
 **目标**：Paper 1 上线 arXiv，获得 arXiv ID
 
@@ -238,7 +241,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 
 **Phase 4 输出**：Paper 1 arXiv ID（如 `arXiv:2607.XXXXX`），可立即用于 ZUAEC BP
 
-### Phase 5：Paper 2 v1 撰写（Week 8-9: 2026-07-08 → 2026-07-21）
+### Phase 5：Paper 2 v1 撰写（Week 7-8: 2026-06-26 → 2026-07-09）
 
 **目标**：基于 Paper 1 锁定的框架 + Mycelium 部署进度，完成 Paper 2 v1
 
@@ -267,7 +270,7 @@ Layer 4：核心引用文献（25-35 篇，写入 References）
 | 2 个 demo Agent（转写 + 摘要）跑通 | Jason 团队 | Week 10-12 |
 | 性能数据采集（discovery 延迟 / ZK 生成时间 / 消息大小）| Jason 团队 | Week 11-12 |
 
-### Phase 7：Paper 2 review + arXiv 提交（Week 13-14: 2026-08-19 → 2026-08-31）
+### Phase 7：Paper 2 review + arXiv 提交（Week 9: 2026-07-10 → 2026-07-22）
 
 **目标**：Paper 2 v1 → v2 → arXiv，赶在 ZUAEC 8/31 报名截止前
 

@@ -15,21 +15,21 @@
 
 | 编号 | 引用 | 类型 | 来源标注 | 核实状态 | 备选处理 |
 |------|------|------|---------|---------|---------|
-| [1] | Feng, F., Chen, X. & Christakis, N.A. (2026). On the optimal integration of intelligent agents into network systems to steer cooperation. *PNAS*, 123(12), e2537939123. | journal | PNAS（peer-reviewed）| ⚠️ 需核实 | PNAS 2026 期号需确认 |
-| [2] | Evans, J. et al. (2026). Agentic AI and the next intelligence explosion. arXiv:2603.20639 | preprint | arXiv | ⚠️ 需核实 | arXiv 编号需访问验证 |
-| [3] | Chakraborty, S. (2026). A Co-Evolutionary Theory of Human-AI Coexistence: Mutualism, Governance, and Dynamics in Complex Societies. arXiv:2604.22227 | preprint | arXiv | ⚠️ 需核实 | 同上 |
-| [4] | Han, T.A. et al. (2026). Social physics in the age of artificial intelligence. arXiv:2603.16900 | preprint | arXiv | ⚠️ 需核实 | 同上 |
-| [5] | Mitchell, R.J. (2026). Beyond Symbolic Control: Societal Consequences of AI-Driven Workforce Displacement and the Imperative for Genuine Human Oversight Architectures. arXiv:2604.00081 | preprint | arXiv | ⚠️ 需核实 | 同上 |
-| [6] | Li, M. et al. (2026). Does Socialization Emerge in AI Agent Society? A Case Study of Moltbook. arXiv:2602.14299 | preprint | arXiv | ✅ **已核实**（2026-05-20 WebSearch）| Moltbook 是真实平台，2026 年 1 月上线，77万+ autonomous agents |
-| [7] | Yee, B. et al. (2026). Molt Dynamics: Emergent Social Phenomena in Autonomous AI Agent Populations. arXiv:2603.03555 | preprint | arXiv | ✅ **已核实** | Brandon Yee & Krishna Sharma；77万 vs 90704 不是矛盾，77万是 Moltbook 平台总量，90704 是 3 周窗口的 active subset；6.7% 协作成功率来自 164 个 multi-agent 协作事件 |
-| [8] | Huang, Y. et al. (2026). Emergent Social Intelligence Risks in Generative Multi-Agent Systems. arXiv:2603.27771 | preprint | arXiv | ⚠️ 需核实 | — |
-| [9] | Zhang, H. et al. (2026). Beyond Preset Identities: How Agents Form Stances and Boundaries in Generative Societies. arXiv:2603.23406 | preprint | arXiv | ⚠️ 需核实 | — |
-| [10] | Li, H. et al. (2025). The Emergence of Altruism in Large-Language-Model Agents Society. arXiv:2509.22537 | preprint | arXiv | ⚠️ 需核实 | — |
-| [11] | **Hilbert, M. (2025). Multi-AI-Agent Social Networks. martinhilbert.net** | **personal site** | **个人网站** | **❌ 不符合学术引用标准** | 必须找 arXiv/journal 版本，否则删除或降为 "online manuscript" |
-| [12] | Quan, K. et al. (2026). Towards AI as Colleagues: Multi-Agent System Improves Structured Ideation Processes. *CHI 2026* | conference | CHI（peer-reviewed）| ⚠️ 需核实 | CHI 2026 接收名单需确认 |
-| [13] | Chen, J. et al. (2025). Static Sandboxes Are Inadequate. arXiv:2510.13982 | preprint | arXiv | ⚠️ 需核实 | doc03 提及但 doc01 参考文献缺失，需补 |
-| [14] | Haase, J. & Pokutta, S. (2025). Beyond Static Responses. arXiv:2506.01839 | preprint | arXiv | ⚠️ 需核实 | — |
-| [15] | Wu, R. et al. (2026). EvolveR: Self-Evolving LLM Agents. arXiv:2510.16079 (ICML 2026) | preprint+conf | arXiv + ICML | ⚠️ 需核实 | ICML 2026 接收名单需确认 |
+| [1] | Feng, F., Chen, X. & Christakis, N.A. (2026). On the optimal integration of intelligent agents into network systems to steer cooperation. *PNAS*, 123(12), e2537939123. | journal | PNAS（peer-reviewed）| ✅ **已核实**（2026-05-21）| 演化图论最优嵌入比例；DOI:10.1073/pnas.2537939123 |
+| [2] | Evans, J., Bratton, B., & Agüera y Arcas, B. (2026). Agentic AI and the next intelligence explosion. arXiv:2603.20639 | preprint | arXiv | ✅ **已核实**（2026-05-21）| "AI singularity误被设想为单一神级心智" — 实为3位作者 |
+| [3] | Chakraborty, S. (2026). A Co-Evolutionary Theory of Human–AI Coexistence: Mutualism, Governance, and Dynamics in Complex Societies. arXiv:2604.22227 | preprint | arXiv | ✅ **已核实**（2026-05-21）| 上交大；"条件互利共生+治理"框架 |
+| [4] | Han, T.A. et al. (2026). Social physics in the age of artificial intelligence. arXiv:2603.16900 | preprint | arXiv | ✅ **已核实**（2026-05-21）| 7位作者；演化博弈论+文化演化+LLM仿真；6个研究方向 |
+| [5] | Mitchell, R.J. (2026). Beyond Symbolic Control: Societal Consequences of AI-Driven Workforce Displacement and the Imperative for Genuine Human Oversight Architectures. arXiv:2604.00081 | preprint | arXiv | ⚠️ 待直接访问URL | — |
+| [6] | Li, M. et al. (2026). Does Socialization Emerge in AI Agent Society? A Case Study of Moltbook. arXiv:2602.14299 | preprint | arXiv | ✅ **已核实**（2026-05-20）| Moltbook 真实平台；77万总量，90704为3周活跃子集 |
+| [7] | Yee, B. et al. (2026). Molt Dynamics: Emergent Social Phenomena in Autonomous AI Agent Populations. arXiv:2603.03555 | preprint | arXiv | ✅ **已核实**（2026-05-20）| 6.7%协作成功率；164个multi-agent事件 |
+| [8] | Huang, Y. et al. (2026). Emergent Social Intelligence Risks in Generative Multi-Agent Systems. arXiv:2603.27771 | preprint | arXiv | ✅ **已核实**（2026-05-21）| 15位作者；"multi-agent systems rapidly moving from lab to real-world deployments" |
+| [9] | Zhang, H., Song, S., & Wang, J. (2026). Beyond Preset Identities: How Agents Form Stances and Boundaries in Generative Societies. arXiv:2603.23406 | preprint | arXiv | ✅ **已核实**（2026-05-21）| "stable stance formation and identity negotiation" |
+| [10] | Li, H. et al. (2025). The Emergence of Altruism in Large-Language-Model Agents Society. arXiv:2509.22537 | preprint | arXiv | ✅ **已核实**（2026-05-21）| 香港浸大/港中深；Schelling博弈驱动200+ agents |
+| [11] | **Hilbert, M. (2025). Multi-AI-Agent Social Networks. martinhilbert.net** | **personal site** | **个人网站** | **❌ 不符合学术引用标准** | 无 arXiv/journal 版本；**替换方案**：用 arXiv:2501.05171 (Piao et al. 极化) 或 arXiv:2411.03252 (Takata 个体性涌现) 支撑同一论点 |
+| [12] | Quan, K., Albassam, D., Wu, M., Ding, Z., & Chin, J. (2026). Towards AI as Colleagues: Multi-Agent System Improves Structured Ideation Processes. *CHI 2026* | conference | CHI（peer-reviewed）| ✅ **已核实**（2026-05-21）| arXiv:2510.23904；UIUC/U.Maryland；注意：CHI最终版标题删去了"Professional" |
+| [13] | Chen, J. et al. (2025). Static Sandboxes Are Inadequate. arXiv:2510.13982 | preprint | arXiv | ✅ **已核实**（2026-05-21）| 开放式协同演化；三支柱分类 |
+| [14] | Haase, J. & Pokutta, S. (2025). Beyond Static Responses. arXiv:2506.01839 | preprint | arXiv | ✅ **已核实**（2026-05-21）| 6层连续体框架；社会科学仿真新范式 |
+| [15] | Wu, R. et al. (2026). EvolveR: Self-Evolving LLM Agents. arXiv:2510.16079 (ICML 2026) | preprint+conf | arXiv + ICML | ⚠️ 待核实 | ICML 2026 接收名单需确认 |
 
 **核实方法**：
 1. 访问 `arxiv.org/abs/<编号>` 验证 arXiv 论文存在
