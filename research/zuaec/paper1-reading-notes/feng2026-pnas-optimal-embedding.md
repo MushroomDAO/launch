@@ -3,7 +3,7 @@
 **Citation**: Fu, F., Chen, X., & Christakis, N.A. (2026). On the optimal integration of intelligent agents into network systems to steer cooperation. *PNAS*, 123(12), e2537939123.
 **DOI**: https://doi.org/10.1073/pnas.2537939123
 **Cluster**: Social Physics / Evolutionary Game Theory
-**Status**: Skim only（待全文）
+**Status**: Skim only（待全文）| ⚠️ **PDF可用性**: PNAS仅付费，无arXiv/bioRxiv预印本；PMC免费版 2026-09-16 开放 (PMID:41838917, PMC13011929)
 
 ## Core claim (一句话)
 在社会技术网络中嵌入"智能体节点"时，存在一个最优的中间嵌入比例，能最有效地促进群体合作——过多或过少AI agent都会降低合作率。

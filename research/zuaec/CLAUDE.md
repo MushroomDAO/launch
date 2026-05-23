@@ -1,33 +1,34 @@
 # CLAUDE.md — ZUAEC 论文写作工作目录
 
-> **最近更新**：2026-05-21 | **当前阶段**：Phase 1（文献检索）🟡 进行中
+> **最近更新**：2026-05-22 | **当前阶段**：Phase 1（文献检索）🟢 候选池达标 + 核心精读完成
 
 ## 项目背景
 
 本目录为**第八届浙江大学校友创新创业大赛（ZUAEC）**参赛项目准备两篇学术论文：
 
 - **Paper 1**：*Three Pillars for an Agent Collaboration Network: A Paradigm Shift from Capability Invocation to Social Role Agency, with a Scoping Review of 2022-2026 Literature*
-- **Paper 2**：*ASM: A Communication Protocol for Role-Bearing AI Agents in Decentralized Collaboration Networks*
+- **Paper 2**：*ASM: A Communication Protocol for Role-Bearing AI Agents in Open Collaboration Networks*（标题已去"去中心化/Decentralized"敏感词，2026-05-22）
 
 截止：2026-08-31 两篇 arXiv 提交 + ZUAEC 报名完成（压缩后 9 周计划）。
 
-## 当前进度快照（2026-05-21）
+## 当前进度快照（2026-05-22）
 
 | 指标 | 状态 |
 |------|------|
 | Phase 0（决策对齐）| ✅ 完成，范式定位锁定 |
-| Phase 1（文献检索）| 🟡 Day 1 完成，Day 2 进行中 |
-| 已核实引用 | 18/19（0 幻觉）|
-| 新文献候选 | 36 篇（Group A/B/C/E/F/G）|
-| 阅读笔记 | 9 篇（含 Gupta+Ruan 全文分析）|
-| PDF 存档 | 11 篇（`papers/` 目录，本地存储）|
-| 会话存档 | `claude-sessions/`（3 个 JSONL）|
+| Phase 1（文献检索）| 🟢 候选池 ~133 篇（>120 目标）+ 48 篇核心精读完成 |
+| 候选文献池 | ~133 篇（screen §二 + `paper1-screen-batch-groupD.md` 28 + `paper1-screen-batch-social-protocol.md` 46，已去重）|
+| 阅读笔记 | **48 篇**（2026-05-22 夜间 +34，并行 subagent 下载+精读）→ 见 `scope-review-synthesis.md` |
+| PDF 存档 | 46 篇（`papers/`，已 gitignore）|
+| 综合映射 | ✅ `scope-review-synthesis.md`（48 篇聚类 + Paper1/2 章节映射 + 竞争者/张力分析）|
+| Paper 2 敏感词 | ✅ 已去"去中心化/Decentralized"（标题/关键词/小节/结论）|
 
-**⚠️ Jason 待 review（4 件）**：
-1. `paper-innovation-points.md` → 确认 v0.3 定位调整（"首次桥接"→"首个统一框架"）
-2. `paper1-reading-notes/gupta2025-ostrom-llm-agents.md` → 写入 feedback
-3. `paper1-reading-notes/ruan2026-parsons-agent-governance.md` → 写入 feedback
-4. `paper1-literature-screen.md` → 确认 §2 调整方向
+**⚠️ Jason 待 review（夜间新增，优先级高）**：
+1. `scope-review-synthesis.md` → **通读**，确认 Paper1/2 章节映射与竞争者差异化策略
+2. **引用完整性高危项**（synthesis §3.8）：`2604.27271` 版本被替换、`2511.02841` 作者纠错、Coral 新竞争者、Shen 实为 workshop
+3. `paper2-draft-v0.md` → 确认标题中性化（"Open" vs 备选 "Distributed/Permissionless"）
+4. 48 篇 `paper1-reading-notes/*.md` → 各篇含 "Jason's feedback" 待填（尤其⚠️张力篇 `zhang2026-beyond-preset-identities.md`）
+5. **承上**：`paper-innovation-points.md` v0.3 定位（"首次桥接"→"首个统一框架"——夜间精读已强化此论断，见 synthesis §3.3）
 
 ---
 
@@ -41,8 +42,11 @@
 | `paper1-draft-v0.md` | Paper 1 初稿 |
 | `paper2-draft-v0.md` | Paper 2 初稿 |
 | `paper1-bibliography.md` | 文献核查清单 |
-| `paper1-literature-screen.md` | PRISMA-ScR 筛选流程 |
-| `paper1-reading-notes/` | 全文阅读笔记（每篇一个文件）|
+| `paper1-literature-screen.md` | PRISMA-ScR 筛选流程（~133 候选）|
+| `paper1-screen-batch-groupD.md` | 候选批次：Group D + 基础框架（28 篇）|
+| `paper1-screen-batch-social-protocol.md` | 候选批次：社会模拟 + 协议/身份（46 篇）|
+| `scope-review-synthesis.md` | **综合映射**：48 篇精读聚类 + Paper1/2 章节映射 + 竞争者/张力 |
+| `paper1-reading-notes/` | 全文阅读笔记（48 篇，每篇一个文件）|
 
 ---
 

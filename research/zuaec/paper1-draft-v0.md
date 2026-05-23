@@ -30,20 +30,26 @@ Traditional agent communication protocols (MCP, FIPA ACL, AutoGen, OpenAI functi
 
 ## 1. Introduction
 
-### 1.0 The Core Argument: A Paradigm Shift
+### 1.0 How This Paper Is Written: Discovery, Not Defense
 
-Current AI agent infrastructure treats agents as **capabilities to be invoked**: MCP exposes tool functions for LLM consumption; FIPA ACL formalizes message-level interactions; AutoGen orchestrates multi-agent workflows under a central coordinator. These protocols answer the question *"How can one process invoke another's capability?"*
+This paper begins with a question, not an answer.
 
-We argue this framing is insufficient for the next phase of AI agent deployment. Increasingly, AI agents must engage in transactions that require *mobilizing social resources*—signing purchase contracts on behalf of a foreign trade company, negotiating partnerships, organizing events across organizational boundaries, accumulating verifiable reputation over time. Such transactions require what we call **social role agency**: the agent must declare a social role (e.g., "purchasing agent for Company X"), carry verifiable credentials backing that role (KYC, business license, prior interaction history), and operate within authorized scope under privacy and auditability constraints.
+We entered the 2022-2026 AI agent literature with an intuition—that AI agents increasingly need not just capability, but *social embedding*: verifiable identity, role-bearing credentials, and trust accumulated across interactions. That intuition had a name: the **Three-Pillar Framework** (collaboration protocols, quantified social capital, permissionless networks). But a name is not a framework, and an intuition is not evidence.
 
-The shift from *capability container* to *social role agent* is the core paradigm proposal of this paper. We do not argue that AI agents will form societies; we argue they already need to **collaborate across organizational boundaries on social-level tasks**, and the existing capability-level infrastructure is insufficient.
+The scoping review documented in §3-5 was conducted with an open posture: the review could strengthen this hypothesis, modify it, or reveal that the intuition was wrong. We found all three outcomes across different domains. Some literature strongly supports the pillar structure (e.g., TrustFlow's topic-aware reputation vectors align with the SC pillar; MacNet's emergent random-topology superiority aligns with the N pillar's permissionless design). Other literature challenges the framing or reveals boundary conditions (e.g., Pappu et al. 2026 show that multi-agent consensus can dilute expert judgment, qualifying when agent collaboration adds value). We have preserved these tensions in §9 rather than eliding them.
+
+The Three-Pillar Framework presented in §6 is therefore the *output* of the review process, not its starting assumption. Readers who find the framework incomplete or wrong are encouraged to treat this paper as a first-iteration synthesis, not a final claim. The framework's value lies in organizing a research agenda (§10), not in asserting a proven truth.
+
+**Why this matters for the reader.** Current AI agent infrastructure treats agents as **capabilities to be invoked**: MCP exposes tool functions for LLM consumption; FIPA ACL formalizes message-level interactions; AutoGen orchestrates multi-agent workflows under a central coordinator. These protocols answer the question *"How can one process invoke another's capability?"*
+
+Increasingly, however, AI agents must engage in transactions that require *mobilizing social resources*—signing purchase contracts on behalf of a foreign trade company, negotiating partnerships, organizing events across organizational boundaries, accumulating verifiable reputation over time. Such transactions require what we call **social role agency**: the agent declares a social role, carries verifiable credentials backing that role, and operates within authorized scope under auditability constraints. The existing capability-level infrastructure does not support this.
 
 This paper proceeds in three movements:
-- **Paradigm articulation** (§1, §6): Why social role agency is the right next abstraction
-- **Diagnostic scoping review** (§2-5): What 2022-2026 frontier research reveals about why current systems fall short
-- **Framework proposal** (§6-7): The three-pillar framework as institutional infrastructure for an Agent Collaboration Network
+- **Diagnostic scoping review** (§2-5): What does 2022-2026 frontier research reveal about where AI agent systems are heading, and what structural gaps emerge from that trajectory?
+- **Framework synthesis** (§6-7): What three-pillar structure—tentatively named P/SC/N—does the review evidence suggest as necessary conditions for an Agent Collaboration Network?
+- **Empirical anchor and research agenda** (§8-10): Where is this framework being implemented, what does early evidence show, and what empirical validation is needed?
 
-A companion paper [Authors, 2026, Paper 2] presents the protocol-level operationalization (ASM) and an empirical reference implementation. Section 8 of this paper provides a transparent description of that implementation, disclosed under conflict-of-interest constraints.
+A companion paper [Authors, 2026, Paper 2] takes the components identified here and designs a concrete system (ASM protocol, dual-network model, LAAS-based reputation system) with initial scenario validation. Section 8 of this paper provides a transparent description of that implementation, disclosed under conflict-of-interest constraints.
 
 ### 1.1 The Three-Path Question
 
@@ -114,6 +120,21 @@ Three theoretical traditions inform our analysis:
 **Social capital theory** [Bourdieu 1986; Putnam 2000; Lin 2001; Coleman 1988] provides the sociological vocabulary we will employ in §6.
 
 **Common-pool resource governance** [Ostrom 1990] informs our treatment of "permissionless networks with governance."
+
+### 2.3 Positioning: Capability Layer vs. Relationship Layer
+
+Existing research on responsible and safe AI agents operates primarily at the **capability layer**: making individual agents more transparent, accountable, and trustworthy [Cheng et al. 2026; Durante et al. 2024; Wooldridge & Jennings 1995]. This is a necessary and valuable research program. However, a capable, transparent, and accountable agent still requires *relationship infrastructure* to participate productively in an open multi-agent network.
+
+Our framework operates at a complementary but higher-order **relationship layer**: the protocols, social capital mechanisms, and network structures that enable agents to collaborate, accumulate trust across interactions, and generate emergent outcomes.
+
+| Layer | Question | Representative Work | Our Contribution |
+|-------|----------|---------------------|-----------------|
+| **Capability layer** | How can an individual agent perform better, more safely? | Durante et al. 2024; Cheng et al. 2026 (TAT); CAMEL, AutoGen | Not our focus |
+| **Relationship layer** | How do agents form effective collaboration networks? | *This paper* (P/SC/N) | Three-pillar framework |
+
+The key distinction is directional: capability frameworks ask "what can this agent do?" while relationship frameworks ask "how do agents cooperate to produce outcomes neither could achieve alone?" Capabilities can iterate rapidly—models improve month over month—but without relationship infrastructure, a population of highly capable agents remains a collection of isolated nodes. Innovation and emergence require not just capable agents, but *networks of collaborating agents* with shared protocols, accumulated trust, and open participation structures. This is the gap the Three-Pillar Framework addresses.
+
+This framing also clarifies why our contribution is orthogonal to, rather than competing with, capability-layer and safety-layer research. A network built on the Three-Pillar Framework can host agents of any capability level; conversely, a TAT-compliant agent gains nothing from its compliance unless there exists a network in which that compliance is recognized and rewarded.
 
 ---
 

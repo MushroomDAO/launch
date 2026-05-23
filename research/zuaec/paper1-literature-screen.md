@@ -10,22 +10,29 @@
 ## PRISMA-ScR 流程图（动态更新）
 
 ```
-记录总数（所有来源）：
-  arXiv 首批检索（Group A+C+F+G）: ~45 篇候选
+记录总数（所有来源，2026-05-22 更新）：
+  arXiv 首批检索（Group A+B+C+E+F+G）: ~40 篇候选（本文件 §二）
   已知文献核实（paper1-bibliography.md）: 19 篇
+  Group D + 基础框架批（paper1-screen-batch-groupD.md）: 28 篇（全部 arXiv 验证）
+  社会模拟 + 协议/身份批（paper1-screen-batch-social-protocol.md）: 46 篇（全部 arXiv API 验证）
   ─────────────────────────────────────────────
-  当前候选总数：~64 篇（Phase 1 第1天）
+  当前候选总数：~133 篇（去重后，已超 120 目标 ✅）
 
-标题层初步筛选：
-  强相关（直接纳入摘要阅读）: 32 篇（见下表）
-  弱相关/待判断: 12 篇
-  排除: ~20 篇（长程任务/纯embodied/无社会维度）
+标题/摘要层筛选（持续进行）：
+  强相关（⭐⭐⭐⭐+，全文阅读优先）: ~50 篇
+  中相关（⭐⭐⭐，摘要入围）: ~55 篇
+  排除/弱相关: ~28 篇（长程任务/纯embodied/无社会维度/纯MARL）
 
-PRISMA 最终计数（Phase 1 结束时更新）：
-  摘要入围: [TODO: ~80-100]
-  全文阅读: [TODO: ~30-50]
-  最终纳入: [TODO: ~25-35]
+全文精读完成（reading-notes/）：24 篇（截至 2026-05-22 夜间批次，仍在增加）
+
+PRISMA 最终计数（Phase 1 结束时定稿）：
+  摘要入围: [TODO: ~100-120]
+  全文阅读: [进行中: 24+ → 目标 35-45]
+  最终纳入: [TODO: ~28-38]
 ```
+
+> **三个候选库文件**（互不重复）：本文件 §二（首批 ~40）+ `paper1-screen-batch-groupD.md`（28）+ `paper1-screen-batch-social-protocol.md`（46）。
+> **非 arXiv TODO**：ERC-8004 规范需直接查官方 spec（无 arXiv 版本）；Bourdieu/Putnam/Ostrom 原典走经典引用。
 
 ---
 
@@ -79,7 +86,7 @@ PRISMA 最终计数（Phase 1 结束时更新）：
 |----|------|------|------|-------|--------|---------|---------|
 | NEW-E01 | Social Learning & Collective Norm Formation in LLM Multi-Agent Systems | Gupta, Zhong, Rahwan et al. | 2025 | 2510.14401 | ⭐⭐⭐⭐⭐ | **Ostrom** | 最直接将Ostrom应用于LLM agents |
 | NEW-E02 | From Firms to Computation: AI Governance & Evolution of Institutions | Harre | 2025 | 2507.13616 | ⭐⭐⭐⭐⭐ | **Ostrom+制度理论** | AI治理→制度演化问题 |
-| NEW-E03 | Synthetic Social Graph: Emergent Behavior in AI Agent Communities | (需核实) | 2026 | 2604.27271⚠️ | ⭐⭐⭐⭐ | **Putnam** | bonding/bridging在AI agent网络中 |
+| NEW-E03 | Synthetic Social Graph: Emergent Behavior in AI Agent Communities | Cha & Kim（LG Uplus）| 2026 | 2604.27271 ⚠️**版本陷阱** | ⭐⭐⭐⭐ | **Putnam** | bonding/bridging在AI agent网络中；✅全文已读(v1)。⚠️同一ID的v3已替换为"Frame Entrepreneurs..."删掉Putnam——引用v1有风险，本地存 papers/synthetic-social-graph2026-v1.pdf |
 | NEW-E04 | Governance by Design: Parsonian Institutional Architecture for Agent Societies | Ruan | 2026 | 2604.11337 | ⭐⭐⭐⭐⭐ | **Parsons AGIL** | 最直接将Parsons应用于智能体社会架构 |
 | NEW-E05 | Institutional AI: Governing LLM Collusion via Public Governance Graphs | Bracale Syrnikov et al. | 2026 | 2601.11369 | ⭐⭐⭐⭐ | 制度机制设计 | 制度嵌入→合谋从50%降至5.6% |
 | NEW-E06 | When Agents Evolve, Institutions Follow | Fei, Guo, Xiao | 2026 | 2604.27691 | ⭐⭐⭐⭐ | 历史制度比较 | 7种历史制度→治理拓扑影响57pp |
@@ -116,7 +123,7 @@ PRISMA 最终计数（Phase 1 结束时更新）：
 | NEW-014 | Survey of AI Agent Protocols | (多作者) | 2025 | 2504.16736 | Paper 2 §2 比较表 |
 | NEW-015 | Which LLM Multi-Agent Protocol to Choose? | (多作者) | 2025 | 2510.17149 | Paper 2 §2 选型评估 |
 | NEW-016 | Agent Network Protocol (ANP) White Paper | ANP工作组 | 2025 | 2508.00007 | DID-based agent identity；直接与ASM对话 |
-| NEW-017 | AI Agents with Decentralized Identifiers and Verifiable Credentials | Rouhani et al. | 2025 | 2511.02841 | Paper 2 §3 身份层 |
+| NEW-017 | AI Agents with Decentralized Identifiers and Verifiable Credentials | **Rodriguez Garzon, Vaziry, Kuzu et al.（TU Berlin）** ✅作者已纠错（原误标 Rouhani）| 2025 | 2511.02841 | Paper 2 §3 身份层；✅全文已读 |
 | NEW-018 | AgentDID: Trustless Identity Authentication for AI Agents | (多作者) | 2026 | 2604.25189 | Paper 2 §3 身份层 |
 | NEW-019 | Secure Autonomous Agent Payments: DID+VC+ZKP | (多作者) | 2025 | 2511.15712 | Paper 2 §5 隐私保护 |
 | NEW-020 | Inter-Agent Trust Models: Brief, Claim, Proof, Stake, Reputation | (多作者) | 2025 | 2511.03434 | Paper 2 §2 信任模型分类 |
