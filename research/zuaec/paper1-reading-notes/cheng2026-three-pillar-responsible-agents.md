@@ -45,6 +45,8 @@ Safe agentic AI deployment requires progressive trust-building through four evol
 ⭐⭐⭐⭐ | A direct "same-vocabulary competitor" that must be explicitly engaged in Paper 1 §5 to establish our novelty; TAT pillars (internal institutional safety) vs. P/SC/N pillars (open network architecture) is a clean, defensible distinction that strengthens our contribution claim.
 
 ## Jason's feedback
+
+> **2026-05-22（第一轮）**
 > TAT（Transparency / Accountability / Trustworthiness）是**能力层面**的三支柱——它在说如何让单个 agent 本身变得更透明、可审计、可信任。
 >
 > 我们的 P/SC/N 是**关系层面**的三支柱——我们解决的是 agent 之间如何建立协作关系、形成社会资本、构建开放协作网络。
@@ -53,3 +55,16 @@ Safe agentic AI deployment requires progressive trust-building through four evol
 >
 > 论文差异化表述建议（Paper 1 §5）：
 > "Cheng et al. (2026) address the *capability layer* of responsible AI: making individual agents internally transparent, accountable, and trustworthy. Our framework addresses a complementary but higher-order *relationship layer*: the protocols, social capital mechanisms, and network structures that enable agents to collaborate, build trust across interactions, and generate emergent outcomes. A perfectly transparent and accountable agent still requires relationship infrastructure to participate productively in an open multi-agent network."
+
+> **2026-05-24（第二轮）**
+> 该论文是对 agent 工作过程的规范设定，目标是让人类更好地使用 agent，偏向于结构内的 agent、agent 独立工作过程管控；我们更聚焦于多个 agent 的跨组织协作。
+>
+> 存在一个假设：agent 能力进化一定会进化到一个非常智能的程度。那单体或者组织内 agent 更远的未来，会需要什么？我们认为是跨组织 agent 协作，包括协议、网络和必备的基础设施。
+>
+> 我们对 agent 定义了两种类型：
+> - **助理型（Assistant）**：有限使用人类账户资产，辅助人类决策
+> - **自主型（Autonomous）**：自主决策，拥有 agent 独立账户并控制该账户的所有资产
+>
+> 核心定义维度：**账户类型**和**对资产的控制能力**。
+>
+> 关键约束：即便是自主型 agent 的账户，最终所有权依然在人类 owner 手中——因为 agent 无法自主开设账户，它是人工智能，不是具有法律人格的智慧生命。这一约束使得"关系层"基础设施（P/SC/N）对人类信任锚点的依赖成为结构性必要，而非可选项。

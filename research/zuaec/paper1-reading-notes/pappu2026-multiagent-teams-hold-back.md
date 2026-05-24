@@ -35,4 +35,22 @@ The adversarial robustness trade-off finding also motivates our N (permissionles
 ⭐⭐⭐⭐⭐ | The single most important empirical paper for our thesis — proves that capability-labeled multi-agent teams fail and identifies the missing social authority mechanism that our SC pillar provides. Must cite prominently in Paper 1 §3.
 
 ## Jason's feedback
-> （请在此处写入你的feedback）
+
+> **2026-05-24**
+> 这个论文给的是答案——生成的答案的创新性和平庸性。这个衡量标准已经限制了 agent 的评估场景，局限于对话生成任务。
+>
+> 而我们的论文，不管论文一还是论文二，希望得到的是 agent 协作网络。它的衡量标准是唯一的：是不是帮助人类通过互动提升了效率。
+>
+> 路径是：人和人之间的交互 → 改进为人和机之间的互动 → 再改进为机和机之间的互动。换句话说，我们最终还是为了提升人类社会活动的效率，而提供的 agent 协作网络。
+>
+> 衡量它的唯一标准：是不是提升了人和人之间的协作效率。比如我们提供的三个验证场景：找工作、找男朋友（社交匹配）、外贸公司的销售或采购。这些是有实际案例的，不局限于 agent 对话场景，放到实际生活中去衡量。
+>
+> 评价标准：**事实问题是否被解决**，而不是生成答案的创新性评分。
+>
+> **结论：这篇论文对我们不是挑战，只是一个反例。它限制了 agent 的评价场景，而我们用完全不同的评价体系。**
+
+## 对论文定位的影响
+
+这条 feedback 确立了我们框架的**评价标准独立性**，需要在 Paper 1 §1 或 §9（Discussion）中明确声明：
+
+> "We measure the effectiveness of an Agent Collaboration Network not by the quality of AI-generated outputs, but by whether it improves the efficiency of real-world human collaboration tasks — job referral, social matching, cross-organizational procurement. This evaluation standard is orthogonal to benchmarks that measure answer quality (MMLU, GPQA), and explains why findings such as Pappu et al. (2026) — which show multi-agent consensus degrades answer quality — do not constitute a challenge to our framework: we are not optimizing for answer quality, but for task resolution in human social contexts."
