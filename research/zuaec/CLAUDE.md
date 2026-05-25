@@ -39,14 +39,13 @@
 | `progress.md` | **每次对话必读**，当前阶段、任务状态、下一步 |
 | `master-execution-plan.md` | 9 周整体执行计划（Phase 0-8）|
 | `paper-revision-status.md` | v2 plan 落实情况对照 |
-| `paper1-draft-v0.md` | Paper 1 初稿 |
-| `paper2-draft-v0.md` | Paper 2 初稿 |
-| `paper1-bibliography.md` | 文献核查清单 |
-| `paper1-literature-screen.md` | PRISMA-ScR 筛选流程（~133 候选）|
-| `paper1-screen-batch-groupD.md` | 候选批次：Group D + 基础框架（28 篇）|
-| `paper1-screen-batch-social-protocol.md` | 候选批次：社会模拟 + 协议/身份（46 篇）|
-| `scope-review-synthesis.md` | **综合映射**：48 篇精读聚类 + Paper1/2 章节映射 + 竞争者/张力 |
-| `paper1-reading-notes/` | 全文阅读笔记（48 篇，每篇一个文件）|
+| `paper1/` | **Paper 1 专属目录**：draft、bibliography、framework-logic、literature-screen、screen-batch 系列 |
+| `paper2/` | **Paper 2 专属目录**：`paper2-draft-v0.md` |
+| `paper3/` | **Paper 3 专属目录**：`paper3-draft-v0.md`、`agent-network-architecture.md`、PydanticAI 技术方案与里程碑 |
+| `scope-review-synthesis.md` | **综合映射**（共享）：48 篇精读聚类 + Paper1/2 章节映射 + 竞争者/张力 |
+| `talk-feedback.md` | **设计讨论追踪**（共享）：LAAS/SC/协作框架/安全基调/最优解引导等 Jason 亲述 |
+| `industry-standards-reference.md` | **业界标准参考**（共享）：A2A/MCP/OpenAI/Anthropic 官方规范 |
+| `paper1-reading-notes/` | **全文阅读笔记**（共享，174 篇，每篇含 Paper1/2/3 relevance + Jason feedback）|
 
 ---
 
