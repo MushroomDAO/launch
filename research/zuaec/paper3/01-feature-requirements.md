@@ -1,7 +1,7 @@
 # ACN-Agent 功能需求清单（Paper 1/2/3 → 工程映射）
 
 > **用途**：Paper 3 工程落地的功能需求总表。把 Paper 1（P/SC/N 框架）、Paper 2（ASM 协议）、Paper 3（五模块 + Tier 评测）的所有 feature 拆解为可开发的工程需求项，并标注优先级与所属里程碑。
-> **底座**：PydanticAI（待研究确认后细化每项的实现方式 / gap）
+> **底座**：Pi（pi-mono，TypeScript，badlogic/earendil-works，54k+ stars，MIT）——待 Pi 深度调研回来后细化每项的实现方式 / gap
 > **最后更新**：2026-05-25
 
 ---
