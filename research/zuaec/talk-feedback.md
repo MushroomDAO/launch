@@ -469,6 +469,44 @@ Layer 1（机制层）: 机—机 协作  ← Paper 1 + Paper 2 的核心
 
 ---
 
+## 八、ACN 安全基调：不是法外之地（2026-05-25 Jason 亲述）
+
+> **Jason 原话**：
+> 就是管配 Paper 1 配 Paper 2 实际上定一个基调，就是 agent 也好，这个无许可 agent 的协作网络，它并不是法外之地。换句话说，我们该有的监管，该有的安全和这个验证，都必不可少。不管是隐私保护还是安全保护还是一些比如说想要非法作恶的人，其实对他们来说，我们都有防范措施。这是我们安全的基础的基调。对，它不是法外之地，它依然可溯源。但它这个溯源呢是需要法律层面才可以直接获取某个 relay 的数据的。
+
+### 核心原则正式化
+
+**"ACN 不是法外之地"** 是 Paper 1 + Paper 2 的安全基调，包含三层含义：
+
+| 层次 | 含义 | 技术实现 |
+|------|------|---------|
+| **1. 身份可溯** | 每个 agent 行为可追溯到负责人类 | ERC-8004 所有权链 + KYC 基础认证 |
+| **2. 行为可审** | 协作过程有协议级记录，不可篡改 | ASM 消息签名 + SC 链上历史 |
+| **3. 违规可惩** | 恶意行为者在系统内有代价 | SC 声誉扣除 + 坏账机制 + relay 排除 |
+
+**关键设计原则（Jason 明确）**：
+- **Permissionless 准入** ≠ 匿名免责——任何人可以加入，但行为有链上痕迹
+- **隐私保护** ≠ 身份隐匿——数据不出本地（LAAS+DP），但 agent-human 绑定链上可查
+- **Relay 数据获取** 需要**法律程序**——relay 运营者对用户数据有保管责任，执法机构需走法律渠道（类似电话运营商通讯记录调取）；普通查询只能看到公开 SC 声誉，看不到场景协议数据
+
+### 这个基调对抗的两种误解
+
+**误解一**：去中心化 = 无人监管 = 可以随意作恶
+- 回应：可溯源（身份绑定）+ 有代价（SC 扣除）+ 有机制（协议层约束）
+
+**误解二**：可溯源 = 全公开 = 没有隐私
+- 回应：法律门槛保护合法用户隐私（relay 数据受保护）；链上只暴露最小信息（agent_id + SC 分，不暴露场景内容）
+
+### 在论文中的定位
+
+**Paper 1 §1 + §5（N 支柱）建议加入**：
+> "Permissionless does not mean lawless. ACN combines open participation with layered accountability: every agent is cryptographically bound to a responsible human principal (P pillar), every interaction accumulates a verifiable social capital record (SC pillar), and every relay operates under legal jurisdiction for data access (N pillar governance). The network is open to join; it is not open to impunity."
+
+**Paper 2 §6（安全分析）建议加入**：
+> "ASM's security model rests on three complementary guarantees: (1) identity traceability — agent-human binding via ERC-8004 ensures every protocol action is attributable; (2) behavioral accountability — SC records provide tamper-resistant interaction history; (3) legal-tier data access — relay operators maintain jurisdictional custody of session data, accessible only through lawful process. Users benefit from privacy-by-default while remaining accountable under applicable law."
+
+---
+
 ## 七、待解决的开放问题
 
 ### 论文相关
