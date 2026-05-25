@@ -413,7 +413,63 @@ https://cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf
 
 ---
 
-## 六、待解决的开放问题
+## 六、协作层级框架（2026-05-25 Jason 亲述）
+
+### 6.1 三层协作的逻辑关系
+
+> **Jason 原话**：无论是人机还是机机，他都是为了达成什么呢？达成人和人之间的协作。原来传统人和人之间的协作其实有很多的障碍。通过人机和机机之间的协作去完全抹除是不现实，但我认为是有可能在某些特定的范围和领域进行很大的提效的。
+>
+> 信任关系实际上非常难建立，就是建立信任关系之后才能建立高效的协作。但在特定的领域和范围内的，机机之间建立信任、人机之间建立信任，反而更更简单一些，或者说更高效一些。
+>
+> 我们 Paper 1 和 Paper 2，实际上都是在讨论机机协作——就是通过什么方式让 agent 和 agent 之间达成高效的协作。但背后还是为了解决人和人之间的协作问题，提升他们的效率。所以我们引入人机协作和机机协作。
+
+### 6.2 三层协作架构图
+
+```
+Layer 3（目标层）: 人—人 协作
+  原始目标，效率提升的最终受益者
+  障碍：信任建立慢、信息不对称、地理/语言/文化壁垒
+       ↑ 为了提升效率
+       
+Layer 2（接口层）: 人—机 协作
+  人类通过 agent 进入协作网络
+  agent = 人类的协作入口和代理人
+  助理型账户：在人类约束下行动（人机边界清晰）
+  自主型账户：人类授权范围内独立执行
+       ↑ 为了规模化
+       
+Layer 1（机制层）: 机—机 协作  ← Paper 1 + Paper 2 的核心
+  agent 之间的协作协议（ASM）
+  声誉加权路由（SC 支柱）
+  无许可网络接入（N 支柱）
+  → 规模化、7×24 小时、跨语言/文化/时区
+```
+
+### 6.3 为什么机机信任比人人信任更容易建立
+
+| 对比维度 | 人—人 信任建立 | 机—机 信任建立（ACN 框架内）|
+|---------|-------------|------------------------|
+| 时间成本 | 数月/数年积累 | 基于历史交互记录（可秒级查询）|
+| 信息透明度 | 依赖主观感知，信息不对称 | VC 凭证可机器验证，声誉分数可计算 |
+| 欺骗成本 | 建立虚假信任后逃跑成本低 | SBT 绑定身份 + 链上记录不可篡改 |
+| 跨域/跨文化 | 语言、文化、习俗障碍大 | 协议标准化，语言/文化无关 |
+| 规模化 | 人的时间是瓶颈 | 并发处理，无人力限制 |
+
+**结论**（Jason）：在**特定范围和领域**内，机机信任比人人信任更高效——这是 ACN 的价值主张的核心。不是"替代"人人协作，而是**在特定场景下大幅提效**。
+
+### 6.4 论文定位的精确表述
+
+| 论文 | 讨论的协作层 | 最终服务的目标 |
+|------|-----------|------------|
+| Paper 1（三支柱框架）| 机—机协作的制度设计 | 人—人协作效率提升 |
+| Paper 2（ASM 协议）| 机—机协作的通信协议 | 人—人协作效率提升 |
+
+**Paper 1 §1 / §9 的论证链**（建议加入）：
+> "Human-human collaboration faces persistent barriers: trust establishment is slow, information asymmetry is high, and geographic/cultural/temporal friction is costly. Human-agent collaboration provides an interface layer, but agent-agent collaboration is the mechanism layer — enabling specialised agents to transact trust, route tasks, and build verifiable interaction histories at machine speed and global scale. The ultimate beneficiary of machine-machine collaboration efficiency is always human-human collaboration: reduced friction, faster trust bootstrapping, and verifiable intermediation in domains where human bilateral trust would take months to establish."
+
+---
+
+## 七、待解决的开放问题
 
 ### 论文相关
 - [x] Paper 2 §5 按 LAAS + DP 路径重写（已完成 2026-05-23）
@@ -428,7 +484,7 @@ https://cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf
 - [ ] 维度注册表的协议设计：公共基础维度 + 可自定义扩展维度的协议格式
 
 ### 引用相关
-- [ ] A2A v1.0.0 规范（2026-03-12）加入 Paper 2 §2 引用列表
-- [ ] MCP spec 2025-11-25 加入 Paper 2 §2 引用列表
-- [ ] Anthropic Engineering Blog 加入 Paper 2 §1（Motivation）
-- [ ] OpenAI Governing Agentic AI（2023）加入 Paper 2 §1.3（Threat Landscape）
+- [x] A2A v1.0.0 规范 → `industry-standards-reference.md §1`（官方 URL + GitHub + 技术规范全整理）
+- [x] MCP spec 2025-11-25 → `industry-standards-reference.md §2`（Anthropic 官方 + GitHub + Schema 链接）
+- [x] Anthropic Engineering Blog → `industry-standards-reference.md §4`（90.2% 提升、Orchestrator-Worker、CitationAgent）
+- [x] OpenAI Governing Agentic AI（Shavit et al. 2023）→ `industry-standards-reference.md §3`（七大实践 + 三方信任模型 + 互操作性空白引用）
