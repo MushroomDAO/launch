@@ -94,6 +94,13 @@ export async function handleV2Relay(body: V2RelayRequest, env: V2Env): Promise<V
       reason: `authorization.address must be AirAccountDelegate (${SEPOLIA.AIRACCOUNT_DELEGATE})`,
     }
   }
+  if (body.authorization.chainId !== sepolia.id) {
+    return {
+      ok: false,
+      code: 'WRONG_CHAIN_ID',
+      reason: `authorization.chainId must be ${sepolia.id}`,
+    }
+  }
 
   // 2. Extract intent from batch
   const extraction = extractTokenBuyIntent(

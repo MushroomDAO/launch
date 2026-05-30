@@ -85,8 +85,11 @@ async function handleV2(
     return error('Invalid JSON body', 'INVALID_SHAPE', 400, corsHeaders)
   }
 
-  // Rate limit by buyer (separate KV namespace from v1 not required — same store OK)
-  const rl = await checkRateLimit((body as any).buyer ?? '0x0', env)
+  const buyer = (body as any).buyer
+  if (!buyer || typeof buyer !== 'string' || !/^0x[0-9a-fA-F]{40}$/i.test(buyer)) {
+    return error('buyer must be a valid Ethereum address', 'INVALID_SHAPE', 400, corsHeaders)
+  }
+  const rl = await checkRateLimit(buyer as `0x${string}`, env)
   if (!rl.allowed) {
     return error(rl.reason ?? 'Rate limited', 'RATE_LIMITED', 429, corsHeaders)
   }
