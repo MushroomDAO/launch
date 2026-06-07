@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍄</text></svg>" />
+<title>Gasless Buy — Mycelium Protocol</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root { --bg:#020617; --cyan:#22d3ee; --yellow:#fbbf24; --green:#4ade80; --slate:#94a3b8; }
+  body { background: var(--bg); color: #f8fafc; font-family: "Courier New", monospace; }
+  .bg-grid { position: fixed; inset: 0; z-index: -1;
+    background-image: linear-gradient(rgba(34,211,238,0.25) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(34,211,238,0.25) 1px, transparent 1px);
+    background-size: 50px 50px; mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+    opacity: 0.15; }
+  .glass { background: rgba(15,23,42,0.7); border: 1px solid rgba(34,211,238,0.25); border-radius: 12px; backdrop-filter: blur(8px); }
+  .glass-yellow { background: rgba(15,23,42,0.7); border: 1px solid rgba(251,191,36,0.3); border-radius: 12px; backdrop-filter: blur(8px); }
+  .btn { width: 100%; padding: 0.75rem; border-radius: 8px; font-weight: 600; transition: all 0.2s; cursor: pointer; }
+  .btn-cyan { background: rgba(34,211,238,0.12); color: var(--cyan); border: 1px solid rgba(34,211,238,0.4); }
+  .btn-cyan:hover:not(:disabled) { background: rgba(34,211,238,0.25); }
+  .btn-yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.4); }
+  .btn-yellow:hover:not(:disabled) { background: rgba(251,191,36,0.25); }
+  .btn-red { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
+  .btn-red:hover:not(:disabled) { background: rgba(239,68,68,0.25); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .input { width: 100%; padding: 0.6rem; border-radius: 6px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); color: #f8fafc; font-family: "Courier New", monospace; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+  pre.log { background: rgba(0,0,0,0.5); padding: 0.5rem 0.75rem; border-radius: 6px; max-height: 14rem; overflow-y: auto; font-size: 0.75rem; line-height: 1.4; white-space: pre-wrap; word-break: break-all; }
+  a.nav-link { color: var(--slate); transition: color 0.2s; }
+  a.nav-link:hover { color: var(--cyan); }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-grid"></div>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur" style="background: rgba(2,6,23,0.92); border-bottom: 1px solid rgba(34,211,238,0.25);">
+  <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+    <span style="color: var(--cyan); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.15em;">MYCELIUM · GASLESS</span>
+    <div class="flex gap-5 text-sm">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="for-communities.html" class="nav-link">For Communities</a>
+      <a href="join.html" class="nav-link">Direct Buy</a>
+      <a href="join-gasless.html" style="color: var(--yellow); font-weight: 600;">Gasless</a>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-3xl mx-auto px-6 pt-24 pb-12 space-y-6">
+
+  <!-- HERO -->
+  <div class="text-center">
+    <span class="tag" style="background: rgba(251,191,36,0.1); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3);">Beta · Sepolia 测试网</span>
+    <h1 class="text-4xl font-bold mt-3" style="color: var(--yellow);">Gasless 购买</h1>
+    <p class="text-slate-400 text-sm mt-2">钱包里只有 USDC 也能买——我们通过 EIP-7702 + 我们的 relayer 帮你免费付 gas。<br/>透明白名单：仅赞助 GToken 购买 / aPNTs 购买 / 解除委托 三件事。</p>
+  </div>
+
+  <!-- 1. 连接钱包 -->
+  <div class="glass p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold" style="color: var(--cyan);">① 连接钱包 / Connect Wallet</h2>
+      <span id="wallet-badge" class="tag" style="background: rgba(148,163,184,0.15); color: var(--slate); border: 1px solid rgba(148,163,184,0.3);">● 未连接</span>
+    </div>
+    <button id="btn-connect" class="btn btn-cyan" onclick="connectWallet()">Connect MetaMask</button>
+    <div id="wallet-info" class="hidden mt-3 text-xs space-y-1">
+      <div class="flex justify-between"><span class="text-slate-400">地址</span><span id="w-addr" class="font-mono" style="color: var(--cyan);">—</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Sepolia ETH</span><span id="w-eth" class="font-mono" style="color: var(--green);">—</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">USDC</span><span id="w-usdc" class="font-mono" style="color: var(--green);">—</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">GToken</span><span id="w-gt" class="font-mono" style="color: var(--yellow);">—</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">aPNTs</span><span id="w-apnts" class="font-mono" style="color: var(--yellow);">—</span></div>
+      <div id="eth-warning" class="hidden mt-2 p-2 rounded" style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25);">
+        <span style="color: var(--yellow);">⚠</span> 你的 Sepolia ETH 余额低，<strong style="color: var(--yellow);">建议使用 Gasless 模式</strong>。
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 选择购买的 token -->
+  <div class="glass p-5">
+    <h2 class="text-lg font-bold mb-3" style="color: var(--cyan);">② 选择标的 / Choose Token</h2>
+    <div class="grid grid-cols-2 gap-3">
+      <button id="opt-gt" class="btn" onclick="selectToken('GTOKEN')" style="background: rgba(251,191,36,0.15); color: var(--yellow); border: 2px solid rgba(251,191,36,0.5);">
+        <div class="font-bold">GToken</div>
+        <div class="text-xs opacity-70 mt-1">门票 · 治理</div>
+      </button>
+      <button id="opt-ap" class="btn" onclick="selectToken('APNTS')" style="background: rgba(15,23,42,0.5); color: var(--slate); border: 1px solid rgba(255,255,255,0.1);">
+        <div class="font-bold">aPNTs</div>
+        <div class="text-xs opacity-70 mt-1">gas 信用 / 服务积分</div>
+      </button>
+    </div>
+    <div class="mt-3 text-xs space-y-1">
+      <div class="flex justify-between"><span class="text-slate-400">销售合约</span>
+        <span class="font-mono">
+          <a id="link-sale" href="#" target="_blank" rel="noopener" class="nav-link">—</a>
+          <button onclick="copyAddr('sale', this)" class="ml-1 px-1 rounded" style="background: rgba(255,255,255,0.08); font-size: 9px;" title="复制">📋</button>
+        </span>
+      </div>
+      <div class="flex justify-between"><span class="text-slate-400">Token 合约（导入 MetaMask）</span>
+        <span class="font-mono">
+          <a id="link-token" href="#" target="_blank" rel="noopener" class="nav-link">—</a>
+          <button onclick="copyAddr('token', this)" class="ml-1 px-1 rounded" style="background: rgba(255,255,255,0.08); font-size: 9px;" title="复制">📋</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 购买 -->
+  <div class="glass-yellow p-5">
+    <h2 class="text-lg font-bold mb-3" style="color: var(--yellow);">③ Gasless 购买 / Buy without ETH</h2>
+    <label class="text-xs text-slate-400 block mb-1">支付金额 (USDC)</label>
+    <input id="usd-input" type="number" class="input mb-2" placeholder="如 15" min="1" step="0.01" oninput="updateEstimate()" />
+    <div class="text-xs flex justify-between mb-3">
+      <span class="text-slate-400">预计获得</span>
+      <span id="estimate" class="font-mono" style="color: var(--yellow);">— —</span>
+    </div>
+    <div class="flex gap-2 mb-3">
+      <button onclick="setUsd(15)" class="btn text-xs py-2" style="background: rgba(255,255,255,0.05); color: var(--slate); border: 1px solid rgba(255,255,255,0.1);">$15</button>
+      <button onclick="setUsd(50)" class="btn text-xs py-2" style="background: rgba(255,255,255,0.05); color: var(--slate); border: 1px solid rgba(255,255,255,0.1);">$50</button>
+      <button onclick="setUsd(100)" class="btn text-xs py-2" style="background: rgba(255,255,255,0.05); color: var(--slate); border: 1px solid rgba(255,255,255,0.1);">$100</button>
+    </div>
+    <button id="btn-buy" class="btn btn-yellow" onclick="signAndRelay()" disabled>
+      <span id="btn-buy-text">签 + 提交 Gasless 购买</span>
+    </button>
+    <p class="text-xs text-slate-500 mt-3">
+      <span style="color: var(--yellow);">流程：</span>
+      ① 签 EIP-712 PurchaseIntent (MetaMask 会显示你买什么、付多少、过期时间)
+      → ② 签 EIP-7702 Authorization (委托给 AirAccountDelegate)
+      → ③ relayer 代付 gas 提交链上 Type-4 tx
+    </p>
+  </div>
+
+  <!-- 4. 撤销委托 -->
+  <div class="glass p-5">
+    <h2 class="text-lg font-bold mb-3" style="color: #f87171;">④ 解除委托 / Revoke Delegation</h2>
+    <p class="text-xs text-slate-400 mb-3">
+      撤销后，你的 EOA 不再委托给 AirAccountDelegate。再次 gasless 购买需要重新签 EIP-7702 Authorization。<br/>
+      <span class="text-slate-500">Revoking restores your EOA to a standard externally-owned account. Any future gasless action requires re-delegation.</span>
+    </p>
+    <button id="btn-revoke" class="btn btn-red" onclick="revokeDelegation()" disabled>签 + 提交解除委托</button>
+  </div>
+
+  <!-- 5. 日志 -->
+  <div class="glass p-5">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-lg font-bold" style="color: var(--cyan);">日志 / Log</h2>
+      <button onclick="document.getElementById('log').textContent=''" class="text-xs px-2 py-1 rounded" style="background: rgba(255,255,255,0.05); color: var(--slate);">clear</button>
+    </div>
+    <pre id="log" class="log">等待操作...</pre>
+  </div>
+
+  <!-- Footer -->
+  <p class="text-center text-xs text-slate-500">
+    Sepolia · AirAccountDelegate <code style="color:var(--cyan)">0x41FdE128…D38B7</code> · 测试网
+  </p>
+</div>
+
+<script type="module">
+import {
+  createPublicClient, createWalletClient, custom, http,
+  encodeFunctionData, parseAbi, formatEther, formatUnits, parseUnits,
+  getAddress, type Address
+} from 'https://esm.sh/viem@2.21.54'
+import { sepolia } from 'https://esm.sh/viem@2.21.54/chains'
+
+// ─── Config ──────────────────────────────────────────────────────────────
+const SEPOLIA_CHAIN_ID = 11155111
+const USDC      = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
+const GTOKEN    = '0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67'
+const APNTS     = '0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772'
+const SALE_GT   = '0x3e4e0a663682a2d58d626d0057142328ef0b626a'   // SaleContractV2 (gToken)
+const SALE_AP   = '0xf1a5fe670dbf6c5219000b30500a98f772ef1f14'   // APNTsSaleContract
+const DELEGATE  = '0x41FdE128d7a7196B968875cA1491816D360D38B7'   // AirAccountDelegate
+const RELAYER_URL = 'https://mycelium-relayer.workers.dev'        // TODO: replace after deploy
+
+const ERC20 = parseAbi([
+  'function balanceOf(address) view returns (uint256)',
+  'function approve(address,uint256) returns (bool)',
+  'function decimals() view returns (uint8)',
+])
+const SALE_GT_ABI = parseAbi([
+  'function getCurrentPriceUSD() view returns (uint256)',
+  'function getTokensForUSD(uint256) view returns (uint256)',
+  'function buyTokens(uint256,address,uint256)',
+])
+const SALE_AP_ABI = parseAbi([
+  'function priceUSD() view returns (uint256)',
+  'function getAPNTsForUSD(uint256) view returns (uint256)',
+  'function buyAPNTs(uint256,address)',
+])
+const DELEGATE_ABI = parseAbi([
+  'function nonce() view returns (uint256)',
+])
+
+// ─── State ───────────────────────────────────────────────────────────────
+let provider, publicClient, walletClient, account = null
+let selectedToken = 'GTOKEN'      // 'GTOKEN' | 'APNTS'
+let priceGT, priceAP
+
+// ─── UI helpers ──────────────────────────────────────────────────────────
+const log = (msg, kind = 'info') => {
+  const t = new Date().toTimeString().slice(0, 8)
+  const color = kind === 'error' ? '#f87171' : kind === 'success' ? '#4ade80' : kind === 'warn' ? '#fbbf24' : '#cbd5e1'
+  const el = document.getElementById('log')
+  const div = document.createElement('div')
+  div.style.color = color
+  div.textContent = `[${t}] ${msg}`
+  el.appendChild(div)
+  el.scrollTop = el.scrollHeight
+}
+const setBadge = (text, color) => {
+  const b = document.getElementById('wallet-badge')
+  b.textContent = text
+  b.style.color = color
+  b.style.borderColor = color
+}
+const shortAddr = (a) => a.slice(0, 6) + '…' + a.slice(-4)
+
+window.copyAddr = async function(which, btn) {
+  const addr = which === 'sale'
+    ? (selectedToken === 'GTOKEN' ? SALE_GT : SALE_AP)
+    : (selectedToken === 'GTOKEN' ? GTOKEN : APNTS)
+  await navigator.clipboard.writeText(addr)
+  const orig = btn.textContent
+  btn.textContent = '✓'
+  setTimeout(() => { btn.textContent = orig }, 1000)
+}
+
+window.setUsd = (v) => { document.getElementById('usd-input').value = v; updateEstimate() }
+
+window.updateEstimate = function() {
+  const raw = parseFloat(document.getElementById('usd-input').value)
+  const est = document.getElementById('estimate')
+  if (!raw || raw <= 0) { est.textContent = '— —'; return }
+  if (selectedToken === 'GTOKEN' && priceGT) {
+    const usd6 = BigInt(Math.round(raw * 1e6))
+    const tokens = (usd6 * (10n ** 18n)) / priceGT
+    est.textContent = `${(Number(tokens) / 1e18).toFixed(4)} GT`
+  } else if (selectedToken === 'APNTS' && priceAP) {
+    const usd6 = BigInt(Math.round(raw * 1e6))
+    const tokens = (usd6 * (10n ** 18n)) / priceAP
+    est.textContent = `${(Number(tokens) / 1e18).toFixed(2)} aPNTs`
+  }
+}
+
+window.selectToken = function(kind) {
+  selectedToken = kind
+  const gt = document.getElementById('opt-gt')
+  const ap = document.getElementById('opt-ap')
+  if (kind === 'GTOKEN') {
+    gt.style.background = 'rgba(251,191,36,0.15)'; gt.style.color = '#fbbf24'; gt.style.border = '2px solid rgba(251,191,36,0.5)'
+    ap.style.background = 'rgba(15,23,42,0.5)';    ap.style.color = '#94a3b8'; ap.style.border = '1px solid rgba(255,255,255,0.1)'
+  } else {
+    ap.style.background = 'rgba(251,191,36,0.15)'; ap.style.color = '#fbbf24'; ap.style.border = '2px solid rgba(251,191,36,0.5)'
+    gt.style.background = 'rgba(15,23,42,0.5)';    gt.style.color = '#94a3b8'; gt.style.border = '1px solid rgba(255,255,255,0.1)'
+  }
+  // refresh contract links
+  const sale = kind === 'GTOKEN' ? SALE_GT : SALE_AP
+  const token = kind === 'GTOKEN' ? GTOKEN : APNTS
+  const linkSale = document.getElementById('link-sale')
+  const linkToken = document.getElementById('link-token')
+  linkSale.textContent = shortAddr(sale)
+  linkSale.href = `https://sepolia.etherscan.io/address/${sale}`
+  linkToken.textContent = shortAddr(token)
+  linkToken.href = `https://sepolia.etherscan.io/address/${token}`
+  updateEstimate()
+}
+
+// ─── Connect ─────────────────────────────────────────────────────────────
+window.connectWallet = async function() {
+  if (!window.ethereum) { log('未发现 MetaMask', 'error'); return }
+  provider = window.ethereum
+  try {
+    const accounts = await provider.request({ method: 'eth_requestAccounts' })
+    account = getAddress(accounts[0])
+
+    // Ensure Sepolia
+    const chainId = await provider.request({ method: 'eth_chainId' })
+    if (parseInt(chainId, 16) !== SEPOLIA_CHAIN_ID) {
+      try {
+        await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xaa36a7' }] })
+      } catch (e) {
+        log('请手动切到 Sepolia 网络', 'warn')
+        return
+      }
+    }
+
+    publicClient = createPublicClient({ chain: sepolia, transport: http() })
+    walletClient = createWalletClient({ account, chain: sepolia, transport: custom(provider) })
+
+    document.getElementById('w-addr').textContent = shortAddr(account)
+    document.getElementById('wallet-info').classList.remove('hidden')
+    setBadge('● Sepolia', '#4ade80')
+    log('钱包已连接: ' + shortAddr(account), 'success')
+
+    await refreshBalances()
+    await refreshPrices()
+    document.getElementById('btn-buy').disabled = false
+    document.getElementById('btn-revoke').disabled = false
+  } catch (e) {
+    log('连接失败: ' + (e.message || e), 'error')
+  }
+}
+
+async function refreshBalances() {
+  const [eth, usdc, gt, ap] = await Promise.all([
+    publicClient.getBalance({ address: account }),
+    publicClient.readContract({ address: USDC, abi: ERC20, functionName: 'balanceOf', args: [account] }),
+    publicClient.readContract({ address: GTOKEN, abi: ERC20, functionName: 'balanceOf', args: [account] }),
+    publicClient.readContract({ address: APNTS, abi: ERC20, functionName: 'balanceOf', args: [account] }),
+  ])
+  document.getElementById('w-eth').textContent = formatEther(eth).slice(0, 8) + ' ETH'
+  document.getElementById('w-usdc').textContent = formatUnits(usdc, 6) + ' USDC'
+  document.getElementById('w-gt').textContent = formatUnits(gt, 18).slice(0, 10) + ' GT'
+  document.getElementById('w-apnts').textContent = formatUnits(ap, 18).slice(0, 10) + ' aPNTs'
+  // Low ETH warning
+  if (eth < parseUnits('0.001', 18)) {
+    document.getElementById('eth-warning').classList.remove('hidden')
+  } else {
+    document.getElementById('eth-warning').classList.add('hidden')
+  }
+}
+
+async function refreshPrices() {
+  priceGT = await publicClient.readContract({ address: SALE_GT, abi: SALE_GT_ABI, functionName: 'getCurrentPriceUSD' })
+  priceAP = await publicClient.readContract({ address: SALE_AP, abi: SALE_AP_ABI, functionName: 'priceUSD' })
+  log(`GToken 价 $${(Number(priceGT)/1e6).toFixed(4)} · aPNTs 价 $${(Number(priceAP)/1e6).toFixed(4)}`)
+  updateEstimate()
+}
+
+// ─── Sign + Relay (gasless purchase) ─────────────────────────────────────
+window.signAndRelay = async function() {
+  if (!account) { log('请先连接钱包', 'warn'); return }
+  const raw = parseFloat(document.getElementById('usd-input').value)
+  if (!raw || raw <= 0) { log('请输入金额', 'warn'); return }
+  const usdAmount = BigInt(Math.round(raw * 1e6))
+  const isGT = selectedToken === 'GTOKEN'
+  const saleAddr = isGT ? SALE_GT : SALE_AP
+
+  // Read delegate nonce (EOA state, defaults to 0 if not yet delegated)
+  let nonce
+  try {
+    nonce = await publicClient.readContract({ address: account, abi: DELEGATE_ABI, functionName: 'nonce' })
+  } catch { nonce = 0n }
+  const deadline = BigInt(Math.floor(Date.now() / 1000) + 1800) // 30min
+
+  // Build calls: [approve(USDC, sale, usd), buy(usd, USDC, [minOut])]
+  const approveData = encodeFunctionData({
+    abi: parseAbi(['function approve(address,uint256)']),
+    functionName: 'approve', args: [saleAddr, usdAmount],
+  })
+  // 2% slippage protection: minOut = estimated_tokens * 0.98
+  const minOutGT = priceGT && priceGT > 0n
+    ? (usdAmount * (10n ** 18n) / priceGT) * 98n / 100n
+    : 0n
+  const buyData = isGT
+    ? encodeFunctionData({ abi: SALE_GT_ABI, functionName: 'buyTokens', args: [usdAmount, USDC, minOutGT] })
+    : encodeFunctionData({ abi: SALE_AP_ABI, functionName: 'buyAPNTs', args: [usdAmount, USDC] })
+
+  const calls = [
+    { target: USDC,     value: 0n, data: approveData },
+    { target: saleAddr, value: 0n, data: buyData },
+  ]
+
+  // ── Step 1: EIP-712 sign ExecuteBatch ──
+  log('① 请在 MetaMask 中签署 EIP-712 PurchaseIntent...', 'warn')
+  let sig
+  try {
+    sig = await walletClient.signTypedData({
+      domain: { name: 'AirAccountDelegate', version: '1', chainId: SEPOLIA_CHAIN_ID, verifyingContract: account },
+      types: {
+        ExecuteBatch: [
+          { name: 'calls', type: 'Call[]' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+        Call: [
+          { name: 'target', type: 'address' },
+          { name: 'value', type: 'uint256' },
+          { name: 'data', type: 'bytes' },
+        ],
+      },
+      primaryType: 'ExecuteBatch',
+      message: { calls, nonce, deadline },
+    })
+    log('✓ EIP-712 已签', 'success')
+  } catch (e) {
+    log('用户取消签名: ' + (e.shortMessage || e.message), 'error')
+    return
+  }
+
+  // ── Step 2: EIP-7702 authorization sign ──
+  log('② 请在 MetaMask 中签署 EIP-7702 Authorization (委托给 AirAccountDelegate)...', 'warn')
+  let authorization
+  try {
+    authorization = await walletClient.signAuthorization({
+      account, chainId: SEPOLIA_CHAIN_ID,
+      contractAddress: DELEGATE, nonce: Number(await publicClient.getTransactionCount({ address: account })),
+    })
+    log('✓ EIP-7702 Authorization 已签', 'success')
+  } catch (e) {
+    log('用户取消授权签名: ' + (e.shortMessage || e.message), 'error')
+    return
+  }
+
+  // ── Step 3: POST to relayer ──
+  log('③ 提交到 relayer...', 'warn')
+  try {
+    const resp = await fetch(RELAYER_URL + '/v2/relay', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyer: account,
+        calls: calls.map(c => ({ target: c.target, value: c.value.toString(), data: c.data })),
+        deadline: Number(deadline),
+        signature: sig,
+        authorization: {
+          chainId: authorization.chainId,
+          address: authorization.contractAddress ?? authorization.address,
+          nonce: authorization.nonce,
+          r: authorization.r,
+          s: authorization.s,
+          yParity: authorization.yParity ?? authorization.v,
+        },
+      }, (_, v) => typeof v === 'bigint' ? v.toString() : v),
+    })
+    const j = await resp.json()
+    if (resp.ok && j.txHash) {
+      log(`✓ tx 已提交: ${j.txHash}`, 'success')
+      log(`匹配规则: ${j.matchedRule}`, 'info')
+      log(`等待确认 → https://sepolia.etherscan.io/tx/${j.txHash}`, 'info')
+      // Refresh balances after a short delay
+      setTimeout(() => refreshBalances().catch(() => {}), 15000)
+    } else {
+      log(`relayer 拒绝: [${j.code}] ${j.error}`, 'error')
+    }
+  } catch (e) {
+    log('网络错误: ' + e.message, 'error')
+  }
+}
+
+// ─── Revoke ──────────────────────────────────────────────────────────────
+window.revokeDelegation = async function() {
+  if (!account) { log('请先连接钱包', 'warn'); return }
+  log('签 EIP-7702 Authorization (contract = 0x0, 清除委托)...', 'warn')
+  try {
+    const auth = await walletClient.signAuthorization({
+      account,
+      chainId: SEPOLIA_CHAIN_ID,
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      nonce: Number(await publicClient.getTransactionCount({ address: account })),
+    })
+    log('提交到 relayer /v2/revoke...', 'warn')
+    const resp = await fetch(RELAYER_URL + '/v2/revoke', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyer: account,
+        authorization: {
+          chainId: auth.chainId,
+          address: auth.contractAddress ?? auth.address,
+          nonce: auth.nonce,
+          r: auth.r, s: auth.s, yParity: auth.yParity ?? auth.v,
+        },
+      }),
+    })
+    const j = await resp.json()
+    if (resp.ok && j.txHash) {
+      log(`✓ 委托已撤销: ${j.txHash}`, 'success')
+      log(`Etherscan: https://sepolia.etherscan.io/tx/${j.txHash}`, 'info')
+    } else {
+      log(`relayer 拒绝: [${j.code}] ${j.error}`, 'error')
+    }
+  } catch (e) {
+    log('失败: ' + (e.message || e), 'error')
+  }
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────
+selectToken('GTOKEN') // default
+log('页面就绪 · 点击 Connect Wallet 开始')
+</script>
+</body>
+</html>
