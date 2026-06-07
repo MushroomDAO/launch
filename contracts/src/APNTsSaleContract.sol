@@ -2,6 +2,7 @@
 pragma solidity >=0.8.25;
 
 import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import {IERC20Metadata} from "openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
@@ -72,6 +73,7 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
     error ZeroAmount();
     error InvalidPrice();
     error PaymentTokenNotAccepted(address token);
+    error InvalidPaymentTokenDecimals(address token, uint8 decimals);
     error BelowMinPurchase(uint256 amount, uint256 minimum);
     error ExceedsMaxPurchase(uint256 amount, uint256 maximum);
     error InsufficientInventory(uint256 requested, uint256 available);
@@ -226,6 +228,13 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
      */
     function setPaymentToken(address token, bool accepted) external onlyOwner {
         if (token == address(0)) revert ZeroAddress();
+        // Codex MEDIUM-3 fix: enforce 6-decimal stablecoin (USDC/USDT). Mirrors
+        // SaleContractV2.setPaymentToken so pricing math (USD with 6 decimals)
+        // can't be subverted by whitelisting a non-6-dec token.
+        if (accepted) {
+            uint8 decimals = IERC20Metadata(token).decimals();
+            if (decimals != 6) revert InvalidPaymentTokenDecimals(token, decimals);
+        }
         acceptedPaymentTokens[token] = accepted;
         emit PaymentTokenSet(token, accepted);
     }
