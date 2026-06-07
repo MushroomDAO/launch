@@ -201,7 +201,10 @@ const log = (msg, kind = 'info') => {
   const t = new Date().toTimeString().slice(0, 8)
   const color = kind === 'error' ? '#f87171' : kind === 'success' ? '#4ade80' : kind === 'warn' ? '#fbbf24' : '#cbd5e1'
   const el = document.getElementById('log')
-  el.innerHTML += `<div style="color:${color}">[${t}] ${msg}</div>`
+  const div = document.createElement('div')
+  div.style.color = color
+  div.textContent = `[${t}] ${msg}`
+  el.appendChild(div)
   el.scrollTop = el.scrollHeight
 }
 const setBadge = (text, color) => {
@@ -345,8 +348,12 @@ window.signAndRelay = async function() {
     abi: parseAbi(['function approve(address,uint256)']),
     functionName: 'approve', args: [saleAddr, usdAmount],
   })
+  // 2% slippage protection: minOut = estimated_tokens * 0.98
+  const minOutGT = priceGT && priceGT > 0n
+    ? (usdAmount * (10n ** 18n) / priceGT) * 98n / 100n
+    : 0n
   const buyData = isGT
-    ? encodeFunctionData({ abi: SALE_GT_ABI, functionName: 'buyTokens', args: [usdAmount, USDC, 0n] })
+    ? encodeFunctionData({ abi: SALE_GT_ABI, functionName: 'buyTokens', args: [usdAmount, USDC, minOutGT] })
     : encodeFunctionData({ abi: SALE_AP_ABI, functionName: 'buyAPNTs', args: [usdAmount, USDC] })
 
   const calls = [
