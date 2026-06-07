@@ -79,7 +79,7 @@ contract AirAccountDelegateTest is Test {
                 keccak256(bytes("AirAccountDelegate")),
                 keccak256(bytes("1")),
                 block.chainid,
-                eoa // verifyingContract = the EOA itself, per EIP-7702 semantics
+                address(logic) // verifyingContract = IMPLEMENTATION address (constant; MM-compatible)
             )
         );
         return keccak256(abi.encodePacked("\x19\x01", domSep, structHash));
@@ -256,9 +256,10 @@ contract AirAccountDelegateTest is Test {
         assertEq(onchain, offchain);
     }
 
-    function test_domain_separator_includes_eoa_address() public view {
+    function test_domain_separator_uses_implementation_address() public view {
+        // Pinned to IMPLEMENTATION so MetaMask (which blocks signing when
+        // verifyingContract == one of the user's accounts) accepts it.
         bytes32 sep = AirAccountDelegate(payable(eoa)).domainSeparator();
-        // verifyingContract slot is `eoa`, so different EOA → different separator.
         bytes32 DOMAIN_TYPEHASH = keccak256(
             "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
         );
@@ -268,14 +269,56 @@ contract AirAccountDelegateTest is Test {
                 keccak256(bytes("AirAccountDelegate")),
                 keccak256(bytes("1")),
                 block.chainid,
-                eoa
+                address(logic)
             )
         );
         assertEq(sep, expected);
+        // Sanity: IMPLEMENTATION() view returns the same constant from both copies.
+        assertEq(AirAccountDelegate(payable(eoa)).IMPLEMENTATION(), address(logic));
     }
 
     function test_version_strings() public view {
         assertEq(AirAccountDelegate(payable(eoa)).NAME(), "AirAccountDelegate");
         assertEq(AirAccountDelegate(payable(eoa)).VERSION(), "1");
+    }
+
+    // ─── Codex gap fixes: low-s & invalid v ────────────────────────────────
+
+    function test_executeBatch_rejects_high_s_signature() public {
+        AirAccountDelegate.Call[] memory calls = _single(
+            address(counter), 0, abi.encodeWithSelector(Counter.inc.selector)
+        );
+        uint256 deadline = block.timestamp + 1 hours;
+        bytes32 digest = _digest(calls, 0, deadline);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(eoaPk, digest);
+
+        // Flip s into the high-s half (EIP-2 disallowed).
+        // secp256k1 N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+        bytes32 N = bytes32(uint256(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141));
+        bytes32 highS = bytes32(uint256(N) - uint256(s));
+        // Flipping s also flips v parity to keep the same valid signer pair.
+        uint8 newV = v == 27 ? 28 : 27;
+        bytes memory malleable = abi.encodePacked(r, highS, newV);
+
+        // Contract's _recoverEcdsa returns address(0) on high-s → InvalidSigner reverts
+        vm.expectRevert();
+        AirAccountDelegate(payable(eoa)).executeBatch(calls, deadline, malleable);
+    }
+
+    function test_executeBatch_rejects_invalid_v_ecrecover_zero() public {
+        AirAccountDelegate.Call[] memory calls = _single(
+            address(counter), 0, abi.encodeWithSelector(Counter.inc.selector)
+        );
+        uint256 deadline = block.timestamp + 1 hours;
+        bytes32 digest = _digest(calls, 0, deadline);
+        (, bytes32 r, bytes32 s) = vm.sign(eoaPk, digest);
+
+        // Pass v = 0 — _recoverEcdsa normalizes v<27 to v+27, so v=0 becomes v=27
+        // which still might recover a valid (but wrong) signer.
+        // To reliably test ecrecover→0, use v=99 (out of range) which ecrecover rejects.
+        bytes memory invalidV = abi.encodePacked(r, s, uint8(99));
+
+        vm.expectRevert();
+        AirAccountDelegate(payable(eoa)).executeBatch(calls, deadline, invalidV);
     }
 }

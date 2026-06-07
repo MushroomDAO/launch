@@ -15,6 +15,13 @@ pragma solidity 0.8.25;
  *   against `address(this)` — which IS the EOA when delegated. This means: only the EOA's
  *   private key can authorize batches against its own delegated address.
  *
+ *   EIP-712 domain.verifyingContract = the immutable IMPLEMENTATION address (NOT the EOA).
+ *   Why: MetaMask refuses to sign typed data whose `verifyingContract` equals one of the
+ *   wallet's own accounts (phishing protection introduced in MM 11.x). By pinning the
+ *   domain to the implementation contract address (baked into the bytecode at deploy
+ *   time via `address(this)` in the constructor), both off-chain signer and on-chain
+ *   verifier agree on the same constant, and MetaMask allows the signature.
+ *
  *   Replay protection:
  *     - per-EOA `nonce` (stored on EOA's storage slot 0 of THIS contract)
  *     - `deadline` enforces expiration
@@ -52,6 +59,20 @@ contract AirAccountDelegate {
     bytes32 public constant DOMAIN_TYPEHASH = keccak256(
         "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
     );
+
+    // =============================================================
+    //                        IMMUTABLES
+    // =============================================================
+
+    /// @notice The implementation contract address — used as `verifyingContract` in the
+    ///         EIP-712 domain. Set once at construction (= original deployment address),
+    ///         and baked into the runtime bytecode so it stays constant even when this
+    ///         code runs under an EOA via EIP-7702.
+    address public immutable IMPLEMENTATION;
+
+    constructor() {
+        IMPLEMENTATION = address(this);
+    }
 
     // =============================================================
     //                          STORAGE
@@ -134,7 +155,9 @@ contract AirAccountDelegate {
     //                     HASHING HELPERS (view)
     // =============================================================
 
-    /// @notice Returns the EIP-712 domain separator for THIS contract instance.
+    /// @notice Returns the EIP-712 domain separator. Pinned to IMPLEMENTATION so MetaMask
+    ///         (which blocks signing where `verifyingContract` is one of the user's own
+    ///         accounts) will accept the request.
     function domainSeparator() public view returns (bytes32) {
         return keccak256(
             abi.encode(
@@ -142,7 +165,7 @@ contract AirAccountDelegate {
                 keccak256(bytes(NAME)),
                 keccak256(bytes(VERSION)),
                 block.chainid,
-                address(this)
+                IMPLEMENTATION
             )
         );
     }
