@@ -8,15 +8,16 @@ compatibility_flags = ["nodejs_compat"]
 CHAIN_ID = "11155111"
 ENTRY_POINT = "0x0000000071727De22E5E9d8BAf0edAc6f37da032"
 
-# Sale contracts (Sepolia, gToken-bound stack)
-SALE_CONTRACT = "0x3e4e0A663682a2d58d626D0057142328Ef0b626a"           # SaleContractV2 (gToken)
-APNTS_SALE_CONTRACT = "0xf1a5FE670dbf6c5219000B30500a98F772EF1F14"     # APNTsSaleContract
+# Sale contracts (Sepolia, Path A canonical-bound stack, 2026-06-21)
+SALE_CONTRACT = "0x29eE47dEBD0E60d426352415749b4899057D913F"           # SaleContractV2 (→ canonical GToken)
+APNTS_SALE_CONTRACT = "0x136654d4141d151e9C237af65E98c03e22afc142"     # APNTsSaleContract (→ canonical aPNTs)
 USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"
 
-# v2 gasless flow
+# v2/v3 gasless flow
 AIRACCOUNT_DELEGATE = "0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc"
-GTOKEN_ADDRESS = "0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67"
-APNTS_ADDRESS = "0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772"
+BUY_HELPER = "0x0EA2AEd239574F4e875Ae570C67825da845E7e66"             # BuyHelper (gasless v3, → canonical + new sales)
+GTOKEN_ADDRESS = "0x20a051502a7AE6e40cfFd6EBe59057538E698984"          # canonical SuperPaymaster GToken
+APNTS_ADDRESS = "0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b"           # canonical aPNTs
 
 # v1 legacy (INFRA_NOT_READY guard until SuperPaymaster stack is wired)
 # REGISTRY_ADDRESS = "0xa62EFc8a9138617E245bd21BcF5b5E406D864525"

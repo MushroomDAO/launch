@@ -14,11 +14,13 @@ import {BuyHelper} from "../src/BuyHelper.sol";
  *      --broadcast --verify
  */
 contract DeployBuyHelper is Script {
+    // Rebound to the canonical SuperPaymaster GToken/aPNTs (path A reconciliation,
+    // 2026-06-21) + the freshly redeployed sale stack bound to those tokens.
     address constant USDC    = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
-    address constant GTOKEN  = 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67;
-    address constant APNTS   = 0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772;
-    address constant SALE_GT = 0x3e4e0A663682a2d58d626D0057142328Ef0b626a;
-    address constant SALE_AP = 0xf1a5FE670dbf6c5219000B30500a98F772EF1F14;
+    address constant GTOKEN  = 0x20a051502a7AE6e40cfFd6EBe59057538E698984;
+    address constant APNTS   = 0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b;
+    address constant SALE_GT = 0x29eE47dEBD0E60d426352415749b4899057D913F;
+    address constant SALE_AP = 0x136654d4141d151e9C237af65E98c03e22afc142;
 
     function run() external returns (BuyHelper helper) {
         console.log("=== Deploying BuyHelper ===");

@@ -64,14 +64,16 @@ export type Intent = {
 
 // ─── Sepolia addresses (canonical) ───────────────────────────────────────────
 
+// Path A (2026-06-21): sale stack redeployed bound to the canonical SuperPaymaster
+// GToken / aPNTs. GTOKEN/APNTS/SALE_V2_NEW/APNTS_SALE/BUY_HELPER all rebound here.
 export const SEPOLIA = {
   USDC: getAddress('0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'),
-  GTOKEN: getAddress('0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67'),
-  APNTS: getAddress('0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772'),
-  SALE_V2_NEW: getAddress('0x3e4e0a663682a2d58d626d0057142328ef0b626a'),
-  APNTS_SALE: getAddress('0xf1a5fe670dbf6c5219000b30500a98f772ef1f14'),
+  GTOKEN: getAddress('0x20a051502a7AE6e40cfFd6EBe59057538E698984'),
+  APNTS: getAddress('0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b'),
+  SALE_V2_NEW: getAddress('0x29eE47dEBD0E60d426352415749b4899057D913F'),
+  APNTS_SALE: getAddress('0x136654d4141d151e9C237af65E98c03e22afc142'),
   AIRACCOUNT_DELEGATE: getAddress('0x0BC1A36d932e2E9efA33b98043a73b8Be1a6E9Fc'),
-  BUY_HELPER: getAddress('0x578D6f74d8bDA18Cc3b834C1bd74674c529250e7'),
+  BUY_HELPER: getAddress('0x0EA2AEd239574F4e875Ae570C67825da845E7e66'),
 } as const
 
 // ─── Helper: build a rule with auto-computed selector ───────────────────────

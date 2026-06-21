@@ -184,7 +184,7 @@
 
   <!-- Footer -->
   <p class="text-center text-xs text-slate-500">
-    Sepolia · BuyHelper <code style="color:var(--cyan)">0x578D6f74…50e7</code> · gasless=EIP-3009 · self-pay=USDC/USDT · 测试网
+    Sepolia · BuyHelper <code style="color:var(--cyan)">0x0EA2AE…7e66</code> · gasless=EIP-3009 · self-pay=USDC/USDT · 测试网
   </p>
 </div>
 
@@ -200,11 +200,12 @@ import { sepolia } from 'https://esm.sh/viem@2.31.0/chains'
 const SEPOLIA_CHAIN_ID = 11155111
 const USDC      = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
 const USDT      = '0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0'  // Aave Sepolia USDT (6-dec)
-const GTOKEN    = '0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67'
-const APNTS     = '0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772'
-const SALE_GT   = '0x3e4e0a663682a2d58d626d0057142328ef0b626a'
-const SALE_AP   = '0xf1a5fe670dbf6c5219000b30500a98f772ef1f14'
-const BUY_HELPER = '0x578D6f74d8bDA18Cc3b834C1bd74674c529250e7'
+// Path A (2026-06-21): rebound to canonical SuperPaymaster GToken/aPNTs + redeployed sale stack.
+const GTOKEN    = '0x20a051502a7AE6e40cfFd6EBe59057538E698984'
+const APNTS     = '0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b'
+const SALE_GT   = '0x29eE47dEBD0E60d426352415749b4899057D913F'
+const SALE_AP   = '0x136654d4141d151e9C237af65E98c03e22afc142'
+const BUY_HELPER = '0x0EA2AEd239574F4e875Ae570C67825da845E7e66'
 const RELAYER_URL = 'https://mycelium-relayer.jhfnetboy.workers.dev'
 
 const ERC20 = parseAbi([
