@@ -15,6 +15,7 @@ const BUYER = privateKeyToAccount(BUYER_PK).address as Address
 const OTHER_PK = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d' as const
 
 const ENV = {
+  CHAIN_ID: '11155111', // Sepolia — must match the EIP-712 domain chainId in signBuyIntent
   RPC_URL: 'http://invalid-rpc',
   OPERATOR_PK: '0x' + '11'.repeat(32) as Hex,
 }
