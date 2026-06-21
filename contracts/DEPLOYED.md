@@ -1,6 +1,27 @@
 # Deployed Contracts
 
-## Sepolia Testnet (Current)
+## Sepolia — Path A (canonical-bound stack, 2026-06-21) — CURRENT
+
+Sale stack redeployed bound to the **canonical SuperPaymaster GToken / aPNTs** (the
+authoritative ecosystem tokens), replacing the earlier test-token-bound deployment.
+
+| Contract | Address |
+|---|---|
+| GToken (canonical, SuperPaymaster) | `0x20a051502a7AE6e40cfFd6EBe59057538E698984` |
+| aPNTs (canonical) | `0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b` |
+| SaleContractV2 (→ canonical GToken) | `0x29eE47dEBD0E60d426352415749b4899057D913F` |
+| APNTsSaleContract (→ canonical aPNTs) | `0x136654d4141d151e9C237af65E98c03e22afc142` |
+| BuyHelper (gasless, → canonical + new sales) | `0x0EA2AEd239574F4e875Ae570C67825da845E7e66` |
+| USDC (payment) | `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` |
+| Deployer / treasury / owner | `0xb5600060e6de5E11D3636731964218E53caadf0E` |
+
+- Prices: GToken $0.15 · aPNTs $0.02. Inventory funded: 500 GT → SaleV2, 5000 aPNTs → APNTsSale.
+- Verified on-chain: self-pay buy succeeded (canonical GT received). Gasless requires the
+  relayer whitelist to be updated to the new BuyHelper + canonical tokens.
+- **TODO (relayer)**: whitelist BuyHelper `0x0EA2AE…`, sales `0x29eE47…`/`0x136654…`, and
+  target tokens `0x20a051…`/`0x9e66B…` in `services/relayer` (whitelist.ts + wrangler.toml).
+
+## Sepolia Testnet (legacy — test-token-bound, superseded by Path A above)
 
 | Contract | Address | Etherscan |
 |---|---|---|
