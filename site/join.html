@@ -416,6 +416,10 @@ window.signAndRelay = async function() {
   const paymentAmount = BigInt(Math.round(raw * 1e6))
   const isGT = selectedToken === 'GTOKEN'
   const targetToken = isGT ? GTOKEN : APNTS
+  // 2% 滑点保护:minOut = 预估 token × 0.98(仅 GToken;buyAPNTs 合约无 minOut 参数,传 0)
+  const minOut = (isGT && priceGT && priceGT > 0n)
+    ? (paymentAmount * (10n ** 18n) / priceGT) * 98n / 100n
+    : 0n
 
   let recipient = account
   const giftOn = document.getElementById('opt-gift').checked
@@ -472,7 +476,7 @@ window.signAndRelay = async function() {
         ],
       },
       primaryType: 'BuyIntent',
-      message: { buyer: account, paymentToken: USDC, paymentAmount, targetToken, recipient, minOut: 0n, deadline: BigInt(deadline), nonce },
+      message: { buyer: account, paymentToken: USDC, paymentAmount, targetToken, recipient, minOut, deadline: BigInt(deadline), nonce },
     })
     log('✓ BuyIntent 已签', 'success')
   } catch (e) { log('用户取消签名: ' + (e.shortMessage || e.message), 'error'); return }
@@ -490,7 +494,7 @@ window.signAndRelay = async function() {
       body: JSON.stringify({
         intent: {
           buyer: account, paymentToken: USDC, paymentAmount: paymentAmount.toString(),
-          targetToken, recipient, minOut: '0', deadline, nonce,
+          targetToken, recipient, minOut: minOut.toString(), deadline, nonce,
         },
         buyIntentSig: intentSig,
         transferAuth: { validAfter, v: v_, r: r_, s: s_ },
@@ -555,8 +559,12 @@ window.selfPayBuy = async function() {
   try {
     let hash
     if (isGT) {
+      // 2% 滑点保护:minOut = 预估 GToken × 0.98
+      const minOutGT = (priceGT && priceGT > 0n)
+        ? (usdAmount * (10n ** 18n) / priceGT) * 98n / 100n
+        : 0n
       hash = await walletClient.writeContract({
-        address: SALE_GT, abi: SALE_GT_ABI, functionName: 'buyTokens', args: [usdAmount, payAddr, 0n],
+        address: SALE_GT, abi: SALE_GT_ABI, functionName: 'buyTokens', args: [usdAmount, payAddr, minOutGT],
       })
     } else {
       hash = await walletClient.writeContract({
