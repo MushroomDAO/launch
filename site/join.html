@@ -184,7 +184,7 @@
 
   <!-- Footer -->
   <p class="text-center text-xs text-slate-500">
-    Sepolia · BuyHelper <code style="color:var(--cyan)">0x0EA2AE…7e66</code> · gasless=EIP-3009 · self-pay=USDC/USDT · 测试网
+    Sepolia · BuyHelper <code style="color:var(--cyan)">0xF78f89…B429</code> · gasless=EIP-3009 · self-pay=USDC/USDT · 测试网
   </p>
 </div>
 
@@ -200,12 +200,16 @@ import { sepolia } from 'https://esm.sh/viem@2.31.0/chains'
 const SEPOLIA_CHAIN_ID = 11155111
 const USDC      = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
 const USDT      = '0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0'  // Aave Sepolia USDT (6-dec)
-// Path A (2026-06-21): rebound to canonical SuperPaymaster GToken/aPNTs + redeployed sale stack.
+// Path A canonical + buyTokensFor/buyAPNTsFor + 发布门 hardening 重部署 (2026-06-23):
+// 绑权威 GToken/aPNTs;sale 栈 + BuyHelper(3 个 DVT relayer 白名单)全部重新部署。
 const GTOKEN    = '0x20a051502a7AE6e40cfFd6EBe59057538E698984'
 const APNTS     = '0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b'
-const SALE_GT   = '0x29eE47dEBD0E60d426352415749b4899057D913F'
-const SALE_AP   = '0x136654d4141d151e9C237af65E98c03e22afc142'
-const BUY_HELPER = '0x0EA2AEd239574F4e875Ae570C67825da845E7e66'
+const SALE_GT   = '0x86aC0278fAFA3Bf51e18426937A264e16B78bce4'
+const SALE_AP   = '0x1cE31924EE7e0296d6b739d0bC96B354CA55b30C'
+const BUY_HELPER = '0xF78f898413ef069C870A554f47B66eC6D9c5B429'
+// ⚠️ gasless relayer 已迁移到 DVT relay (dvtN.aastar.io,见 AAStarCommunity/dvt#5)。
+// 下面这个旧 Cloudflare Worker 已弃用 → gasless 段待接 DVT relay/SDK;
+// self-pay(下方直接调 sale 合约)已指向新栈,不受影响。
 const RELAYER_URL = 'https://mycelium-relayer.jhfnetboy.workers.dev'
 
 const ERC20 = parseAbi([

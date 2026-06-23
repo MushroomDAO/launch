@@ -1,6 +1,32 @@
 # Deployed Contracts
 
-## Sepolia — Path A (canonical-bound stack, 2026-06-21) — CURRENT
+## Sepolia — buyTokensFor + 发布门 hardening (2026-06-23) — CURRENT
+
+Sale stack redeployed: adds `buyTokensFor` / `buyAPNTsFor` (self-pay with an explicit
+recipient — buy into AirAccount, aastar-sdk#145 gap 2) + release-gate hardening
+(cap-exempt BuyHelper, `executeBuy` onlyRelayer whitelist of the 3 DVT operators,
+recipient events, CEI fixes). Same canonical SuperPaymaster GToken / aPNTs.
+
+| Contract | Address |
+|---|---|
+| GToken (canonical, SuperPaymaster) | `0x20a051502a7AE6e40cfFd6EBe59057538E698984` |
+| aPNTs (canonical) | `0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b` |
+| SaleContractV2 (→ canonical GToken) | `0x86aC0278fAFA3Bf51e18426937A264e16B78bce4` |
+| APNTsSaleContract (→ canonical aPNTs) | `0x1cE31924EE7e0296d6b739d0bC96B354CA55b30C` |
+| BuyHelper (gasless, 3 DVT relayer whitelist) | `0xF78f898413ef069C870A554f47B66eC6D9c5B429` |
+| USDC (payment) | `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` |
+| USDT (payment) | `0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0` |
+| Deployer / treasury / owner | `0xb5600060e6de5E11D3636731964218E53caadf0E` |
+
+- Prices: GToken $0.15 · aPNTs $0.02. Inventory: 500 GT → SaleV2, 5000 aPNTs → APNTsSale.
+- gasless relayer = **DVT relay** (3 operators dvt1/2/3, AAStarCommunity/dvt#5); BuyHelper
+  `isRelayer` whitelist = those 3. Old Cloudflare Worker (`0x4Bec0b1c…`) deprecated.
+- On-chain verified: `isRelayer[dvt1/2/3]`=true, `capExempt[BuyHelper]`=true, USDC+USDT
+  accepted, whitelistRequired=false, inventory funded, owner can add/removeRelayer.
+- Released through the gate: tests + self-review + Codex ×3 (GO) + fork E2E 6/6 (PRs #22/#23/#24).
+- Note: supplier was EIP-7702 delegated; revoked before deploy (tx `0xd77e0281…`).
+
+## Sepolia — Path A (canonical-bound stack, 2026-06-21) — superseded by the above
 
 Sale stack redeployed bound to the **canonical SuperPaymaster GToken / aPNTs** (the
 authoritative ecosystem tokens), replacing the earlier test-token-bound deployment.
