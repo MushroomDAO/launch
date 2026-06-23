@@ -114,6 +114,13 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
     mapping(address => bool) public isWhitelisted;
     mapping(address => bool) public acceptedTokens;
 
+    /// @notice Addresses exempt from perPersonCapUSD. Intended for the trusted
+    /// BuyHelper, whose gasless purchases all aggregate under its own address
+    /// (msg.sender) — without an exemption the shared counter would hit the
+    /// per-person cap and brick gasless for everyone. Per-buyer limits for the
+    /// gasless path are enforced at the relayer layer (rate limit + per-tx/day).
+    mapping(address => bool) public capExempt;
+
     // =============================================================
     //                          EVENTS
     // =============================================================
@@ -134,6 +141,18 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
     event WhitelistRequiredUpdated(bool required);
     event WhitelistUpdated(address indexed user, bool status);
     event PerPersonCapUpdated(uint256 newCapUSD);
+    /// @notice Emitted by buyTokensFor when the recipient differs from the payer
+    /// (代购 / buy-into-AirAccount). Mirrors TokensPurchased + the actual recipient.
+    event TokensPurchasedFor(
+        address indexed buyer,
+        address indexed recipient,
+        address indexed paymentToken,
+        uint256 usdAmount,
+        uint256 gTokenAmount,
+        uint256 priceUSD,
+        uint256 milestone
+    );
+    event CapExemptUpdated(address indexed account, bool exempt);
 
     // =============================================================
     //                        CONSTRUCTOR
@@ -238,7 +257,7 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
         internal
         returns (uint256 gTokenAmount)
     {
-        if (to == address(0)) revert ZeroAddress();
+        if (to == address(0) || to == address(this)) revert ZeroAddress();
         if (whitelistRequired && !isWhitelisted[msg.sender]) {
             revert NotWhitelisted(msg.sender);
         }
@@ -246,7 +265,8 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
         if (!acceptedTokens[paymentToken]) revert TokenNotAccepted(paymentToken);
 
         uint256 spent = userTotalSpent[msg.sender];
-        if (spent + usdAmount > perPersonCapUSD) {
+        // capExempt addresses (the trusted BuyHelper) skip the per-person cap.
+        if (!capExempt[msg.sender] && spent + usdAmount > perPersonCapUSD) {
             revert ExceedsPerPersonCap(usdAmount, perPersonCapUSD - spent);
         }
 
@@ -274,7 +294,6 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
         IERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
         gToken.safeTransfer(to, gTokenAmount);
 
-        // buyer = payer (msg.sender); recipient is observable via the GToken Transfer event.
         emit TokensPurchased(
             msg.sender,
             paymentToken,
@@ -283,6 +302,19 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
             pricePaid,
             milestonePaid
         );
+        // Record the actual recipient when it differs from the payer (代购/AirAccount),
+        // so indexers credit the buy to the recipient and not just the payer.
+        if (to != msg.sender) {
+            emit TokensPurchasedFor(
+                msg.sender,
+                to,
+                paymentToken,
+                usdAmount,
+                gTokenAmount,
+                pricePaid,
+                milestonePaid
+            );
+        }
     }
 
     // =============================================================
@@ -395,6 +427,17 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
         if (capUSD == 0) revert ZeroAmount();
         perPersonCapUSD = capUSD;
         emit PerPersonCapUpdated(capUSD);
+    }
+
+    /**
+     * @notice Exempt (or re-include) an address from the per-person cap.
+     * @dev Intended for the trusted BuyHelper so gasless buys don't share one
+     *      capped counter. Owner-only; emits CapExemptUpdated.
+     */
+    function setCapExempt(address account, bool exempt) external onlyOwner {
+        if (account == address(0)) revert ZeroAddress();
+        capExempt[account] = exempt;
+        emit CapExemptUpdated(account, exempt);
     }
 
     function setTreasury(address newTreasury) external onlyOwner {

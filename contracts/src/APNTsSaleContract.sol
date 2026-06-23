@@ -64,6 +64,15 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
     event PaymentTokenSet(address indexed token, bool accepted);
     event PurchaseLimitsUpdated(uint256 minAmount, uint256 maxAmount);
     event EmergencyWithdraw(address indexed token, uint256 amount, address indexed to);
+    /// @notice Emitted by buyAPNTsFor when the recipient differs from the payer.
+    event APNTsPurchasedFor(
+        address indexed buyer,
+        address indexed recipient,
+        address indexed paymentToken,
+        uint256 aPNTsAmount,
+        uint256 usdAmount,
+        uint256 priceUsed
+    );
 
     // =============================================================
     //                        ERRORS
@@ -180,7 +189,7 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
         internal
         returns (uint256 aPNTsAmount)
     {
-        if (to == address(0)) revert ZeroAddress();
+        if (to == address(0) || to == address(this)) revert ZeroAddress();
         if (usdAmount == 0) revert ZeroAmount();
         if (!acceptedPaymentTokens[paymentToken]) revert PaymentTokenNotAccepted(paymentToken);
 
@@ -192,15 +201,20 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
         uint256 inventory = availableInventory();
         if (aPNTsAmount > inventory) revert InsufficientInventory(aPNTsAmount, inventory);
 
+        // CEI: state update before external transfers.
+        totalSold += aPNTsAmount;
+
         // Transfer payment from payer (msg.sender) to treasury
         ERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
 
         // Transfer aPNTs to recipient `to` (observable via the aPNTs Transfer event)
         aPNTs.safeTransfer(to, aPNTsAmount);
 
-        totalSold += aPNTsAmount;
-
         emit APNTsPurchased(msg.sender, paymentToken, aPNTsAmount, usdAmount, priceUSD);
+        // Record the actual recipient when it differs from the payer.
+        if (to != msg.sender) {
+            emit APNTsPurchasedFor(msg.sender, to, paymentToken, aPNTsAmount, usdAmount, priceUSD);
+        }
     }
 
     /**

@@ -4,6 +4,10 @@ pragma solidity 0.8.25;
 import {Script, console} from "forge-std/Script.sol";
 import {BuyHelper} from "../src/BuyHelper.sol";
 
+interface ISaleCapExempt {
+    function setCapExempt(address account, bool exempt) external;
+}
+
 /**
  * @notice Deploy BuyHelper to Sepolia.
  *
@@ -33,6 +37,11 @@ contract DeployBuyHelper is Script {
 
         vm.startBroadcast();
         helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP);
+        // Exempt the helper from SaleContractV2's per-person cap. Without this,
+        // every gasless buy aggregates under the helper's address and bricks at
+        // $864. Requires the broadcaster to be SALE_GT's owner. (APNTsSaleContract
+        // has no per-person cap, so no exemption is needed there.)
+        ISaleCapExempt(SALE_GT).setCapExempt(address(helper), true);
         vm.stopBroadcast();
 
         console.log("");
