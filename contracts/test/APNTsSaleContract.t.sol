@@ -434,4 +434,26 @@ contract APNTsSaleContractTest is Test {
         vm.stopPrank();
         assertEq(aPNTs.balanceOf(user1), expected, "legacy path unchanged");
     }
+
+    // ─── release hardening: self-recipient reject / recipient event ──
+
+    function test_BuyAPNTsFor_RejectsSelfRecipient() public {
+        vm.startPrank(user1);
+        usdc.approve(address(saleContract), 1_000_000);
+        vm.expectRevert(APNTsSaleContract.ZeroAddress.selector);
+        saleContract.buyAPNTsFor(address(saleContract), 1_000_000, address(usdc));
+        vm.stopPrank();
+    }
+
+    function test_APNTsPurchasedFor_emitted_on_buyFor() public {
+        address recipient = makeAddr("airaccount2");
+        uint256 usdAmount = 1_000_000;
+        uint256 expected = saleContract.getAPNTsForUSD(usdAmount);
+        vm.startPrank(user1);
+        usdc.approve(address(saleContract), usdAmount);
+        vm.expectEmit(true, true, true, true);
+        emit APNTsSaleContract.APNTsPurchasedFor(user1, recipient, address(usdc), expected, usdAmount, DEFAULT_PRICE);
+        saleContract.buyAPNTsFor(recipient, usdAmount, address(usdc));
+        vm.stopPrank();
+    }
 }

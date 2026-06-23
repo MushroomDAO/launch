@@ -230,4 +230,49 @@ contract SaleContractV2Test is Test {
         sale.buyTokens(150 * 1e6, address(usdc), 0);
         assertEq(gt.balanceOf(alice), 1000 * 1e18, "legacy path unchanged");
     }
+
+    // ─── release hardening: cap exemption / self-recipient / recipient event ──
+
+    function test_buyTokensFor_rejects_self_recipient() public {
+        vm.prank(alice);
+        vm.expectRevert(SaleContractV2.ZeroAddress.selector);
+        sale.buyTokensFor(address(sale), 150 * 1e6, address(usdc), 0);
+    }
+
+    function test_capExempt_skips_per_person_cap() public {
+        // Lower cap to $100; exempt alice → she can exceed it (mirrors BuyHelper).
+        vm.startPrank(owner);
+        sale.setPerPersonCap(100 * 1e6);
+        sale.setCapExempt(alice, true);
+        vm.stopPrank();
+
+        vm.startPrank(alice);
+        sale.buyTokens(150 * 1e6, address(usdc), 0); // $150 > $100 cap, but exempt
+        sale.buyTokens(150 * 1e6, address(usdc), 0);
+        vm.stopPrank();
+        assertEq(gt.balanceOf(alice), 2000 * 1e18, "exempt payer bypasses cap");
+    }
+
+    function test_cap_still_enforced_for_non_exempt() public {
+        vm.prank(owner);
+        sale.setPerPersonCap(100 * 1e6);
+        vm.prank(alice);
+        vm.expectRevert(
+            abi.encodeWithSelector(SaleContractV2.ExceedsPerPersonCap.selector, 150 * 1e6, 100 * 1e6)
+        );
+        sale.buyTokens(150 * 1e6, address(usdc), 0);
+    }
+
+    function test_setCapExempt_owner_only() public {
+        vm.prank(alice);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, alice));
+        sale.setCapExempt(alice, true);
+    }
+
+    function test_TokensPurchasedFor_emitted_on_buyFor() public {
+        vm.expectEmit(true, true, true, true);
+        emit SaleContractV2.TokensPurchasedFor(alice, bob, address(usdc), 150 * 1e6, 1000 * 1e18, 150_000, 0);
+        vm.prank(alice);
+        sale.buyTokensFor(bob, 150 * 1e6, address(usdc), 0);
+    }
 }
