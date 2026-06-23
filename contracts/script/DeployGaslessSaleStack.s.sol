@@ -33,6 +33,10 @@ contract DeployGaslessSaleStack is Script {
         address usdc      = vm.envAddress("USDC_ADDRESS");
         address treasury  = vm.envAddress("TREASURY_ADDRESS");
         address owner     = vm.envAddress("OWNER_ADDRESS");
+        // Optional: accept USDT too (self-pay path — USDT has no EIP-3009 so it
+        // can't go gasless, but buyTokensFor/buyAPNTsFor let it buy into AirAccount).
+        // Must be a 6-decimal stablecoin (setPaymentToken enforces this).
+        address usdt      = vm.envOr("USDT_ADDRESS", address(0));
 
         require(gToken != address(0), "GTOKEN_ADDRESS unset");
         require(apnts != address(0), "APNTS_ADDRESS unset");
@@ -52,6 +56,7 @@ contract DeployGaslessSaleStack is Script {
         // 1. SaleContractV2 bound to verified gToken
         saleV2 = new SaleContractV2(gToken, treasury, owner);
         saleV2.setPaymentToken(usdc, true);
+        if (usdt != address(0)) saleV2.setPaymentToken(usdt, true);
         saleV2.setWhitelistRequired(false);
         console.log("SaleContractV2 (gToken):", address(saleV2));
 
@@ -63,6 +68,7 @@ contract DeployGaslessSaleStack is Script {
             owner
         );
         apntsSale.setPaymentToken(usdc, true);
+        if (usdt != address(0)) apntsSale.setPaymentToken(usdt, true);
         console.log("APNTsSaleContract: ", address(apntsSale));
 
         vm.stopBroadcast();

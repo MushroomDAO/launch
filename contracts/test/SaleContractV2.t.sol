@@ -194,4 +194,40 @@ contract SaleContractV2Test is Test {
         assertEq(sale.VERSION(), 20000);
         assertEq(sale.version(), "2.0.0");
     }
+
+    // ─── buyTokensFor: self-pay with explicit recipient (SDK#145 gap 2) ──
+
+    function test_buyTokensFor_credits_recipient() public {
+        uint256 usd = 150 * 1e6; // $150 → 1000 GT @ $0.15
+        vm.prank(alice);
+        uint256 out = sale.buyTokensFor(bob, usd, address(usdc), 0);
+
+        assertEq(out, 1000 * 1e18, "returns minted amount");
+        assertEq(gt.balanceOf(bob), 1000 * 1e18, "recipient gets GToken");
+        assertEq(gt.balanceOf(alice), 0, "payer gets nothing");
+        assertEq(usdc.balanceOf(treasury), usd, "payment pulled from payer");
+        assertEq(sale.userTotalSpent(alice), usd, "cap charged to payer");
+        assertEq(sale.userTotalSpent(bob), 0, "recipient cap untouched");
+    }
+
+    function test_buyTokensFor_zero_recipient_reverts() public {
+        vm.prank(alice);
+        vm.expectRevert(SaleContractV2.ZeroAddress.selector);
+        sale.buyTokensFor(address(0), 150 * 1e6, address(usdc), 0);
+    }
+
+    function test_buyTokensFor_respects_slippage() public {
+        // $150 yields exactly 1000 GT; requiring 1001 must revert.
+        vm.prank(alice);
+        vm.expectRevert(
+            abi.encodeWithSelector(SaleContractV2.SlippageExceeded.selector, 1000 * 1e18, 1001 * 1e18)
+        );
+        sale.buyTokensFor(bob, 150 * 1e6, address(usdc), 1001 * 1e18);
+    }
+
+    function test_buyTokens_still_credits_self() public {
+        vm.prank(alice);
+        sale.buyTokens(150 * 1e6, address(usdc), 0);
+        assertEq(gt.balanceOf(alice), 1000 * 1e18, "legacy path unchanged");
+    }
 }

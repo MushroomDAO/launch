@@ -199,12 +199,46 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
 
     /**
      * @notice Purchase GTokens by paying with an accepted stablecoin.
+     * @dev Tokens are credited to msg.sender. Thin wrapper over `_buyTokensFor`.
      */
     function buyTokens(uint256 usdAmount, address paymentToken, uint256 minTokensOut)
         external
         nonReentrant
         whenNotPaused
     {
+        _buyTokensFor(msg.sender, usdAmount, paymentToken, minTokensOut);
+    }
+
+    /**
+     * @notice Same as `buyTokens`, but credits the purchased GToken to `to`
+     *         instead of msg.sender. Payment is still pulled from msg.sender,
+     *         and the per-person cap + whitelist still apply to msg.sender (payer).
+     * @dev Added for SDK self-pay "buy into AirAccount" — recipient ≠ payer
+     *      (aastar-sdk#145 gap 2; e.g. pay with USDT from MetaMask EOA, credit
+     *      aPNTs/GToken to the user's AirAccount). The gasless path already
+     *      supports recipient via BuyHelper; this covers non-EIP-3009 self-pay.
+     * @param to Recipient of the purchased GToken (must be non-zero).
+     * @return gTokenAmount Amount of GToken credited to `to`.
+     */
+    function buyTokensFor(address to, uint256 usdAmount, address paymentToken, uint256 minTokensOut)
+        external
+        nonReentrant
+        whenNotPaused
+        returns (uint256)
+    {
+        return _buyTokensFor(to, usdAmount, paymentToken, minTokensOut);
+    }
+
+    /**
+     * @dev Core purchase logic. Payer is always msg.sender; recipient is `to`.
+     *      Not re-entrancy guarded itself — only reachable via the guarded
+     *      `buyTokens` / `buyTokensFor` externals.
+     */
+    function _buyTokensFor(address to, uint256 usdAmount, address paymentToken, uint256 minTokensOut)
+        internal
+        returns (uint256 gTokenAmount)
+    {
+        if (to == address(0)) revert ZeroAddress();
         if (whitelistRequired && !isWhitelisted[msg.sender]) {
             revert NotWhitelisted(msg.sender);
         }
@@ -216,7 +250,7 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
             revert ExceedsPerPersonCap(usdAmount, perPersonCapUSD - spent);
         }
 
-        uint256 gTokenAmount = getTokensForUSD(usdAmount);
+        gTokenAmount = getTokensForUSD(usdAmount);
         if (gTokenAmount == 0) revert ZeroTokensOut();
 
         if (minTokensOut > 0 && gTokenAmount < minTokensOut) {
@@ -238,8 +272,9 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
         _advanceIfNeeded();
 
         IERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
-        gToken.safeTransfer(msg.sender, gTokenAmount);
+        gToken.safeTransfer(to, gTokenAmount);
 
+        // buyer = payer (msg.sender); recipient is observable via the GToken Transfer event.
         emit TokensPurchased(
             msg.sender,
             paymentToken,
