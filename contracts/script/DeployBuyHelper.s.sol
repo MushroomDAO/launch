@@ -35,12 +35,19 @@ contract DeployBuyHelper is Script {
         console.log("SALE_GT:    ", SALE_GT);
         console.log("SALE_AP:    ", SALE_AP);
 
-        address relayer = vm.envAddress("RELAYER_ADDRESS");
-        require(relayer != address(0), "RELAYER_ADDRESS unset");
-        console.log("RELAYER:    ", relayer);
+        // 3 DVT relay operators (AAStarCommunity/dvt#5, Sepolia). Owner can
+        // addRelayer/removeRelayer later without redeploying (rotation / new nodes).
+        address[] memory relayers = new address[](3);
+        relayers[0] = 0x214de9df4442e130F095083ECe3F67c8f2eaB6B7; // dvt1
+        relayers[1] = 0x04abAC202DA0AE78a3ca5DFa1016066919792c5a; // dvt2
+        relayers[2] = 0xA47db60B58eE7c7a4d04d44BdAd2A6e8b9A3653F; // dvt3
+        address owner = vm.envAddress("OWNER_ADDRESS");
+        require(owner != address(0), "OWNER_ADDRESS unset");
+        console.log("Owner:      ", owner);
+        console.log("Relayers:   3 DVT operators (dvt1/dvt2/dvt3)");
 
         vm.startBroadcast();
-        helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP, relayer);
+        helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP, owner, relayers);
         // Exempt the helper from SaleContractV2's per-person cap. Without this,
         // every gasless buy aggregates under the helper's address and bricks at
         // $864. Requires the broadcaster to be SALE_GT's owner. (APNTsSaleContract

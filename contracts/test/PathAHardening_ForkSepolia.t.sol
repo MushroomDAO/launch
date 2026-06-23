@@ -61,7 +61,9 @@ contract PathAHardeningForkTest is Test {
         saleAP.setPaymentToken(USDT, true);
         vm.stopPrank();
 
-        helper = new BuyHelper(USDC, GTOKEN, APNTS, address(saleGT), address(saleAP), relayer);
+        address[] memory relayerSet = new address[](1);
+        relayerSet[0] = relayer;
+        helper = new BuyHelper(USDC, GTOKEN, APNTS, address(saleGT), address(saleAP), owner, relayerSet);
         vm.prank(owner);
         saleGT.setCapExempt(address(helper), true);
 

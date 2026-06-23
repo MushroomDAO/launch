@@ -4,6 +4,7 @@ pragma solidity 0.8.25;
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 /**
  * @title BuyHelper
@@ -51,7 +52,7 @@ interface IAPNTsSale {
     function buyAPNTs(uint256 usdAmount, address paymentToken) external;
 }
 
-contract BuyHelper is ReentrancyGuard {
+contract BuyHelper is ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
     // =============================================================
@@ -63,13 +64,14 @@ contract BuyHelper is ReentrancyGuard {
     address public immutable APNTS;
     address public immutable SALE_GT;
     address public immutable SALE_AP;
-    /// @notice The only address allowed to call executeBuy (the gasless relayer).
-    /// The helper is cap-exempt on the sale, so a public entry would let anyone
-    /// drive it to bypass the per-person cap; per-buyer limits are enforced by
-    /// the relayer off-chain.
-    address public immutable RELAYER;
 
     bytes32 public immutable DOMAIN_SEPARATOR;
+
+    /// @notice Whitelisted relayer operators allowed to call executeBuy. The helper
+    /// is cap-exempt on the sale, so a public entry would let anyone bypass the
+    /// per-person cap; only these trusted DVT relay operators may submit. Owner can
+    /// add/remove to rotate hot wallets or onboard new DVT nodes without redeploying.
+    mapping(address => bool) public isRelayer;
 
     // =============================================================
     //                        CONSTANTS
@@ -98,6 +100,7 @@ contract BuyHelper is ReentrancyGuard {
         uint256 paymentAmount,
         uint256 receivedAmount
     );
+    event RelayerUpdated(address indexed relayer, bool allowed);
 
     // =============================================================
     //                          ERRORS
@@ -123,15 +126,19 @@ contract BuyHelper is ReentrancyGuard {
         address apnts,
         address saleGT,
         address saleAP,
-        address relayer
-    ) {
-        if (relayer == address(0)) revert ZeroRelayer();
+        address initialOwner,
+        address[] memory relayers
+    ) Ownable(initialOwner) {
         USDC = usdc;
         GTOKEN = gtoken;
         APNTS = apnts;
         SALE_GT = saleGT;
         SALE_AP = saleAP;
-        RELAYER = relayer;
+        for (uint256 i = 0; i < relayers.length; i++) {
+            if (relayers[i] == address(0)) revert ZeroRelayer();
+            isRelayer[relayers[i]] = true;
+            emit RelayerUpdated(relayers[i], true);
+        }
 
         DOMAIN_SEPARATOR = keccak256(
             abi.encode(
@@ -186,10 +193,10 @@ contract BuyHelper is ReentrancyGuard {
         bytes calldata buyIntentSig,
         TransferAuthExtras calldata transferAuth
     ) external nonReentrant {
-        // 0. Access control: only the trusted relayer may submit. The helper is
+        // 0. Access control: only a whitelisted relayer may submit. The helper is
         // cap-exempt on the sale, so a public entry would let anyone bypass the
         // per-person cap. Per-buyer limits are enforced by the relayer off-chain.
-        if (msg.sender != RELAYER) revert NotRelayer(msg.sender);
+        if (!isRelayer[msg.sender]) revert NotRelayer(msg.sender);
 
         // 1. Sanity checks
         if (intent.paymentToken != USDC) revert UnsupportedPaymentToken(intent.paymentToken);
@@ -241,6 +248,23 @@ contract BuyHelper is ReentrancyGuard {
             intent.paymentAmount,
             received
         );
+    }
+
+    // =============================================================
+    //                    RELAYER MANAGEMENT
+    // =============================================================
+
+    /// @notice Add a relayer operator to the whitelist. Owner-only.
+    function addRelayer(address relayer) external onlyOwner {
+        if (relayer == address(0)) revert ZeroRelayer();
+        isRelayer[relayer] = true;
+        emit RelayerUpdated(relayer, true);
+    }
+
+    /// @notice Remove a relayer operator from the whitelist. Owner-only.
+    function removeRelayer(address relayer) external onlyOwner {
+        isRelayer[relayer] = false;
+        emit RelayerUpdated(relayer, false);
     }
 
     // =============================================================
