@@ -44,7 +44,8 @@ contract BuyHelperForkSepoliaTest is Test {
         (buyer, buyerPk) = makeAddrAndKey("buyer-eip3009-e2e");
         recipient = makeAddr("recipient-daigou");
 
-        helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP);
+        // relayer = this test contract, so executeBuy calls (made by it) pass onlyRelayer.
+        helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP, address(this));
 
         // Fund buyer with USDC; no ETH on purpose (this is the gasless scenario).
         deal(USDC, buyer, 1000 * 1e6); // 1000 USDC

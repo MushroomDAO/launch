@@ -267,7 +267,10 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
         uint256 spent = userTotalSpent[msg.sender];
         // capExempt addresses (the trusted BuyHelper) skip the per-person cap.
         if (!capExempt[msg.sender] && spent + usdAmount > perPersonCapUSD) {
-            revert ExceedsPerPersonCap(usdAmount, perPersonCapUSD - spent);
+            // Guard against underflow: an address could have been exempt (spent
+            // may exceed cap) and later re-included via setCapExempt(false).
+            uint256 remaining = perPersonCapUSD > spent ? perPersonCapUSD - spent : 0;
+            revert ExceedsPerPersonCap(usdAmount, remaining);
         }
 
         gTokenAmount = getTokensForUSD(usdAmount);

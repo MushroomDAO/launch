@@ -35,8 +35,12 @@ contract DeployBuyHelper is Script {
         console.log("SALE_GT:    ", SALE_GT);
         console.log("SALE_AP:    ", SALE_AP);
 
+        address relayer = vm.envAddress("RELAYER_ADDRESS");
+        require(relayer != address(0), "RELAYER_ADDRESS unset");
+        console.log("RELAYER:    ", relayer);
+
         vm.startBroadcast();
-        helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP);
+        helper = new BuyHelper(USDC, GTOKEN, APNTS, SALE_GT, SALE_AP, relayer);
         // Exempt the helper from SaleContractV2's per-person cap. Without this,
         // every gasless buy aggregates under the helper's address and bricks at
         // $864. Requires the broadcaster to be SALE_GT's owner. (APNTsSaleContract

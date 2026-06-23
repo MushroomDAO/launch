@@ -233,10 +233,11 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
 
         uint256 usdAmount = getUSDForAPNTs(aPNTsAmount);
 
+        // CEI: state update before external transfers.
+        totalSold += aPNTsAmount;
+
         ERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
         aPNTs.safeTransfer(msg.sender, aPNTsAmount);
-
-        totalSold += aPNTsAmount;
 
         emit APNTsPurchased(msg.sender, paymentToken, aPNTsAmount, usdAmount, priceUSD);
     }

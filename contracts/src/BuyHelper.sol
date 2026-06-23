@@ -63,6 +63,11 @@ contract BuyHelper is ReentrancyGuard {
     address public immutable APNTS;
     address public immutable SALE_GT;
     address public immutable SALE_AP;
+    /// @notice The only address allowed to call executeBuy (the gasless relayer).
+    /// The helper is cap-exempt on the sale, so a public entry would let anyone
+    /// drive it to bypass the per-person cap; per-buyer limits are enforced by
+    /// the relayer off-chain.
+    address public immutable RELAYER;
 
     bytes32 public immutable DOMAIN_SEPARATOR;
 
@@ -105,6 +110,8 @@ contract BuyHelper is ReentrancyGuard {
     error InvalidSignatureLength(uint256 length);
     error InvalidBuyIntentSigner(address recovered, address expected);
     error BelowMinOut(uint256 received, uint256 minOut);
+    error NotRelayer(address caller);
+    error ZeroRelayer();
 
     // =============================================================
     //                       CONSTRUCTOR
@@ -115,13 +122,16 @@ contract BuyHelper is ReentrancyGuard {
         address gtoken,
         address apnts,
         address saleGT,
-        address saleAP
+        address saleAP,
+        address relayer
     ) {
+        if (relayer == address(0)) revert ZeroRelayer();
         USDC = usdc;
         GTOKEN = gtoken;
         APNTS = apnts;
         SALE_GT = saleGT;
         SALE_AP = saleAP;
+        RELAYER = relayer;
 
         DOMAIN_SEPARATOR = keccak256(
             abi.encode(
@@ -176,6 +186,11 @@ contract BuyHelper is ReentrancyGuard {
         bytes calldata buyIntentSig,
         TransferAuthExtras calldata transferAuth
     ) external nonReentrant {
+        // 0. Access control: only the trusted relayer may submit. The helper is
+        // cap-exempt on the sale, so a public entry would let anyone bypass the
+        // per-person cap. Per-buyer limits are enforced by the relayer off-chain.
+        if (msg.sender != RELAYER) revert NotRelayer(msg.sender);
+
         // 1. Sanity checks
         if (intent.paymentToken != USDC) revert UnsupportedPaymentToken(intent.paymentToken);
         if (intent.targetToken != GTOKEN && intent.targetToken != APNTS) {
