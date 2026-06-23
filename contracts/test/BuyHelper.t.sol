@@ -82,4 +82,34 @@ contract BuyHelperUnitTest is Test {
             makeAddr("saleGT"), makeAddr("saleAP"), owner, relayers
         );
     }
+
+    // ── edge cases flagged by Codex (fail-closed, not silent) ────────────────
+
+    function test_constructor_empty_relayers_fails_closed() public {
+        address[] memory empty = new address[](0);
+        BuyHelper h = new BuyHelper(
+            makeAddr("usdc"), makeAddr("gtoken"), makeAddr("apnts"),
+            makeAddr("saleGT"), makeAddr("saleAP"), owner, empty
+        );
+        // No relayers → every executeBuy reverts (fail-closed, never silently buys).
+        BuyHelper.BuyIntent memory intent;
+        BuyHelper.TransferAuthExtras memory auth =
+            BuyHelper.TransferAuthExtras({validAfter: 0, v: 27, r: bytes32(0), s: bytes32(0)});
+        vm.prank(relayer1);
+        vm.expectRevert(abi.encodeWithSelector(BuyHelper.NotRelayer.selector, relayer1));
+        h.executeBuy(intent, hex"", auth);
+    }
+
+    function test_removeAll_then_owner_restores() public {
+        vm.startPrank(owner);
+        helper.removeRelayer(relayer1);
+        helper.removeRelayer(relayer2);
+        vm.stopPrank();
+        assertFalse(helper.isRelayer(relayer1));
+        assertFalse(helper.isRelayer(relayer2));
+        // Owner can always recover from an empty set.
+        vm.prank(owner);
+        helper.addRelayer(relayer1);
+        assertTrue(helper.isRelayer(relayer1), "owner restores relayer");
+    }
 }
