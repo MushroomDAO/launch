@@ -152,10 +152,39 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
      * with different decimals, owner should adjust the price accordingly.
      */
     function buyAPNTs(uint256 usdAmount, address paymentToken) external nonReentrant {
+        _buyAPNTsFor(msg.sender, usdAmount, paymentToken);
+    }
+
+    /**
+     * @notice Same as `buyAPNTs`, but credits the purchased aPNTs to `to`
+     *         instead of msg.sender. Payment is still pulled from msg.sender.
+     * @dev Added for SDK self-pay "buy into AirAccount" — recipient ≠ payer
+     *      (aastar-sdk#145 gap 2; e.g. pay with USDT from MetaMask EOA, credit
+     *      aPNTs to the user's AirAccount).
+     * @param to Recipient of the purchased aPNTs (must be non-zero).
+     * @return aPNTsAmount Amount of aPNTs credited to `to`.
+     */
+    function buyAPNTsFor(address to, uint256 usdAmount, address paymentToken)
+        external
+        nonReentrant
+        returns (uint256)
+    {
+        return _buyAPNTsFor(to, usdAmount, paymentToken);
+    }
+
+    /**
+     * @dev Core purchase logic. Payer is always msg.sender; recipient is `to`.
+     *      Only reachable via the nonReentrant `buyAPNTs` / `buyAPNTsFor` externals.
+     */
+    function _buyAPNTsFor(address to, uint256 usdAmount, address paymentToken)
+        internal
+        returns (uint256 aPNTsAmount)
+    {
+        if (to == address(0)) revert ZeroAddress();
         if (usdAmount == 0) revert ZeroAmount();
         if (!acceptedPaymentTokens[paymentToken]) revert PaymentTokenNotAccepted(paymentToken);
 
-        uint256 aPNTsAmount = getAPNTsForUSD(usdAmount);
+        aPNTsAmount = getAPNTsForUSD(usdAmount);
 
         if (aPNTsAmount < minPurchaseAmount) revert BelowMinPurchase(aPNTsAmount, minPurchaseAmount);
         if (aPNTsAmount > maxPurchaseAmount) revert ExceedsMaxPurchase(aPNTsAmount, maxPurchaseAmount);
@@ -163,11 +192,11 @@ contract APNTsSaleContract is Ownable, ReentrancyGuard {
         uint256 inventory = availableInventory();
         if (aPNTsAmount > inventory) revert InsufficientInventory(aPNTsAmount, inventory);
 
-        // Transfer payment from buyer to treasury
+        // Transfer payment from payer (msg.sender) to treasury
         ERC20(paymentToken).safeTransferFrom(msg.sender, treasury, usdAmount);
 
-        // Transfer aPNTs to buyer
-        aPNTs.safeTransfer(msg.sender, aPNTsAmount);
+        // Transfer aPNTs to recipient `to` (observable via the aPNTs Transfer event)
+        aPNTs.safeTransfer(to, aPNTsAmount);
 
         totalSold += aPNTsAmount;
 
