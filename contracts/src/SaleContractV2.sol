@@ -380,6 +380,9 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
 
         _milestones.push(Milestone({priceUSD: priceUSD, revenueCap: revenueCap}));
         emit MilestoneAdded(_milestones.length - 1, priceUSD, revenueCap);
+        // If revenue already meets the new cap, advance now so the next buy doesn't
+        // transact at the stale (lower) price.
+        _advanceIfNeeded();
     }
 
     /**
@@ -398,6 +401,7 @@ contract SaleContractV2 is Ownable, ReentrancyGuard, Pausable {
 
         _milestones.push(Milestone({priceUSD: newPrice, revenueCap: revenueCap}));
         emit MilestoneAdded(_milestones.length - 1, newPrice, revenueCap);
+        _advanceIfNeeded();
     }
 
     // =============================================================

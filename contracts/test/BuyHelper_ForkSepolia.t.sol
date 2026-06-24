@@ -19,16 +19,17 @@ interface IUsdcView {
  *      --fork-url $SEPOLIA_RPC_URL2 -vv
  */
 contract BuyHelperForkSepoliaTest is Test {
-    // Canonical deployed addresses on Sepolia.
-    address constant SALE_GT  = 0x3e4e0A663682a2d58d626D0057142328Ef0b626a;
-    address constant SALE_AP  = 0xf1a5FE670dbf6c5219000B30500a98F772EF1F14;
-    address constant GTOKEN   = 0x4e6A1125B8619d6D05c99AB2F30BDFc96C843B67;
-    address constant APNTS    = 0x4C4EC2e866f0c43DCA4670A6033e962a05B4C772;
+    // Current canonical deployed stack on Sepolia (Path A + buyTokensFor + hardening).
+    // NOTE: this is a live-bound integration test; refresh these after each redeploy.
+    address constant SALE_GT  = 0x86aC0278fAFA3Bf51e18426937A264e16B78bce4;
+    address constant SALE_AP  = 0x1cE31924EE7e0296d6b739d0bC96B354CA55b30C;
+    address constant GTOKEN   = 0x20a051502a7AE6e40cfFd6EBe59057538E698984;
+    address constant APNTS    = 0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b;
     address constant USDC     = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
 
     // EIP-3009 TransferWithAuthorization typehash (per USDC FiatTokenV2).
-    bytes32 constant TRANSFER_WITH_AUTH_TYPEHASH = keccak256(
-        "TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)"
+    bytes32 constant RECEIVE_WITH_AUTH_TYPEHASH = keccak256(
+        "ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)"
     );
 
     BuyHelper helper;
@@ -67,7 +68,7 @@ contract BuyHelperForkSepoliaTest is Test {
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
         bytes32 usdcDomain = IUsdcView(USDC).DOMAIN_SEPARATOR();
         bytes32 structHash = keccak256(
-            abi.encode(TRANSFER_WITH_AUTH_TYPEHASH, from, to, value, validAfter, validBefore, nonce)
+            abi.encode(RECEIVE_WITH_AUTH_TYPEHASH, from, to, value, validAfter, validBefore, nonce)
         );
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", usdcDomain, structHash));
         (v, r, s) = vm.sign(pk, digest);

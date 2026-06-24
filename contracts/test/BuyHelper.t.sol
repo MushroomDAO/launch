@@ -4,6 +4,12 @@ pragma solidity 0.8.25;
 import {Test} from "forge-std/Test.sol";
 import {BuyHelper} from "../src/BuyHelper.sol";
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
+import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+
+contract MockToken is ERC20 {
+    constructor() ERC20("Mock", "MCK") {}
+    function mint(address to, uint256 amt) external { _mint(to, amt); }
+}
 
 /// @notice Non-fork unit tests for BuyHelper's relayer whitelist + access control
 /// (the onlyRelayer guard added during the release-gate hardening, then upgraded
@@ -111,5 +117,28 @@ contract BuyHelperUnitTest is Test {
         vm.prank(owner);
         helper.addRelayer(relayer1);
         assertTrue(helper.isRelayer(relayer1), "owner restores relayer");
+    }
+
+    // ── sweepToken (audit #1/#3 defense-in-depth) ────────────────────────────
+
+    function test_sweepToken_recovers_stranded() public {
+        MockToken t = new MockToken();
+        t.mint(address(helper), 1000e18);
+        vm.prank(owner);
+        helper.sweepToken(address(t), owner);
+        assertEq(t.balanceOf(owner), 1000e18, "owner recovers stranded token");
+        assertEq(t.balanceOf(address(helper)), 0);
+    }
+
+    function test_sweepToken_owner_only() public {
+        vm.prank(attacker);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, attacker));
+        helper.sweepToken(makeAddr("t"), attacker);
+    }
+
+    function test_sweepToken_zero_recipient_reverts() public {
+        vm.prank(owner);
+        vm.expectRevert(BuyHelper.ZeroRecipient.selector);
+        helper.sweepToken(makeAddr("t"), address(0));
     }
 }

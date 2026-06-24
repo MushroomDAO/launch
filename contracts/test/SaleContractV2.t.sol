@@ -275,4 +275,22 @@ contract SaleContractV2Test is Test {
         vm.prank(alice);
         sale.buyTokensFor(bob, 150 * 1e6, address(usdc), 0);
     }
+
+    // ── audit #5: a newly-added milestone whose cap is already met advances now ──
+
+    function test_addMilestone_advances_if_already_met() public {
+        // Drive revenue past the last seeded milestone (M5 cap $135.8K).
+        vm.prank(owner);
+        sale.setPerPersonCap(10_000_000 * 1e6);
+        usdc.mint(alice, 10_000_000 * 1e6);
+        vm.prank(alice);
+        sale.buyTokens(200_000 * 1e6, address(usdc), 0); // $200K revenue → advances to M5
+        assertEq(sale.currentMilestone(), 5, "at last seeded milestone");
+
+        // Append M6 with cap $150K (< $200K revenue): must auto-advance immediately.
+        vm.prank(owner);
+        sale.addMilestone(300_000, 150_000_000_000); // $0.30 @ $150K cap
+        assertEq(sale.currentMilestone(), 6, "auto-advanced to already-met new milestone");
+        assertEq(sale.getCurrentPriceUSD(), 300_000, "next buy uses new price, not stale");
+    }
 }
