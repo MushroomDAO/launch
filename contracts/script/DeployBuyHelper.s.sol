@@ -23,8 +23,8 @@ contract DeployBuyHelper is Script {
     address constant USDC    = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
     address constant GTOKEN  = 0x20a051502a7AE6e40cfFd6EBe59057538E698984;
     address constant APNTS   = 0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b;
-    address constant SALE_GT = 0x86aC0278fAFA3Bf51e18426937A264e16B78bce4;
-    address constant SALE_AP = 0x1cE31924EE7e0296d6b739d0bC96B354CA55b30C;
+    address constant SALE_GT = 0xA563fA13E2353aE7D65FCE37F4801288CD11FC3e;
+    address constant SALE_AP = 0x9cF028D17b40E5249Ce119a2E642A6eC91a285D0;
 
     function run() external returns (BuyHelper helper) {
         console.log("=== Deploying BuyHelper ===");
