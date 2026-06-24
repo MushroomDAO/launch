@@ -32,8 +32,8 @@ contract PathAHardeningForkTest is Test {
     address constant USDC   = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
     address constant USDT   = 0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0;
 
-    bytes32 constant TRANSFER_WITH_AUTH_TYPEHASH = keccak256(
-        "TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)"
+    bytes32 constant RECEIVE_WITH_AUTH_TYPEHASH = keccak256(
+        "ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)"
     );
 
     SaleContractV2 saleGT;
@@ -165,7 +165,7 @@ contract PathAHardeningForkTest is Test {
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
         bytes32 usdcDomain = IUsdcView(USDC).DOMAIN_SEPARATOR();
         bytes32 structHash =
-            keccak256(abi.encode(TRANSFER_WITH_AUTH_TYPEHASH, from, to, value, validAfter, validBefore, nonce));
+            keccak256(abi.encode(RECEIVE_WITH_AUTH_TYPEHASH, from, to, value, validAfter, validBefore, nonce));
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", usdcDomain, structHash));
         (v, r, s) = vm.sign(pk, digest);
     }

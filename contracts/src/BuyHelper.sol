@@ -31,7 +31,10 @@ import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
  *   because USDC rejects it).
  */
 interface IUSDC {
-    function transferWithAuthorization(
+    // receiveWithAuthorization (not transferWithAuthorization): it requires
+    // msg.sender == to, so only this contract (inside executeBuy) can consume the
+    // buyer's EIP-3009 signature — a front-runner cannot submit it directly to USDC.
+    function receiveWithAuthorization(
         address from,
         address to,
         uint256 value,
@@ -212,8 +215,13 @@ contract BuyHelper is ReentrancyGuard, Ownable {
         address recovered = _recover(digest, buyIntentSig);
         if (recovered != intent.buyer) revert InvalidBuyIntentSigner(recovered, intent.buyer);
 
-        // 3. Pull USDC from buyer via EIP-3009 (USDC contract verifies its own signature)
-        IUSDC(USDC).transferWithAuthorization(
+        // 3. Pull USDC from buyer via EIP-3009 receiveWithAuthorization. Because
+        // receiveWithAuthorization enforces msg.sender == to (== this contract),
+        // the buyer's signed authorization cannot be front-run / replayed directly
+        // against USDC by anyone else — closing the "funds stranded in helper" grief.
+        // (USDC verifies the signature itself; the signed typed-data is
+        // ReceiveWithAuthorization, so the buyer/SDK must sign that primaryType.)
+        IUSDC(USDC).receiveWithAuthorization(
             intent.buyer,
             address(this),
             intent.paymentAmount,
@@ -229,6 +237,7 @@ contract BuyHelper is ReentrancyGuard, Ownable {
         address sale = intent.targetToken == GTOKEN ? SALE_GT : SALE_AP;
         IERC20(USDC).forceApprove(sale, intent.paymentAmount);
 
+        uint256 balanceBefore = IERC20(intent.targetToken).balanceOf(address(this));
         if (intent.targetToken == GTOKEN) {
             ISaleContractV2(sale).buyTokens(intent.paymentAmount, USDC, intent.minOut);
         } else {
@@ -236,8 +245,10 @@ contract BuyHelper is ReentrancyGuard, Ownable {
             IAPNTsSale(sale).buyAPNTs(intent.paymentAmount, USDC);
         }
 
-        // 5. Forward purchased token to recipient
-        uint256 received = IERC20(intent.targetToken).balanceOf(address(this));
+        // 5. Forward ONLY the freshly purchased amount (balance delta) to recipient,
+        // so any token pre-stranded in this contract isn't mis-delivered and minOut /
+        // the emitted amount stay accurate.
+        uint256 received = IERC20(intent.targetToken).balanceOf(address(this)) - balanceBefore;
         if (received < intent.minOut) revert BelowMinOut(received, intent.minOut);
         IERC20(intent.targetToken).safeTransfer(intent.recipient, received);
 
@@ -265,6 +276,14 @@ contract BuyHelper is ReentrancyGuard, Ownable {
     function removeRelayer(address relayer) external onlyOwner {
         isRelayer[relayer] = false;
         emit RelayerUpdated(relayer, false);
+    }
+
+    /// @notice Recover any ERC20 stranded in this contract to `to`. Owner-only
+    /// defense-in-depth — the contract should hold no balance between buys, but this
+    /// covers accidental transfers or any edge that leaves funds parked here.
+    function sweepToken(address token, address to) external onlyOwner {
+        if (to == address(0)) revert ZeroRecipient();
+        IERC20(token).safeTransfer(to, IERC20(token).balanceOf(address(this)));
     }
 
     // =============================================================
