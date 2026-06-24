@@ -108,12 +108,16 @@ function rule(input: {
 // ─── The active rule set (Sepolia) ───────────────────────────────────────────
 
 /**
- * 默认 caps (per spec § 9 D4):
- *  - maxAmountPerTx        = $864 (matches on-chain SaleContractV2.perPersonCapUSD)
- *  - maxAmountPerUserPerDay = $4320 (= $864 × 5, KV-tracked)
+ * 默认 cap:
+ *  - maxAmountPerTx = $864 (per-tx, matches on-chain SaleContractV2.perPersonCapUSD)
+ *
+ * No per-day cap: it was previously declared ($4320) but never enforced (rateLimit
+ * counts hourly request frequency, not cumulative USD), and a per-day cap is
+ * sybil-able anyway (one person, many wallets). Per-person limits are the on-chain
+ * perPersonCapUSD (per wallet); broader distribution is controlled by opening/closing
+ * the sale (SaleContractV2 Pausable) to a known group.
  */
 const CAP_PER_TX_USDC_6DEC = 864_000_000n // $864 in 6-decimal USDC
-const CAP_PER_DAY_USDC_6DEC = 4_320_000_000n
 
 export const RULES_SEPOLIA: readonly SponsorRule[] = [
   // —— rule A: buy GToken via SaleContractV2 (new, gToken-bound) ——
@@ -123,7 +127,6 @@ export const RULES_SEPOLIA: readonly SponsorRule[] = [
     functionSignature: 'buyTokens(uint256,address,uint256)',
     paymentTokens: [SEPOLIA.USDC],
     maxAmountPerTx: CAP_PER_TX_USDC_6DEC,
-    maxAmountPerUserPerDay: CAP_PER_DAY_USDC_6DEC,
   }),
 
   // —— rule B: buy aPNTs via APNTsSaleContract ——
@@ -133,7 +136,6 @@ export const RULES_SEPOLIA: readonly SponsorRule[] = [
     functionSignature: 'buyAPNTs(uint256,address)',
     paymentTokens: [SEPOLIA.USDC],
     maxAmountPerTx: CAP_PER_TX_USDC_6DEC,
-    maxAmountPerUserPerDay: CAP_PER_DAY_USDC_6DEC,
   }),
 
   // —— rule C: revoke EIP-7702 delegation (authorization.contract = 0x0) ——
