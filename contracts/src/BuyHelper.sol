@@ -247,7 +247,9 @@ contract BuyHelper is ReentrancyGuard, Ownable {
 
         // 5. Forward ONLY the freshly purchased amount (balance delta) to recipient,
         // so any token pre-stranded in this contract isn't mis-delivered and minOut /
-        // the emitted amount stay accurate.
+        // the emitted amount stay accurate. targetToken is constrained to GTOKEN/APNTS
+        // (checked in step 1) — both standard, non-fee-on-transfer ERC20s — so the
+        // delta equals exactly what the recipient receives.
         uint256 received = IERC20(intent.targetToken).balanceOf(address(this)) - balanceBefore;
         if (received < intent.minOut) revert BelowMinOut(received, intent.minOut);
         IERC20(intent.targetToken).safeTransfer(intent.recipient, received);
