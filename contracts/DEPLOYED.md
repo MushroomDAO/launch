@@ -1,6 +1,27 @@
 # Deployed Contracts
 
-## Sepolia — buyTokensFor + 发布门 hardening (2026-06-23) — CURRENT
+## Sepolia — 审计修复 (EIP-3009 receiveWithAuth + balance-delta, 2026-06-24) — CURRENT
+
+Codex 全面审计后重部署：BuyHelper 改用 `receiveWithAuthorization`（防 EIP-3009 抢跑致用户资金卡死）
++ balance-delta received + owner `sweepToken`；SaleContractV2 milestone 追加后即时推进。
+⚠️ **签名格式变**：SDK/前端的 EIP-3009 primaryType 须 `TransferWithAuthorization` → `ReceiveWithAuthorization`。
+
+| Contract | Address |
+|---|---|
+| GToken (canonical) | `0x20a051502a7AE6e40cfFd6EBe59057538E698984` |
+| aPNTs (canonical) | `0x9e66B457E0ABb1F139FD8A596d00f784eBA2873b` |
+| SaleContractV2 | `0xA563fA13E2353aE7D65FCE37F4801288CD11FC3e` |
+| APNTsSaleContract | `0x9cF028D17b40E5249Ce119a2E642A6eC91a285D0` |
+| BuyHelper (receiveWithAuth, 3 DVT relayer) | `0x8d08fBD8297355BC93397820AE1CfFD884BEaA00` |
+| USDC | `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` |
+| USDT | `0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0` |
+| Deployer / treasury / owner | `0xb5600060e6de5E11D3636731964218E53caadf0E` |
+
+- 库存：500 GT / 5000 aPNTs；USDC+USDT accepted；`capExempt[BuyHelper]`=true；`isRelayer` dvt1/2/3=true。
+- 发布门：非 fork 138 + fork E2E 15/15（receiveWithAuth 实测）+ Codex GO（PR #26）。
+- 周知：`scripts/release-notify.sh --changes addr,sig`（SDK 改签名 typehash + 换地址；DVT 换 `RELAY_BUY_HELPER`）。
+
+## Sepolia — buyTokensFor + 发布门 hardening (2026-06-23) — superseded by the above
 
 Sale stack redeployed: adds `buyTokensFor` / `buyAPNTsFor` (self-pay with an explicit
 recipient — buy into AirAccount, aastar-sdk#145 gap 2) + release-gate hardening
