@@ -61,20 +61,37 @@
   [data-node][data-layer]:hover{transform:translateX(-50%) scale(1.06) !important;}
   [data-node][data-layer]:focus-visible{transform:translateX(-50%) scale(1.06) !important;}
 
+  /* 长段落一律左对齐：居中的多行正文每行起止参差，读着累。
+     标题 / kicker / CTA 仍居中；段落块本身 margin:auto 保持居中。 */
+  .mp-hero-sub,.mp-hero-lead,.mp-lead{text-align:left;}
+
+  /* 中文标题保持一行。实测「Mycelium 数字公共物品花园」在任意宽度下
+     一行需 font-size ≤ 6.81vw，故取 6.4vw 留余量、72px 封顶
+     （容器 max-width:960px 时上限 74.2px）。内联 style 里写死了
+     clamp(38px,7vw,78px)——7vw 会溢出——所以必须 !important 覆盖。
+     英文标题要压到一行需 ~15px，比正文还小，改用 text-wrap:balance：
+     仍是两行，但两行均分、不留孤字。 */
+  .mp-hero-title{text-wrap:balance;}
+  html[lang^="zh"] .mp-hero-title{white-space:nowrap;font-size:min(6.4vw,72px) !important;}
+
   /* ---- 窄屏 Hero：压缩排版，让首屏底部露出花园花草带 ----
      4 个 CTA 在 390px 下会折成三行，把内容顶出视口，花园完全看不见。
      改为 2×2 网格，并逐级收紧字号、间距与花草带高度。 */
   @media (max-width:640px){
     .mp-hero{padding-top:96px !important;}
     .mp-hero-kicker{font-size:11px !important;letter-spacing:1.5px;margin-bottom:12px !important;}
-    .mp-hero-title{font-size:clamp(27px,8.4vw,34px) !important;letter-spacing:-1px;margin-bottom:12px !important;}
-    .mp-hero-sub{font-size:14.5px !important;margin-bottom:10px !important;}
+    .mp-hero-title{letter-spacing:-.6px;margin-bottom:12px !important;}
+    html[lang="en"] .mp-hero-title{font-size:clamp(23px,6.6vw,29px) !important;}
+    .mp-hero-sub{font-size:14px !important;margin-bottom:10px !important;}
     .mp-hero-lead{font-size:12.5px !important;line-height:1.5;margin-bottom:20px !important;}
     .mp-hero-cta{display:grid !important;grid-template-columns:1fr 1fr;gap:9px !important;max-width:340px;margin:0 auto;}
     .mp-hero-cta .mp-cta{padding:10px 8px !important;font-size:12.5px !important;justify-content:center;white-space:nowrap;}
     .mp-hero-note{margin-top:12px !important;}
     .mp-hero-note a{font-size:11px !important;}
-    .mp-hero-band{height:clamp(200px,30vh,260px) !important;}
+    /* 花草在窄屏只有 7vw≈27px，撑不满花草带，正文与花之间空一大片。
+       整条带按底边中心放大：花草变大、空白收窄；两侧溢出被 hero 的
+       overflow:hidden 裁掉，正是自然的「花丛延伸出画面」效果。 */
+    .mp-hero-band{height:clamp(250px,38vh,330px) !important;transform:scale(1.8);transform-origin:bottom center;}
   }
   /* 矮屏手机（SE / 360×640）：英文文案比中文长两三行，必须再收一档，
      否则正文会盖到花草带上 */
@@ -841,11 +858,11 @@
     heroTitle: ['Mycelium 数字公共物品花园', 'Mycelium — A Garden of Digital Public Goods'],
     heroSub: [
       '借鉴近 10 亿年演化的真菌菌丝网络，在这颗 45 亿岁的星球上，连接个体、社区与城市。',
-      'Inspired by mycelial networks that have evolved for nearly a billion years — on a 4.5-billion-year-old planet — connecting individuals, communities and cities.'
+      'Inspired by mycelial networks nearly a billion years old — connecting individuals, communities and cities on our 4.5-billion-year-old planet.'
     ],
     heroLead: [
       'Mycelium 是一套协作创新系统，由 Infra、Protocol、Network 三层组成。它的使命，是帮助个体、中小组织与城市跨越科技鸿沟，共享数字生活的福祉——不同领域的公共物品，如同花园里的花朵与设施，供所有人自由取用。',
-      'Mycelium is a collaborative-innovation system of three layers — Infra, Protocol and Network. Its mission is to help individuals, small organizations and cities cross the technology gap and share the wellbeing of digital life — public goods across every domain, free for all to use like the flowers and amenities of a garden.'
+      'Mycelium is a collaborative-innovation system of three layers — Infra, Protocol and Network. It helps individuals, small organizations and cities cross the technology gap and share the wellbeing of digital life: public goods free for all, like a garden\u2019s flowers.'
     ],
     ctaJoin: ['加入生态', 'Join the ecosystem'],
     ctaIndex: ['浏览公共物品索引', 'Browse the index'],
