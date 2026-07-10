@@ -61,6 +61,45 @@
   [data-node][data-layer]:hover{transform:translateX(-50%) scale(1.06) !important;}
   [data-node][data-layer]:focus-visible{transform:translateX(-50%) scale(1.06) !important;}
 
+  /* ---- 窄屏 Hero：压缩排版，让首屏底部露出花园花草带 ----
+     4 个 CTA 在 390px 下会折成三行，把内容顶出视口，花园完全看不见。
+     改为 2×2 网格，并逐级收紧字号、间距与花草带高度。 */
+  @media (max-width:640px){
+    .mp-hero{padding-top:96px !important;}
+    .mp-hero-kicker{font-size:11px !important;letter-spacing:1.5px;margin-bottom:12px !important;}
+    .mp-hero-title{font-size:clamp(27px,8.4vw,34px) !important;letter-spacing:-1px;margin-bottom:12px !important;}
+    .mp-hero-sub{font-size:14.5px !important;margin-bottom:10px !important;}
+    .mp-hero-lead{font-size:12.5px !important;line-height:1.5;margin-bottom:20px !important;}
+    .mp-hero-cta{display:grid !important;grid-template-columns:1fr 1fr;gap:9px !important;max-width:340px;margin:0 auto;}
+    .mp-hero-cta .mp-cta{padding:10px 8px !important;font-size:12.5px !important;justify-content:center;white-space:nowrap;}
+    .mp-hero-note{margin-top:12px !important;}
+    .mp-hero-note a{font-size:11px !important;}
+    .mp-hero-band{height:clamp(200px,30vh,260px) !important;}
+  }
+  /* 矮屏手机（SE / 360×640）：英文文案比中文长两三行，必须再收一档，
+     否则正文会盖到花草带上 */
+  @media (max-width:640px) and (max-height:700px){
+    .mp-hero{padding-top:78px !important;}
+    .mp-hero-kicker{font-size:10px !important;margin-bottom:8px !important;}
+    .mp-hero-title{font-size:clamp(24px,7.6vw,30px) !important;margin-bottom:10px !important;}
+    .mp-hero-sub{font-size:13px !important;margin-bottom:8px !important;}
+    .mp-hero-lead{font-size:11.5px !important;line-height:1.45;margin-bottom:14px !important;}
+    .mp-hero-cta{gap:8px !important;}
+    .mp-hero-cta .mp-cta{padding:9px 6px !important;font-size:11.5px !important;}
+    .mp-hero-note{margin-top:10px !important;}
+    .mp-hero-band{height:clamp(160px,26vh,210px) !important;}
+  }
+  /* 极窄屏 */
+  @media (max-width:360px){
+    .mp-hero-cta .mp-cta{font-size:11.5px !important;padding:9px 6px !important;}
+    .mp-hero-lead{font-size:12px !important;}
+  }
+  /* 矮屏（横放的手机 / 小笔记本）：别让花草带把内容压没 */
+  @media (max-height:640px) and (max-width:900px){
+    .mp-hero{padding-top:80px !important;}
+    .mp-hero-band{height:clamp(150px,26vh,200px) !important;}
+  }
+
   /* 舞台变窄后标签横向空间紧张：先隐去花园隐喻词，只留产品名 */
   @media (max-width:980px){
     #garden [data-node-word]{display:none;}
@@ -72,6 +111,7 @@
     #garden button[data-node]>span:last-child{font-size:8px !important;padding:1px 4px !important;letter-spacing:-.1px;}
     #garden button[data-node]{gap:3px !important;}
     #garden [data-layer]{font-size:8.5px !important;padding:3px 6px !important;}
+    .mp-click-hint{font-size:12.5px !important;padding:8px 14px 8px 11px !important;gap:7px !important;text-align:left;line-height:1.35;}
     /* 舞台被压成正方形后横向更挤，这两个节点在窄屏另行让位 */
     #garden [data-id="kms"]{left:88% !important;top:60% !important;}
     #garden [data-id="cometens"]{left:13% !important;top:47% !important;}
@@ -105,7 +145,7 @@
   </div>
 
   <!-- ===== HERO ===== -->
-  <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;padding:clamp(126px,16vh,188px) clamp(20px,6vw,80px) 0;background:linear-gradient(180deg,#fff7e6 0%,#fdf4e3 26%,#eef7ee 58%,#e2f3ea 100%);overflow:hidden;">
+  <section class="mp-hero" style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;padding:clamp(126px,16vh,188px) clamp(20px,6vw,80px) 0;background:linear-gradient(180deg,#fff7e6 0%,#fdf4e3 26%,#eef7ee 58%,#e2f3ea 100%);overflow:hidden;">
     <!-- soft sun -->
     <div style="position:absolute;top:-90px;right:-60px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,#ffe6a1 0%,rgba(255,224,138,.35) 45%,rgba(255,224,138,0) 70%);"></div>
     <!-- drifting spores -->
@@ -115,23 +155,23 @@
     <div style="position:absolute;left:84%;bottom:0;width:5px;height:5px;border-radius:50%;background:rgba(102,126,234,.5);animation:mp-spore 12s linear infinite 2s;"></div>
 
     <div style="position:relative;max-width:960px;z-index:3;">
-      <div class="mp-mono" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#7a8a99;margin-bottom:22px;">MushroomDAO · Mycelium Protocol</div>
-      <h1 data-i18n="heroTitle" style="font-size:clamp(38px,7vw,78px);line-height:1.08;font-weight:800;letter-spacing:-1.5px;margin:0 0 24px;background:linear-gradient(120deg,#e0724a 0%,#d94f7a 30%,#7b61c9 62%,#2b8a8a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Mycelium 数字公共物品花园</h1>
-      <p data-i18n="heroSub" style="font-size:clamp(17px,2.2vw,22px);font-weight:300;color:#5a6c7d;max-width:720px;margin:0 auto 20px;">借鉴近 10 亿年演化的真菌菌丝网络，在这颗 45 亿岁的星球上，连接个体、社区与城市。</p>
-      <p data-i18n="heroLead" style="font-size:clamp(15px,1.7vw,17px);color:#6c7a86;max-width:660px;margin:0 auto 40px;">Mycelium 是一套协作创新系统，由 Infra、Protocol、Network 三层组成。它的使命，是帮助个体、中小组织与城市跨越科技鸿沟，共享数字生活的福祉——不同领域的公共物品，如同花园里的花朵与设施，供所有人自由取用。</p>
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <div class="mp-mono mp-hero-kicker" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#7a8a99;margin-bottom:22px;">MushroomDAO · Mycelium Protocol</div>
+      <h1 class="mp-hero-title" data-i18n="heroTitle" style="font-size:clamp(38px,7vw,78px);line-height:1.08;font-weight:800;letter-spacing:-1.5px;margin:0 0 24px;background:linear-gradient(120deg,#e0724a 0%,#d94f7a 30%,#7b61c9 62%,#2b8a8a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Mycelium 数字公共物品花园</h1>
+      <p class="mp-hero-sub" data-i18n="heroSub" style="font-size:clamp(17px,2.2vw,22px);font-weight:300;color:#5a6c7d;max-width:720px;margin:0 auto 20px;">借鉴近 10 亿年演化的真菌菌丝网络，在这颗 45 亿岁的星球上，连接个体、社区与城市。</p>
+      <p class="mp-hero-lead" data-i18n="heroLead" style="font-size:clamp(15px,1.7vw,17px);color:#6c7a86;max-width:660px;margin:0 auto 40px;">Mycelium 是一套协作创新系统，由 Infra、Protocol、Network 三层组成。它的使命，是帮助个体、中小组织与城市跨越科技鸿沟，共享数字生活的福祉——不同领域的公共物品，如同花园里的花朵与设施，供所有人自由取用。</p>
+      <div class="mp-hero-cta" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
         <a href="#join" class="mp-cta" data-i18n="ctaJoin" style="color:#fff;background:linear-gradient(120deg,#e0724a,#d94f7a);box-shadow:0 8px 22px rgba(224,114,74,.32);">加入生态</a>
         <a href="#index" class="mp-cta" data-i18n="ctaIndex" style="color:#2b8a8a;background:rgba(78,205,196,.16);border:1px solid rgba(78,205,196,.4);">浏览公共物品索引</a>
         <a href="https://tour.mushroom.cv" target="_blank" rel="noopener" class="mp-cta" style="color:#5a6c7d;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.07);">🌍 Tour</a>
         <a href="https://github.com/AAStarCommunity" target="_blank" rel="noopener" class="mp-cta" data-i18n="ctaRepos" style="color:#5a6c7d;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.07);">查看代码仓库</a>
       </div>
-      <div style="margin-top:20px;">
+      <div class="mp-hero-note" style="margin-top:20px;">
         <a href="cold-launch.html" class="mp-mono" data-i18n="ctaColdLaunch" style="font-size:13px;color:#7a8a99;letter-spacing:.5px;border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:2px;">了解冷启动计划与资金路径 →</a>
       </div>
     </div>
 
     <!-- ===== BOTTOM GARDEN BAND — flat-vector spring border ===== -->
-    <div style="position:absolute;left:0;right:0;bottom:0;height:clamp(320px,52vh,500px);pointer-events:none;z-index:2;">
+    <div class="mp-hero-band" style="position:absolute;left:0;right:0;bottom:0;height:clamp(320px,52vh,500px);pointer-events:none;z-index:2;">
       <!-- soft planted ground -->
       <div style="position:absolute;left:0;right:0;bottom:0;height:56%;background:linear-gradient(180deg,rgba(150,205,185,0) 0%,rgba(140,200,180,.26) 46%,rgba(120,188,168,.5) 100%);"></div>
 
@@ -206,7 +246,13 @@
     <div style="max-width:1000px;margin:0 auto 34px;text-align:center;">
       <div class="mp-kicker" data-i18n="gardenKicker" style="color:#2b8a8a;">生态全景</div>
       <h2 class="mp-h2" data-i18n="gardenTitle">数字公共物品花园</h2>
-      <p class="mp-lead" data-i18n="gardenIntro">大圈是整个 Mycelium 生态；最大的圈是城市，城市里社区与个体两个圈相互交汇——许多公共物品，个体与社区都能共用。每一朵花、每一处设施，都是帮助人们跨越科技鸿沟、共享数字生活福祉的公共物品。点击了解它服务谁、能做什么、如何接入。</p>
+      <p class="mp-lead" data-i18n="gardenIntro">大圈是整个 Mycelium 生态；最大的圈是城市，城市里社区与个体两个圈相互交汇——许多公共物品，个体与社区都能共用。每一朵花、每一处设施，都是帮助人们跨越科技鸿沟、共享数字生活福祉的公共物品。</p>
+      <div class="mp-click-hint" style="display:inline-flex;align-items:center;gap:9px;margin-top:20px;padding:9px 18px 9px 14px;border-radius:9999px;background:#fff;border:1px solid rgba(43,138,138,.28);box-shadow:0 4px 14px rgba(40,80,60,.1);color:#2b8a8a;font-size:14px;font-weight:600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
+          <path d="M9 11V6a2 2 0 1 1 4 0v5"/><path d="M13 11V4.5a2 2 0 1 1 4 0V13"/><path d="M17 12.5V8a2 2 0 1 1 4 0v7a7 7 0 0 1-7 7h-2a7 7 0 0 1-7-7v-2a2 2 0 1 1 4 0"/>
+        </svg>
+        <span data-i18n="gardenClickHint">点击花园里的设施或圈层，下方展开它服务谁、能做什么、如何接入</span>
+      </div>
     </div>
 
     <div id="garden-grid" style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:24px;">
@@ -547,7 +593,10 @@
         <div data-i18n="cos72Sub" style="font-size:clamp(18px,2.6vw,24px);font-weight:300;color:#243b36;margin-bottom:24px;">协作系统 · The Cooperation System</div>
         <p data-i18n="cos72P1" style="font-size:16.5px;line-height:1.7;color:#5a6c7d;margin:0 0 12px;">最简单的理解：Cos72 就是一个开源免费的协作系统，既适配社区、也兼容中小组织。运行程序或安装插件，任何团队即刻拥有任务、共识与兑换能力 —— 它横跨协议里的每一个仓库。</p>
         <p data-i18n="cos72P2" style="font-size:15px;line-height:1.75;color:#7a8a99;margin:0 0 26px;">The simplest way to put it: Cos72 is a free, open-source cooperation system, built to fit communities and small organizations alike. Run the app or install a plugin, and any group gets tasks, consensus, and redemption out of the box.</p>
-        <a href="https://cos72.mushroom.cv" target="_blank" rel="noopener" class="mp-cta" data-i18n="cos72Cta" style="color:#fff;background:linear-gradient(120deg,#e0724a,#d94f7a);box-shadow:0 8px 22px rgba(224,114,74,.28);font-size:14px;padding:12px 24px;">打开 Cos72 Beta →</a>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="https://cos72.aastar.io" target="_blank" rel="noopener" class="mp-cta" data-i18n="cos72CtaBeta" style="color:#fff;background:linear-gradient(120deg,#e0724a,#d94f7a);box-shadow:0 8px 22px rgba(224,114,74,.28);font-size:14px;padding:12px 24px;">打开 Cos72 Beta →</a>
+          <a href="https://cos72.mushroom.cv" target="_blank" rel="noopener" class="mp-cta" data-i18n="cos72CtaPrd" style="color:#2b8a8a;background:rgba(78,205,196,.16);border:1px solid rgba(78,205,196,.4);font-size:14px;padding:12px 24px;">Prd · Mycelium 部署 →</a>
+        </div>
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:40px;">
@@ -806,8 +855,12 @@
     gardenKicker: ['生态全景', 'The Ecosystem'],
     gardenTitle: ['数字公共物品花园', 'A Garden of Digital Public Goods'],
     gardenIntro: [
-      '大圈是整个 Mycelium 生态；最大的圈是城市，城市里社区与个体两个圈相互交汇——许多公共物品，个体与社区都能共用。每一朵花、每一处设施，都是帮助人们跨越科技鸿沟、共享数字生活福祉的公共物品。点击了解它服务谁、能做什么、如何接入。',
-      'The big circle is the whole Mycelium ecosystem; the largest circle is the City, where Community and Individual overlap — many public goods serve both. Every flower and amenity is a public good that helps people cross the technology gap and share the wellbeing of digital life. Click to see who it serves, what it does, and how to plug in.'
+      '大圈是整个 Mycelium 生态；最大的圈是城市，城市里社区与个体两个圈相互交汇——许多公共物品，个体与社区都能共用。每一朵花、每一处设施，都是帮助人们跨越科技鸿沟、共享数字生活福祉的公共物品。',
+      'The big circle is the whole Mycelium ecosystem; the largest circle is the City, where Community and Individual overlap — many public goods serve both. Every flower and amenity is a public good that helps people cross the technology gap and share the wellbeing of digital life.'
+    ],
+    gardenClickHint: [
+      '点击花园里的设施或圈层，下方展开它服务谁、能做什么、如何接入',
+      'Tap any facility or circle in the garden — who it serves, what it does and how to plug in appear below'
     ],
     lblEco: ['数字公共物品花园', 'Public Goods Garden'],
     lblCity: ['城市 City', 'City'],
@@ -853,7 +906,8 @@
       'The simplest way to put it: Cos72 is a free, open-source cooperation system, built to fit communities and small organizations alike. Run the app or install a plugin, and any group gets tasks, consensus, and redemption out of the box.',
       '最简单的理解：Cos72 就是一个开源免费的协作系统，既适配社区、也兼容中小组织。运行程序或安装插件，任何团队即刻拥有任务、共识与兑换能力。'
     ],
-    cos72Cta: ['打开 Cos72 Beta →', 'Open the Cos72 Beta →'],
+    cos72CtaBeta: ['打开 Cos72 Beta →', 'Open the Cos72 Beta →'],
+    cos72CtaPrd: ['Prd · Mycelium 部署 →', 'Prd · Mycelium deployment →'],
     cos72F1t: ['任务 · Tasks', 'Tasks · 任务'],
     cos72F1d: ["发布、认领、追踪 —— 社区共享的任务看板。", "Post, claim and track work — the community's shared task board."],
     cos72F2t: ['共识 · Consensus', 'Consensus · 共识'],
