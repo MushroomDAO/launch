@@ -1,0 +1,74 @@
+# Cloudflare Pages 项目 launch-mushroom-box 没有接 GitHub（Git Provider = No），
+# 所以合并到 main 不会自动部署。这个 workflow 补上这一环：main 上 site/ 一变就发布。
+#
+# 需要的仓库 Secret（Settings → Secrets and variables → Actions）：
+#   CLOUDFLARE_API_TOKEN  —— 权限模板选 "Edit Cloudflare Workers"，
+#                            或自定义：Account / Cloudflare Pages / Edit
+# Account ID 不是凭据（在 dashboard URL 里就能看到），直接写在下面。
+
+name: Deploy site to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'wrangler.toml'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Action 一律 pin 到完整 commit SHA：这个 job 拿得到生产部署 token，
+      # 而 v4 / v3 这类 major tag 是可变的，上游 tag 被改指就等于把
+      # CLOUDFLARE_API_TOKEN 交给了新代码。升级时连同注释里的版本号一起改。
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Sanity-check the build output
+        run: |
+          set -euo pipefail
+          test -f site/index.html
+          test -f site/public-goods.html
+          test -f site/assets/goods-data.js
+          # 首页必须真的是花园页，别把空壳推上线
+          grep -q 'garden-stage' site/index.html
+          grep -q 'MYCELIUM_GOODS' site/assets/goods-data.js
+          echo "site/ 校验通过（$(find site -type f | wc -l) 个文件）"
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3.15.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 7bf23342f21baa5ebfc7bc7b74f5a1f2
+          command: pages deploy site --project-name=launch-mushroom-box --branch=main
+
+      # 这一步不会让 job 变红：上传已成功，边缘传播延迟不是部署失败。
+      # 但"绿"不等于"线上已验证"，所以结论明确写进 job summary。
+      - name: Verify production is serving the new build
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 10); do
+            body=$(curl -sL --max-time 15 "https://launch.mushroom.cv/?cb=$RANDOM" || true)
+            # 注意：本站开了 SPA 回退，未知路径也返回 200 + 首页，
+            # 所以只能靠页面内容判断，不能靠 HTTP 状态码
+            if printf '%s' "$body" | grep -q 'garden-stage'; then
+              echo "✅ launch.mushroom.cv 已是新版（第 $i 次探测）"
+              echo "✅ **线上已验证**：launch.mushroom.cv 正在提供本次构建（第 $i 次探测命中）。" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "[$i/10] 尚未生效，20s 后重试…"
+            sleep 20
+          done
+          echo "::warning::3 分钟内未在 launch.mushroom.cv 观察到新版本；部署可能仍在边缘传播中"
+          echo "⚠️ **线上未验证**：上传成功，但 3 分钟内未在 launch.mushroom.cv 观察到本次构建。" >> "$GITHUB_STEP_SUMMARY"
+          echo "本 job 仍为绿色（边缘传播延迟不算部署失败），请手动确认。" >> "$GITHUB_STEP_SUMMARY"
