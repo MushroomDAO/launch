@@ -183,7 +183,7 @@
       service: ['个体 / 社区', 'Individual / Community'],
       cap: ['24/7 沟通代理：聚合 WeChat/TG/Discord/邮件、排程、签署积分合约', '24/7 comms agent: aggregate WeChat/TG/Discord/email, schedule, sign points contracts'],
       hw: ['本地或云', 'Local or cloud'],
-      org: ['无（基础版免费）', 'None (free at base)'],
+      org: ['无', 'None'],
       repo: 'https://github.com/AuraAI', repoLabel: 'AuraAI'
     },
     opencrab: {
