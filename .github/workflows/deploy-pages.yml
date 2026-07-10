@@ -32,7 +32,7 @@ jobs:
       # Action 一律 pin 到完整 commit SHA：这个 job 拿得到生产部署 token，
       # 而 v4 / v3 这类 major tag 是可变的，上游 tag 被改指就等于把
       # CLOUDFLARE_API_TOKEN 交给了新代码。升级时连同注释里的版本号一起改。
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Sanity-check the build output
         run: |
@@ -56,10 +56,13 @@ jobs:
           echo "build stamp = $GITHUB_SHA"
 
       - name: Deploy
-        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3.15.0
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 7bf23342f21baa5ebfc7bc7b74f5a1f2
+          # action v4 默认装 wrangler "latest"，等于每次部署都用一个没验证过的
+          # 工具版本。pin 到本地实测跑通这条 pages deploy 命令的版本。
+          wranglerVersion: '4.110.0'
           command: pages deploy site --project-name=launch-mushroom-box --branch=main
 
       # 这一步不会让 job 变红：上传已成功，边缘传播延迟不是部署失败。
