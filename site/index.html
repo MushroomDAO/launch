@@ -61,20 +61,37 @@
   [data-node][data-layer]:hover{transform:translateX(-50%) scale(1.06) !important;}
   [data-node][data-layer]:focus-visible{transform:translateX(-50%) scale(1.06) !important;}
 
+  /* 长段落一律左对齐：居中的多行正文每行起止参差，读着累。
+     标题 / kicker / CTA 仍居中；段落块本身 margin:auto 保持居中。 */
+  .mp-hero-sub,.mp-hero-lead,.mp-lead{text-align:left;}
+
+  /* 中文标题保持一行。实测「Mycelium 数字公共物品花园」在任意宽度下
+     一行需 font-size ≤ 6.81vw，故取 6.4vw 留余量、72px 封顶
+     （容器 max-width:960px 时上限 74.2px）。内联 style 里写死了
+     clamp(38px,7vw,78px)——7vw 会溢出——所以必须 !important 覆盖。
+     英文标题要压到一行需 ~15px，比正文还小，改用 text-wrap:balance：
+     仍是两行，但两行均分、不留孤字。 */
+  .mp-hero-title{text-wrap:balance;}
+  html[lang^="zh"] .mp-hero-title{white-space:nowrap;font-size:min(6.4vw,72px) !important;}
+
   /* ---- 窄屏 Hero：压缩排版，让首屏底部露出花园花草带 ----
      4 个 CTA 在 390px 下会折成三行，把内容顶出视口，花园完全看不见。
      改为 2×2 网格，并逐级收紧字号、间距与花草带高度。 */
   @media (max-width:640px){
     .mp-hero{padding-top:96px !important;}
     .mp-hero-kicker{font-size:11px !important;letter-spacing:1.5px;margin-bottom:12px !important;}
-    .mp-hero-title{font-size:clamp(27px,8.4vw,34px) !important;letter-spacing:-1px;margin-bottom:12px !important;}
-    .mp-hero-sub{font-size:14.5px !important;margin-bottom:10px !important;}
+    .mp-hero-title{letter-spacing:-.6px;margin-bottom:12px !important;}
+    html[lang="en"] .mp-hero-title{font-size:clamp(23px,6.6vw,29px) !important;}
+    .mp-hero-sub{font-size:14px !important;margin-bottom:10px !important;}
     .mp-hero-lead{font-size:12.5px !important;line-height:1.5;margin-bottom:20px !important;}
     .mp-hero-cta{display:grid !important;grid-template-columns:1fr 1fr;gap:9px !important;max-width:340px;margin:0 auto;}
     .mp-hero-cta .mp-cta{padding:10px 8px !important;font-size:12.5px !important;justify-content:center;white-space:nowrap;}
     .mp-hero-note{margin-top:12px !important;}
     .mp-hero-note a{font-size:11px !important;}
-    .mp-hero-band{height:clamp(200px,30vh,260px) !important;}
+    /* 花草在窄屏只有 7vw≈27px，撑不满花草带，正文与花之间空一大片。
+       整条带按底边中心放大：花草变大、空白收窄；两侧溢出被 hero 的
+       overflow:hidden 裁掉，正是自然的「花丛延伸出画面」效果。 */
+    .mp-hero-band{height:clamp(250px,38vh,330px) !important;transform:scale(1.8);transform-origin:bottom center;}
   }
   /* 矮屏手机（SE / 360×640）：英文文案比中文长两三行，必须再收一档，
      否则正文会盖到花草带上 */
@@ -698,11 +715,47 @@
       <div class="mp-kicker" data-i18n="joinKicker" style="color:#8fd7c4;">无许可加入</div>
       <h2 data-i18n="joinTitle" style="font-size:clamp(28px,4.5vw,46px);font-weight:800;letter-spacing:-1px;margin:0 0 16px;color:#fff;">把你的节点接入菌丝网络</h2>
       <p data-i18n="joinIntro" style="font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,.8);max-width:640px;margin:0 auto 44px;">加入生态是无许可的。四步即可让你的节点成为花园的一部分。</p>
+      <!-- 四条路径：使用 / 建社区 / 成为 Infra / 自建 -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin:0 auto 30px;text-align:left;">
+        <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:24px 22px;display:flex;flex-direction:column;">
+          <div class="mp-mono" data-i18n="pathUseKicker" style="font-size:11px;letter-spacing:1.2px;color:#8fd7c4;margin-bottom:10px;">使用 · 以贡献换取</div>
+          <div data-i18n="pathUseTitle" style="font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;">不掏钱，但也不是白拿</div>
+          <div data-i18n="pathUseDesc" style="font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.72);flex:1;">为社区做出贡献、参与进来，你就能挣到基础服务：日常 gas 代付，以及 mint SBT 的成本。随后 mint 自己的 SBT、加入多个社区、领取并完成任务获得不同社区的积分、到社区兑换台兑换奖品。</div>
+          <a href="#index" data-i18n="pathUseLink" style="margin-top:14px;font-size:13px;font-weight:600;color:#ffe08a;">浏览公共物品索引 →</a>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:24px 22px;display:flex;flex-direction:column;">
+          <div class="mp-mono" data-i18n="pathCommunityKicker" style="font-size:11px;letter-spacing:1.2px;color:#ffe08a;margin-bottom:10px;">建立社区 · 质押可退</div>
+          <div data-i18n="pathCommunityTitle" style="font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;">开一个自己的社区</div>
+          <div data-i18n="pathCommunityDesc" style="font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.72);flex:1;">stake GToken 即可建立社区、发行社区积分、发布社区任务。退出时全额退还 —— 这是押金，不是消费。</div>
+          <a href="join.html" data-i18n="pathCommunityLink" style="margin-top:14px;font-size:13px;font-weight:600;color:#ffe08a;">购买 GToken →</a>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:24px 22px;display:flex;flex-direction:column;">
+          <div class="mp-mono" data-i18n="pathInfraKicker" style="font-size:11px;letter-spacing:1.2px;color:#8fd7c4;margin-bottom:10px;">加入 · 成为 Infra</div>
+          <div data-i18n="pathInfraTitle" style="font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;">运行节点，为别人提供服务</div>
+          <div data-i18n="pathInfraDesc" style="font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.72);flex:1;">加入 Mycelium 的方式之一：运行 KMS 与 DVT 节点。你需要自备硬件（推荐 imx93，其他设备亦可）并质押 stake。下面四步即可完成。</div>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:24px 22px;display:flex;flex-direction:column;">
+          <div class="mp-mono" data-i18n="pathForkKicker" style="font-size:11px;letter-spacing:1.2px;color:#c9b6f5;margin-bottom:10px;">自建 · 一分钱不花</div>
+          <div data-i18n="pathForkTitle" style="font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;">或者，把代码全部复刻走</div>
+          <div data-i18n="pathForkDesc" style="font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.72);flex:1;">这正是开源公共物品的魅力：你可以复刻全部代码，自建一整套机制，不购买我们的任何服务。前提是你有足够的技术团队与服务器投入 —— 多数人不会为了喝口水，去建一座自来水厂。</div>
+          <a href="https://github.com/AAStarCommunity" target="_blank" rel="noopener" data-i18n="pathForkLink" style="margin-top:14px;font-size:13px;font-weight:600;color:#c9b6f5;">复刻全部代码 →</a>
+        </div>
+      </div>
+
+      <!-- 公交车：基建成本按成本价分摊 -->
+      <div style="margin:0 auto 44px;padding:18px 22px;border-radius:16px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18);text-align:left;display:flex;gap:14px;align-items:flex-start;">
+        <span style="font-size:22px;line-height:1.2;flex-shrink:0;">🚌</span>
+        <div>
+          <div data-i18n="busTitle" style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;">公交车也要收票 —— 但只收到成本线附近</div>
+          <div data-i18n="busDesc" style="font-size:13px;line-height:1.65;color:rgba(255,255,255,.66);">COS72 是一个代码仓库，它本身就是数字公共物品，任何人都能免费拿去自部署。但跑起来的社区是有成本的 —— 电费、服务器、AI token、gas fee，都得有人付。我们不做慈善，也不赚商业利润，只收非常低的、足以让它可持续运转下去的成本：gas 赞助 1 美分起步（基础 token transfer，覆盖 90% 场景），x402 facilitator 仅收 1.5%，KMS 与 DVT 的服务器成本摊进 aPNTs 与交易成本。</div>
+        </div>
+      </div>
+
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;max-width:820px;margin:0 auto 44px;">
         <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 18px;text-align:left;">
           <div class="mp-mono" style="font-size:12px;color:#8fd7c4;margin-bottom:8px;">01</div>
-          <div data-i18n="step1t" style="font-weight:700;font-size:15px;margin-bottom:5px;">购买 imx93</div>
-          <div data-i18n="step1d" style="font-size:13px;color:rgba(255,255,255,.68);">获取推荐的开源硬件</div>
+          <div data-i18n="step1t" style="font-weight:700;font-size:15px;margin-bottom:5px;">准备硬件</div>
+          <div data-i18n="step1d" style="font-size:13px;color:rgba(255,255,255,.68);">推荐 imx93，其他设备亦可</div>
         </div>
         <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 18px;text-align:left;">
           <div class="mp-mono" style="font-size:12px;color:#8fd7c4;margin-bottom:8px;">02</div>
@@ -716,12 +769,12 @@
         </div>
         <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 18px;text-align:left;">
           <div class="mp-mono" style="font-size:12px;color:#8fd7c4;margin-bottom:8px;">04</div>
-          <div data-i18n="step4t" style="font-weight:700;font-size:15px;margin-bottom:5px;">配置并接入</div>
-          <div data-i18n="step4d" style="font-size:13px;color:rgba(255,255,255,.68);">按指引接入生态网络</div>
+          <div data-i18n="step4t" style="font-weight:700;font-size:15px;margin-bottom:5px;">质押并接入</div>
+          <div data-i18n="step4d" style="font-size:13px;color:rgba(255,255,255,.68);">完成质押，按指引接入网络</div>
         </div>
       </div>
-      <a href="join.html" class="mp-cta" data-i18n="joinCta" style="padding:16px 40px;font-weight:700;font-size:16px;color:#243b36;background:linear-gradient(120deg,#ffe08a,#ffd166);box-shadow:0 10px 26px rgba(255,209,102,.3);">阅读接入指南 · 购买 GToken</a>
-      <div data-i18n="joinNote" style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.5);">（前往接入与认购页面）</div>
+      <a href="https://kms.aastar.io/portal" target="_blank" rel="noopener" class="mp-cta" data-i18n="joinCta" style="padding:16px 40px;font-weight:700;font-size:16px;color:#243b36;background:linear-gradient(120deg,#ffe08a,#ffd166);box-shadow:0 10px 26px rgba(255,209,102,.3);">接入你的节点 →</a>
+      <div data-i18n="joinNote" style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.5);">（前往 AAStar 社区节点门户：下载镜像与自助部署）</div>
 
       <!-- AUDIENCE (从旧首页织入) -->
       <div style="margin-top:64px;text-align:left;">
@@ -841,11 +894,11 @@
     heroTitle: ['Mycelium 数字公共物品花园', 'Mycelium — A Garden of Digital Public Goods'],
     heroSub: [
       '借鉴近 10 亿年演化的真菌菌丝网络，在这颗 45 亿岁的星球上，连接个体、社区与城市。',
-      'Inspired by mycelial networks that have evolved for nearly a billion years — on a 4.5-billion-year-old planet — connecting individuals, communities and cities.'
+      'Inspired by mycelial networks nearly a billion years old — connecting individuals, communities and cities on our 4.5-billion-year-old planet.'
     ],
     heroLead: [
       'Mycelium 是一套协作创新系统，由 Infra、Protocol、Network 三层组成。它的使命，是帮助个体、中小组织与城市跨越科技鸿沟，共享数字生活的福祉——不同领域的公共物品，如同花园里的花朵与设施，供所有人自由取用。',
-      'Mycelium is a collaborative-innovation system of three layers — Infra, Protocol and Network. Its mission is to help individuals, small organizations and cities cross the technology gap and share the wellbeing of digital life — public goods across every domain, free for all to use like the flowers and amenities of a garden.'
+      'Mycelium is a collaborative-innovation system of three layers — Infra, Protocol and Network. It helps individuals, small organizations and cities cross the technology gap and share the wellbeing of digital life: public goods free for all, like a garden\u2019s flowers.'
     ],
     ctaJoin: ['加入生态', 'Join the ecosystem'],
     ctaIndex: ['浏览公共物品索引', 'Browse the index'],
@@ -931,13 +984,52 @@
 
     joinKicker: ['无许可加入', 'Permissionless onboarding'],
     joinTitle: ['把你的节点接入菌丝网络', 'Plug your node into the mycelium'],
-    joinIntro: ['加入生态是无许可的。四步即可让你的节点成为花园的一部分。', 'Joining is permissionless. Four steps turn your node into part of the garden.'],
-    step1t: ['购买 imx93', 'Buy imx93'], step1d: ['获取推荐的开源硬件', 'Get the recommended open hardware'],
+    joinIntro: [
+      '加入生态是无许可的。使用、建立社区、成为 Infra，或者干脆把代码复刻走自建——四条路，看你需要哪一条。',
+      'Joining is permissionless. Use it, start a community, become Infra — or fork the whole thing and self-host. Four paths; take the one you need.'
+    ],
+    pathUseKicker: ['使用 · 以贡献换取', 'Use · earned by contributing'],
+    pathUseTitle: ['不掏钱，但也不是白拿', 'No cash \u2014 but not a handout'],
+    pathUseDesc: [
+      '为社区做出贡献、参与进来，你就能挣到基础服务：日常 gas 代付，以及 mint SBT 的成本。随后 mint 自己的 SBT、加入多个社区、领取并完成任务获得不同社区的积分、到社区兑换台兑换奖品。',
+      'Contribute to a community and take part, and you earn the basics: everyday gas sponsorship, and the cost of minting your SBT. From there: mint your own SBT, join several communities, claim and finish tasks to earn each community\u2019s points, and redeem prizes at its counter.'
+    ],
+    pathUseLink: ['浏览公共物品索引 →', 'Browse the index →'],
+
+    pathCommunityKicker: ['建立社区 · 质押可退', 'Start a community · refundable stake'],
+    pathCommunityTitle: ['开一个自己的社区', 'Open your own community'],
+    pathCommunityDesc: [
+      'stake GToken 即可建立社区、发行社区积分、发布社区任务。退出时全额退还 —— 这是押金，不是消费。',
+      'Stake GToken to start a community, issue its points and post its tasks. Fully refunded when you leave \u2014 it is a deposit, not a purchase.'
+    ],
+    pathCommunityLink: ['购买 GToken →', 'Buy GToken →'],
+
+    pathInfraKicker: ['加入 · 成为 Infra', 'Join · become Infra'],
+    pathInfraTitle: ['运行节点，为别人提供服务', 'Run a node, serve others'],
+    pathInfraDesc: [
+      '加入 Mycelium 的方式之一：运行 KMS 与 DVT 节点。你需要自备硬件（推荐 imx93，其他设备亦可）并质押 stake。下面四步即可完成。',
+      'One way to join Mycelium: run KMS and DVT nodes. Bring your own hardware (imx93 recommended, other devices work too) and stake. Four steps below.'
+    ],
+
+    pathForkKicker: ['自建 · 一分钱不花', 'Self-host · pay us nothing'],
+    pathForkTitle: ['或者，把代码全部复刻走', 'Or fork the whole thing'],
+    pathForkDesc: [
+      '这正是开源公共物品的魅力：你可以复刻全部代码，自建一整套机制，不购买我们的任何服务。前提是你有足够的技术团队与服务器投入 —— 多数人不会为了喝口水，去建一座自来水厂。',
+      'This is the point of open-source public goods: fork every line, build the whole mechanism yourself, buy nothing from us. It takes an engineering team and servers, though \u2014 most people won\u2019t build a waterworks just to get a drink.'
+    ],
+    pathForkLink: ['复刻全部代码 →', 'Fork the code →'],
+
+    busTitle: ['公交车也要收票 —— 但只收到成本线附近', 'A bus still sells tickets \u2014 priced at cost'],
+    busDesc: [
+      'COS72 是一个代码仓库，它本身就是数字公共物品，任何人都能免费拿去自部署。但跑起来的社区是有成本的 —— 电费、服务器、AI token、gas fee，都得有人付。我们不做慈善，也不赚商业利润，只收非常低的、足以让它可持续运转下去的成本：gas 赞助 1 美分起步（基础 token transfer，覆盖 90% 场景），x402 facilitator 仅收 1.5%，KMS 与 DVT 的服务器成本摊进 aPNTs 与交易成本。',
+      'COS72 is a code repository \u2014 a public good in itself, free for anyone to self-host. But a community that actually runs costs money: electricity, servers, AI tokens, gas fees. This is not charity, and it is not a commercial margin either \u2014 just a very low, sustainable cost. Gas sponsorship starts at 1 cent (a basic token transfer, covering 90% of cases); the x402 facilitator takes 1.5%; KMS and DVT server costs are spread across aPNTs and transaction costs.'
+    ],
+    step1t: ['准备硬件', 'Get the hardware'], step1d: ['推荐 imx93，其他设备亦可', 'imx93 recommended; other devices work too'],
     step2t: ['下载镜像', 'Download image'], step2d: ['获取官方系统镜像', 'Grab the official system image'],
     step3t: ['校验 hash', 'Verify hash'], step3d: ['核对镜像完整性', 'Check image integrity'],
-    step4t: ['配置并接入', 'Configure & connect'], step4d: ['按指引接入生态网络', 'Follow the guide into the network'],
-    joinCta: ['阅读接入指南 · 购买 GToken', 'Onboarding guide · Buy GToken'],
-    joinNote: ['（前往接入与认购页面）', '(opens the onboarding & subscription page)'],
+    step4t: ['质押并接入', 'Stake & connect'], step4d: ['完成质押，按指引接入网络', 'Stake, then follow the guide into the network'],
+    joinCta: ['接入你的节点 →', 'Plug in your node →'],
+    joinNote: ['（前往 AAStar 社区节点门户：下载镜像与自助部署）', '(opens the AAStar community-node portal: image download & self-hosted deploy)'],
 
     audKicker: ["为谁而建 · WHO IT'S FOR", "WHO IT'S FOR · 为谁而建"],
     aud1t: ['开发者 · Developers', 'Developers · 开发者'],
